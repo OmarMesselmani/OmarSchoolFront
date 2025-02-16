@@ -1,0 +1,206 @@
+/* app/auth/login/page.module.css */
+
+.pageContainer { /* ستايلات للحاوية الرئيسية للصفحة بالكامل */
+    display: flex;
+    flex-direction: column; /* ترتيب العناصر عمودياً (هيدر، محتوى رئيسي، فوتر) */
+    min-height: 100vh;
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif; /* تطبيق الخط على الصفحة بالكامل */
+    color: #2e2e2e; /* لون الخط المستخدم في الصفحة بالكامل */
+    width: 100vw; /* تعديل: لجعل الحاوية تأخذ كامل عرض الشاشة */
+    min-width: 100vw; /* تعديل: حد أدنى لعرض الحاوية هو عرض الشاشة بالكامل */
+    overflow-x: hidden; /* إضافة: لمنع ظهور شريط التمرير الأفقي إذا تجاوز المحتوى العرض */
+    background-color: #fff;
+}
+
+.mainContent { /* ستايلات للحاوية المحتوى الرئيسي (أسفل الهيدر وأعلى الفوتر) */
+    flex: 1; /* ليأخذ المساحة المتبقية بين الهيدر والفوتر */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* تأكيد: يجب أن يأخذ 100% من عرض الحاوية الأب */
+    padding-left: 0; /* تعديل: إزالة البادينج اليساري */
+    padding-right: 0; /* تعديل: إزالة البادينج اليميني */
+    margin-left: 0; /* تعديل: إزالة المارجن اليساري */
+    margin-right: 0; /* تعديل: إزالة المارجن اليميني */
+}
+
+.pageTitle {
+    font-size: 2.5rem;
+    margin: 2rem; /* زيادة المسافة السفلية للعنوان قليلاً */
+    text-align: center; /* توسيط العنوان */
+}
+
+.registerPageContainer {
+    display: flex;
+    width: 100%; /* تأكيد أن الحاوية تأخذ 100% من عرض الحاوية الأب */
+    max-width: 1500px;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    flex-direction: row-reverse; /* إضافة هذه الخاصية لعكس ترتيب العناصر في RTL */
+}
+
+.imageSide {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* خلفية الصورة لم تعد ضرورية هنا */
+}
+
+.imagePlaceholder {
+    font-size: 2rem;
+    color: #999;
+}
+
+.formSide {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.registerForm {
+    width: 100%;
+    max-width: 500px;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.formLabel {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.formInput, .formSelect {
+    width: calc(100% - 20px);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 0.25rem;
+    font-family: inherit;
+}
+
+.formSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 10px);
+    background-position-y: center;
+    padding-right: 2rem;
+}
+
+.formSelect::-ms-expand {
+    display: none;
+}
+
+
+.submitButton {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    background-color: #DD2946;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+    font-family: inherit;
+}
+
+.submitButton:hover {
+    background-color: #c8233d;
+}
+
+.buttonContainer { /* ستايلات لحاوية الزر */
+    text-align: center; /* إضافة هذه الخاصية لتوسيط المحتوى (الزر) أفقياً */
+    margin-top: 1.5rem; /* إضافة مساحة علوية للفاصل عن الحقول السابقة إذا أردت */
+}
+
+.forgotPasswordLink { /* ستايلات لرابط "نسيت كلمة السر" */
+    text-align: left; /*  تعديل: محاذاة النص لليسار (في سياق RTL سيكون على اليمين بصرياً) */
+    margin-top: 0.5rem; /* تقليل المساحة العلوية قليلاً إذا لزم الأمر */
+    margin-bottom: 1.5rem; /* إضافة مساحة سفلية للفصل عن الزر */
+}
+
+.formLink { /* ستايلات عامة للروابط في النموذج (لكل من "نسيت كلمة السر" و "إنشاء حساب جديد") */
+    color: #0070f3; /* لون افتراضي للروابط (يمكنك تغييره) */
+    text-decoration: none; /* إزالة التسطير الافتراضي للروابط */
+    font-size: 1.1rem; /* تعديل: تكبير حجم الخط قليلاً - لكلا الرابطين */
+}
+
+.formLink:hover { /* ستايل عند تمرير الفأرة فوق الرابط */
+    text-decoration: underline; /* إضافة تسطير عند التحويم */
+}
+
+
+.createAccountLinkContainer { /* ستايلات لحاوية رابط "إنشاء حساب جديد" */
+    text-align: center; /* توسيط رابط "إنشاء حساب جديد" */
+    margin-top: 2rem; /* إضافة مساحة علوية لرابط "إنشاء حساب جديد" */
+}
+
+
+/* تصميم متجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .registerPageContainer {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem; /* تقليل البادينج في الشاشات الصغيرة */
+    }
+
+    .imageSide {
+        display: none;
+    }
+
+    .formSide {
+        width: 100%;
+        flex: none;
+        padding: 1rem; /* تقليل البادينج في الشاشات الصغيرة */
+        align-items: center;
+    }
+
+    .pageTitle {
+        text-align: center;
+        align-self: center;
+        font-size: 2rem; /* تصغير حجم العنوان في الشاشات الصغيرة */
+        margin-bottom: 1.5rem; /* تقليل المسافة السفلية للعنوان في الشاشات الصغيرة */
+    }
+
+    .registerForm {
+        align-self: center;
+        max-width: 100%; /* السماح للنموذج بأخذ عرض كامل الشاشة في الشاشات الصغيرة */
+    }
+
+    .submitButton {
+        align-self: center;
+    }
+
+    .formLabel {
+        font-size: 1rem; /* تصغير حجم الوسوم في الشاشات الصغيرة */
+    }
+
+    .formInput, .formSelect, .submitButton {
+        font-size: 1rem; /* تصغير حجم الخطوط في الحقول والأزرار في الشاشات الصغيرة */
+        padding: 0.6rem 1rem; /* تقليل البادينج في الحقول والأزرار في الشاشات الصغيرة */
+    }
+
+    .buttonContainer { /* ستايلات لحاوية الزر في الشاشات الصغيرة */
+        text-align: center; /* تأكيد التوسيط في الشاشات الصغيرة أيضاً */
+    }
+
+    .forgotPasswordLink, .createAccountLinkContainer { /* توسيط روابط "نسيت كلمة السر" و "إنشاء حساب" في الشاشات الصغيرة */
+        text-align: center; /* تعديل: إرجاع التوسيط في الشاشات الصغيرة لرابط "نسيت كلمة السر؟" أيضاً */
+    }
+}

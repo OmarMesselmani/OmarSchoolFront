@@ -1,0 +1,354 @@
+/* app/auth/register/page.module.css */
+
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
+    color: #2e2e2e;
+    width: 100vw;
+    min-width: 100vw;
+    overflow-x: hidden;
+    background-color: #fff;
+}
+
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.pageTitle {
+    font-size: 2.5rem;
+    margin: 2rem;
+    text-align: center;
+}
+
+.registerPageContainer {
+    display: flex;
+    width: 100%;
+    max-width: 1500px;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    flex-direction: row-reverse;
+}
+
+.imageSide {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerImage {
+    object-fit: contain;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.formSide {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.registerForm {
+    width: 100%;
+    max-width: 500px;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.formLabel {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.formInput, .formSelect {
+    width: calc(100% - 20px);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 0.25rem;
+    font-family: inherit;
+    text-align: right;
+}
+
+.formSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 10px);
+    background-position-y: center;
+    padding-right: 2rem;
+}
+
+.formSelect::-ms-expand {
+    display: none;
+}
+
+.buttonContainer {
+    text-align: center;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.submitButton {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    background-color: #DD2946;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
+}
+
+.submitButton:hover {
+    background-color: #c8233d;
+}
+
+.submitButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.loginLinkContainer {
+    text-align: right;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.loginLinkText {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.loginLink {
+    color: #0070f3;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.loginLink:hover {
+    text-decoration: underline;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+}
+
+.radioInput {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+}
+
+.radioInput:checked {
+    border: 1px solid #DD2946;
+}
+
+.radioInput:checked::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #DD2946;
+}
+
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.checkboxLabel {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    color: #555;
+    user-select: none;
+}
+
+.checkboxInput {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkboxInput:checked {
+    background-color: #DD2946;
+    border-color: #DD2946;
+}
+
+.checkboxInput:checked::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.termsLink {
+    color: #0070f3;
+    text-decoration: none;
+}
+
+.termsLink:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .registerPageContainer {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .imageSide {
+        display: none; /* إخفاء قسم الصورة بالكامل في وضع الهاتف */
+    }
+
+    .formSide {
+        width: 100%;
+        flex: none;
+        padding: 1rem;
+        align-items: center;
+    }
+
+    .pageTitle {
+        text-align: center;
+        align-self: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .registerForm {
+        align-self: center;
+        max-width: 100%;
+    }
+
+    .submitButton {
+        align-self: center;
+    }
+
+    .formLabel {
+        font-size: 1rem;
+    }
+
+    .formInput, .formSelect, .submitButton {
+        font-size: 1rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .formSelect {
+        padding-right: 2rem;
+    }
+
+    .buttonContainer {
+        text-align: center;
+    }
+
+    .loginLinkContainer {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .loginLinkText, .loginLink {
+        font-size: 1.1rem;
+    }
+
+    .radioGroup {
+        flex-direction: row;
+        gap: 1rem;
+        justify-content: flex-start;
+    }
+
+    .radioLabel {
+        font-size: 1rem;
+    }
+
+    .checkboxGroup {
+        justify-content: flex-start;
+        flex-direction: row;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+
+    .checkboxLabel {
+        margin-right: 0.5rem;
+        text-align: right;
+        margin-top: 0;
+    }
+}
