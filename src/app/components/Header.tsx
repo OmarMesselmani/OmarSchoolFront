@@ -11,6 +11,7 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
+  { href: "/", label: "الرئيسية" },
   {
     href: "#years",
     label: "السنوات",
@@ -31,6 +32,7 @@ export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const dropdownTimeout = useRef<NodeJS.Timeout | null>(null); // إضافة useRef للتأخير
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,13 +55,27 @@ export default function Header() {
     setIsMobileDropdownOpen(false);
   };
 
+  const handleMouseEnter = () => {
+    if (dropdownTimeout.current) {
+      clearTimeout(dropdownTimeout.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeout.current = setTimeout(() => {
+      setIsMobileDropdownOpen(false);
+    }, 500); // تأخير 200 مللي ثانية
+  };
+
   const renderNavLinks = (isSidebar: boolean = false) => {
     return navLinks.map((link, index) => {
       if (link.dropdownItems) {
         return (
-          <li 
-            key={index} 
+          <li
+            key={index}
             className={`${styles.dropdownContainer} ${isSidebar ? styles.sidebarLinks : ''}`}
+            onMouseEnter={handleMouseEnter} // إضافة حدث mouseenter
+            onMouseLeave={handleMouseLeave} // إضافة حدث mouseleave
           >
             <a
               href={link.href}
@@ -78,9 +94,9 @@ export default function Header() {
             <ul className={`${styles.dropdown} ${isSidebar && isMobileDropdownOpen ? styles.dropdownOpen : ''}`}>
               {link.dropdownItems.map((item, i) => (
                 <li key={i}>
-                  <a href={item.href} onClick={handleLinkClick}>
+                  <Link href={item.href} onClick={handleLinkClick}>
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -89,9 +105,9 @@ export default function Header() {
       }
       return (
         <li key={index} className={isSidebar ? styles.sidebarLinks : ''}>
-          <a href={link.href} onClick={handleLinkClick}>
+          <Link href={link.href} onClick={handleLinkClick}>
             {link.label}
-          </a>
+          </Link>
         </li>
       );
     });
@@ -99,7 +115,7 @@ export default function Header() {
 
   const renderButtons = (isSidebar: boolean = false) => (
     <div className={`${styles.buttons} ${isSidebar ? '' : styles.desktopButtons}`}>
-      <Link href="./auth/register" className={styles.createAccountLink}>
+      <Link href="/auth/register" className={styles.createAccountLink}>
         <button className={`${styles.createAccountButton} ${isSidebar ? styles.sidebarButton : ''}`}>
           إنشاء حساب
         </button>
@@ -127,9 +143,9 @@ export default function Header() {
           </div>
 
           <div className={styles.logo}>
-            <img 
-              src="/logo.png" 
-              alt="Logo" 
+            <img
+              src="/logo.png"
+              alt="Logo"
               width={150}
               height={45}
             />

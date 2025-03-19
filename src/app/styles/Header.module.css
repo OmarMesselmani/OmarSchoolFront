@@ -125,6 +125,15 @@
   background-color: #f8f9fa;
 }
 
+/* تعديل هنا */
+.dropdownContainer:hover .dropdown {
+  display: block;
+}
+
+.dropdownContainer:not(:hover) .dropdown {
+  display: none;
+}
+
 /* Mobile Toggle Button */
 .toggleButton {
   display: none;
