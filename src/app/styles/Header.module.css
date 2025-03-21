@@ -3,29 +3,78 @@
 .navbar {
   display: flex;
   justify-content: center;
-  align-items: center;
   background-color: #fff;
   position: relative;
   z-index: 1000;
   width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .headerContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1500px;
   width: 100%;
+  max-width: 1500px;
   padding: 1rem 4rem;
   margin: 0 auto;
   direction: rtl;
 }
 
+/* التعديل الأساسي هنا */
+.navContainer {
+  flex: 1; /* يأخذ المساحة المتبقية */
+  display: flex;
+  justify-content: center; /* توسيط الروابط */
+  margin: 0 2rem; /* مسافة جانبية */
+}
+
+.navLinks {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* بقية الأنماط بدون تغيير */
 .logo {
   width: 150px;
   height: 45px;
+  flex-shrink: 0; /* منع تصغير حجم اللوجو */
+}
+
+.buttons {
   display: flex;
-  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0; /* منع تصغير الأزرار */
+}
+
+/* تحسينات للشاشات المتوسطة */
+@media (max-width: 1200px) {
+  .headerContainer {
+    padding: 1rem 2rem;
+  }
+  
+  .navLinks {
+    gap: 1.5rem;
+  }
+}
+
+/* تحسينات للجوال */
+@media (max-width: 1024px) {
+  .navContainer {
+    display: none; /* إخفاء الروابط في الجوال */
+  }
+  
+  .headerContainer {
+    padding: 1rem;
+    justify-content: space-between; /* توزيع العناصر بشكل صحيح */
+  }
+  
+  .logo {
+    margin: 0; /* إزالة الهوامش التلقائية */
+  }
 }
 
 .logo img {
@@ -99,7 +148,6 @@
 }
 
 .dropdown {
-  display: none;
   position: absolute;
   top: 100%;
   right: 0;
@@ -109,6 +157,17 @@
   min-width: 200px;
   padding: 0.5rem 0;
   margin-top: 0.5rem;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  display: block;
+  pointer-events: none;
+}
+
+.dropdown.dropdownOpen {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .dropdown li {
@@ -125,13 +184,15 @@
   background-color: #f8f9fa;
 }
 
-/* تعديل هنا */
-.dropdownContainer:hover .dropdown {
-  display: block;
-}
-
-.dropdownContainer:not(:hover) .dropdown {
-  display: none;
+/* إضافة منطقة امتداد للقائمة المنسدلة لتسهيل التنقل */
+.dropdownContainer::after {
+  content: '';
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  bottom: -15px;
+  left: 0;
+  z-index: 5;
 }
 
 /* Mobile Toggle Button */
@@ -216,21 +277,19 @@
 
 .sidebar .dropdownOpen {
   display: block;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Desktop Hover Effects */
 @media (min-width: 769px) {
-  .dropdownContainer:hover .dropdown {
-    display: block;
-  }
-
   .navLinks > li > a:hover {
     color: var(--main-color);
   }
 }
 
 /* Mobile Styles */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .headerContainer {
     padding: 1rem;
   }

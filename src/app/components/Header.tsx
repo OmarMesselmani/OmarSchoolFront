@@ -31,8 +31,9 @@ const navLinks: NavLink[] = [
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const dropdownTimeout = useRef<NodeJS.Timeout | null>(null); // إضافة useRef للتأخير
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,16 +56,19 @@ export default function Header() {
     setIsMobileDropdownOpen(false);
   };
 
-  const handleMouseEnter = () => {
-    if (dropdownTimeout.current) {
-      clearTimeout(dropdownTimeout.current);
+  const handleDropdownMouseEnter = (index: number) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
     }
+    setActiveDropdown(index);
   };
 
-  const handleMouseLeave = () => {
-    dropdownTimeout.current = setTimeout(() => {
-      setIsMobileDropdownOpen(false);
-    }, 500); // تأخير 200 مللي ثانية
+  const handleDropdownMouseLeave = () => {
+    // تأخير إخفاء القائمة المنسدلة لإعطاء وقت للمستخدم للوصول إليها
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 300); // 300 مللي ثانية للتأخير
   };
 
   const renderNavLinks = (isSidebar: boolean = false) => {
@@ -74,8 +78,8 @@ export default function Header() {
           <li
             key={index}
             className={`${styles.dropdownContainer} ${isSidebar ? styles.sidebarLinks : ''}`}
-            onMouseEnter={handleMouseEnter} // إضافة حدث mouseenter
-            onMouseLeave={handleMouseLeave} // إضافة حدث mouseleave
+            onMouseEnter={() => !isSidebar && handleDropdownMouseEnter(index)}
+            onMouseLeave={() => !isSidebar && handleDropdownMouseLeave()}
           >
             <a
               href={link.href}
@@ -91,7 +95,15 @@ export default function Header() {
                 </span>
               )}
             </a>
-            <ul className={`${styles.dropdown} ${isSidebar && isMobileDropdownOpen ? styles.dropdownOpen : ''}`}>
+            <ul 
+              className={`${styles.dropdown} ${
+                (isSidebar && isMobileDropdownOpen) || (!isSidebar && activeDropdown === index) 
+                  ? styles.dropdownOpen 
+                  : ''
+              }`}
+              onMouseEnter={() => !isSidebar && handleDropdownMouseEnter(index)}
+              onMouseLeave={() => !isSidebar && handleDropdownMouseLeave()}
+            >
               {link.dropdownItems.map((item, i) => (
                 <li key={i}>
                   <Link href={item.href} onClick={handleLinkClick}>

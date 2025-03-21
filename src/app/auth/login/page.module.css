@@ -1,66 +1,115 @@
-/* app/auth/login/page.module.css */
-
-.pageContainer { /* ستايلات للحاوية الرئيسية للصفحة بالكامل */
+.pageContainer {
     display: flex;
-    flex-direction: column; /* ترتيب العناصر عمودياً (هيدر، محتوى رئيسي، فوتر) */
+    flex-direction: column;
     min-height: 100vh;
     direction: rtl;
-    font-family: 'Tajawal', sans-serif; /* تطبيق الخط على الصفحة بالكامل */
-    color: #2e2e2e; /* لون الخط المستخدم في الصفحة بالكامل */
-    width: 100vw; /* تعديل: لجعل الحاوية تأخذ كامل عرض الشاشة */
-    min-width: 100vw; /* تعديل: حد أدنى لعرض الحاوية هو عرض الشاشة بالكامل */
-    overflow-x: hidden; /* إضافة: لمنع ظهور شريط التمرير الأفقي إذا تجاوز المحتوى العرض */
-    background-color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    color: #171717;
+    width: 100vw;
+    min-width: 100vw;
+    overflow-x: hidden;
+    background: #f8f9fd;
+    align-items: center;
+    position: relative;
 }
 
-.mainContent { /* ستايلات للحاوية المحتوى الرئيسي (أسفل الهيدر وأعلى الفوتر) */
-    flex: 1; /* ليأخذ المساحة المتبقية بين الهيدر والفوتر */
+.rightImage {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    max-width: 15%;
+    object-fit: contain;
+    margin-top: 50px;
+    margin-right: 50px;
+    object-position: right top;
+    z-index: 0;
+    animation: moveUpDown 4s infinite ease-in-out alternate; /* إضافة الحركة */
+}
+
+.leftImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    max-width: 15%;
+    margin-top: 50px;
+    margin-left: 50px;
+    object-fit: contain;
+    object-position: left top;
+    z-index: 0;
+    animation: moveLeftRight 4s infinite ease-in-out alternate; /* إضافة الحركة */
+}
+
+@keyframes moveUpDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(20px); }
+}
+
+@keyframes moveLeftRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(20px); }
+}
+
+.mainContent {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; /* تأكيد: يجب أن يأخذ 100% من عرض الحاوية الأب */
-    padding-left: 0; /* تعديل: إزالة البادينج اليساري */
-    padding-right: 0; /* تعديل: إزالة البادينج اليميني */
-    margin-left: 0; /* تعديل: إزالة المارجن اليساري */
-    margin-right: 0; /* تعديل: إزالة المارجن اليميني */
+    width: calc(100% - 150px);
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 70px;
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+    z-index: 1; /* قيمة أعلى من الصور لضمان ظهور المحتوى فوقها */
 }
 
 .pageTitle {
     font-size: 2.5rem;
-    margin: 2rem; /* زيادة المسافة السفلية للعنوان قليلاً */
-    text-align: center; /* توسيط العنوان */
+    margin: 2rem;
+    text-align: center;
+    font-weight: 500;
 }
 
 .registerPageContainer {
     display: flex;
-    width: 100%; /* تأكيد أن الحاوية تأخذ 100% من عرض الحاوية الأب */
-    max-width: 1500px;
-    padding: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    overflow: hidden;
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: 30px;
     margin-bottom: 2rem;
-    flex-direction: row-reverse; /* إضافة هذه الخاصية لعكس ترتيب العناصر في RTL */
+    flex-direction: row-reverse;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .imageSide {
     flex: 1;
+    padding: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* خلفية الصورة لم تعد ضرورية هنا */
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .imagePlaceholder {
+    height: 100%;
+    object-fit: contain;
     font-size: 2rem;
     color: #999;
 }
 
 .formSide {
     flex: 1;
-    padding: 2rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background-color: #DD2946;
+    color: #fff;
 }
 
 .registerForm {
@@ -76,8 +125,7 @@
 .formLabel {
     display: block;
     font-size: 1.1rem;
-    font-weight: bold;
-    color: #555;
+    color: #fff;
     margin-bottom: 0.5rem;
 }
 
@@ -85,8 +133,7 @@
     width: calc(100% - 20px);
     padding: 0.75rem 1rem;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    border-radius: 25px;
     margin-top: 0.25rem;
     font-family: inherit;
 }
@@ -106,13 +153,13 @@
     display: none;
 }
 
-
 .submitButton {
+    width: 180px;
     padding: 0.8rem 2rem;
     font-size: 1.1rem;
     background-color: #DD2946;
-    color: white;
-    border: none;
+    color: #fff;
+    border: 1px solid #fff;
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -124,40 +171,65 @@
     background-color: #c8233d;
 }
 
-.buttonContainer { /* ستايلات لحاوية الزر */
-    text-align: center; /* إضافة هذه الخاصية لتوسيط المحتوى (الزر) أفقياً */
-    margin-top: 1.5rem; /* إضافة مساحة علوية للفاصل عن الحقول السابقة إذا أردت */
+.buttonContainer {
+    text-align: center;
+    margin-top: 1.5rem;
 }
 
-.forgotPasswordLink { /* ستايلات لرابط "نسيت كلمة السر" */
-    text-align: left; /*  تعديل: محاذاة النص لليسار (في سياق RTL سيكون على اليمين بصرياً) */
-    margin-top: 0.5rem; /* تقليل المساحة العلوية قليلاً إذا لزم الأمر */
-    margin-bottom: 1.5rem; /* إضافة مساحة سفلية للفصل عن الزر */
+.forgotPasswordLink {
+    text-align: left;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.formLink { /* ستايلات عامة للروابط في النموذج (لكل من "نسيت كلمة السر" و "إنشاء حساب جديد") */
-    color: #0070f3; /* لون افتراضي للروابط (يمكنك تغييره) */
-    text-decoration: none; /* إزالة التسطير الافتراضي للروابط */
-    font-size: 1.1rem; /* تعديل: تكبير حجم الخط قليلاً - لكلا الرابطين */
+.formLink {
+    text-decoration: none;
+    font-size: 1.1rem;
 }
 
-.formLink:hover { /* ستايل عند تمرير الفأرة فوق الرابط */
-    text-decoration: underline; /* إضافة تسطير عند التحويم */
+.formInput {
+    color: #171717;
 }
 
-
-.createAccountLinkContainer { /* ستايلات لحاوية رابط "إنشاء حساب جديد" */
-    text-align: center; /* توسيط رابط "إنشاء حساب جديد" */
-    margin-top: 2rem; /* إضافة مساحة علوية لرابط "إنشاء حساب جديد" */
+.formLink:hover {
+    text-decoration: underline;
 }
 
+.createAccountLinkContainer {
+    text-align: center;
+    margin-top: 2rem;
+}
 
-/* تصميم متجاوب للشاشات الصغيرة */
+.homePageLinkContainer {
+    text-align: center;
+    margin-top: 1.2rem; /* زيادة المسافة من النموذج */
+    width: 100%; /* جعل العنصر يأخذ عرض الصفحة بالكامل */
+}
+
+.homePageLink {
+    color: #171717;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.homePageLink:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
+    .rightImage,
+    .leftImage {
+        display: none;
+    }
+
+    .mainContent {
+        width: calc(100% - 50px);
+    }
+
     .registerPageContainer {
+        border-radius: 20px;
         flex-direction: column;
         align-items: center;
-        padding: 1rem; /* تقليل البادينج في الشاشات الصغيرة */
     }
 
     .imageSide {
@@ -167,40 +239,42 @@
     .formSide {
         width: 100%;
         flex: none;
-        padding: 1rem; /* تقليل البادينج في الشاشات الصغيرة */
+        padding: 2rem;
         align-items: center;
     }
 
     .pageTitle {
         text-align: center;
         align-self: center;
-        font-size: 2rem; /* تصغير حجم العنوان في الشاشات الصغيرة */
-        margin-bottom: 1.5rem; /* تقليل المسافة السفلية للعنوان في الشاشات الصغيرة */
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
     }
 
     .registerForm {
         align-self: center;
-        max-width: 100%; /* السماح للنموذج بأخذ عرض كامل الشاشة في الشاشات الصغيرة */
+        max-width: 100%;
     }
 
     .submitButton {
+        padding: 0.8rem 2rem;
         align-self: center;
+        width: 180px;
     }
 
     .formLabel {
-        font-size: 1rem; /* تصغير حجم الوسوم في الشاشات الصغيرة */
+        font-size: 1.2rem;
     }
 
     .formInput, .formSelect, .submitButton {
-        font-size: 1rem; /* تصغير حجم الخطوط في الحقول والأزرار في الشاشات الصغيرة */
-        padding: 0.6rem 1rem; /* تقليل البادينج في الحقول والأزرار في الشاشات الصغيرة */
+        font-size: 1rem;
+        padding: 0.6rem 1rem;
     }
 
-    .buttonContainer { /* ستايلات لحاوية الزر في الشاشات الصغيرة */
-        text-align: center; /* تأكيد التوسيط في الشاشات الصغيرة أيضاً */
+    .buttonContainer {
+        text-align: center;
     }
 
-    .forgotPasswordLink, .createAccountLinkContainer { /* توسيط روابط "نسيت كلمة السر" و "إنشاء حساب" في الشاشات الصغيرة */
-        text-align: center; /* تعديل: إرجاع التوسيط في الشاشات الصغيرة لرابط "نسيت كلمة السر؟" أيضاً */
+    .forgotPasswordLink, .createAccountLinkContainer {
+        text-align: center;
     }
 }

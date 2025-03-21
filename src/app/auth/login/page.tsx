@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import Link from 'next/link'; // استيراد компонент Link
+import Link from 'next/link'; 
 
 export default function LoginPage() {
-    const [loginIdentifier, setLoginIdentifier] = useState(''); // لحفظ البريد الإلكتروني أو رقم الهاتف
+    const [loginIdentifier, setLoginIdentifier] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = (event: React.FormEvent) => {
@@ -22,23 +20,22 @@ export default function LoginPage() {
 
     return (
         <div className={styles.pageContainer}>
-            <Header />
-
+            {/* صور الخلفية */}
+            <img src="/images/side1.png" alt="صورة يمين" className={styles.rightImage} />
+            <img src="/images/side2.png" alt="صورة يسار" className={styles.leftImage} />
+            
             <main className={styles.mainContent}>
-                <h1 className={styles.pageTitle}>تسجيل الدخول</h1> {/* عنوان صفحة تسجيل الدخول */}
-
-                <div className={styles.registerPageContainer}> {/* إعادة استخدام نفس حاوية صفحة التسجيل للتصميم المتشابه */}
+                <h1 className={styles.pageTitle}>تسجيل الدخول</h1>
+                <div className={styles.registerPageContainer}>
                     <div className={styles.imageSide}>
-                        <div className={styles.imagePlaceholder}>صورة</div> {/* نفس عنصر نائب الصورة */}
+                        <img src="/images/hello1.jpg" alt="صورة تسجيل الدخول" className={styles.imagePlaceholder} />
                     </div>
-
                     <div className={styles.formSide}>
-                        <form className={styles.registerForm} onSubmit={handleSubmit}> {/* إعادة استخدام نفس ستايل النموذج */}
-
+                        <form className={styles.registerForm} onSubmit={handleSubmit}>
                             <div className={styles.formGroup}>
-                                <label htmlFor="loginIdentifier" className={styles.formLabel}>البريد الإلكتروني أو رقم الهاتف:</label> {/*  تعديل الليبل */}
+                                <label htmlFor="loginIdentifier" className={styles.formLabel}>البريد الإلكتروني أو رقم الهاتف:</label>
                                 <input
-                                    type="text" // نوع الإدخال يمكن أن يكون نص لاستقبال البريد الإلكتروني أو رقم الهاتف
+                                    type="text"
                                     id="loginIdentifier"
                                     className={styles.formInput}
                                     value={loginIdentifier}
@@ -59,27 +56,27 @@ export default function LoginPage() {
                                 />
                             </div>
 
-                            <div className={styles.forgotPasswordLink}> {/* رابط "نسيت كلمة السر" -  تم نقله للأعلى */}
+                            <div className={styles.forgotPasswordLink}>
                                 <a href="#" className={styles.formLink}>نسيت كلمة السر؟</a>
                             </div>
 
                             <div className={styles.buttonContainer}>
-                                <button type="submit" className={styles.submitButton}>تسجيل الدخول</button> {/* تعديل نص الزر */}
+                                <button type="submit" className={styles.submitButton}>تسجيل الدخول</button>
                             </div>
-
-
                         </form>
 
-                        <div className={styles.createAccountLinkContainer}> {/* حاوية لرابط إنشاء حساب */}
+                        <div className={styles.createAccountLinkContainer}>
                             <p className={styles.createAccountText}>
-                                ليس لديك حساب؟ <Link href="/auth/register" className={styles.formLink}>إنشاء حساب جديد</Link> {/* رابط لصفحة التسجيل */}
+                                ليس لديك حساب؟ <Link href="/auth/register" className={styles.formLink}>إنشاء حساب جديد</Link>
                             </p>
                         </div>
                     </div>
                 </div>
+                {/* إضافة رابط العودة إلى الصفحة الرئيسية خارج النموذج وفي منتصف الصفحة */}
+                <div className={styles.homePageLinkContainer}>
+                    <Link href="/" className={styles.homePageLink}>العودة إلى الصفحة الرئيسية</Link>
+                </div>
             </main>
-
-            <Footer />
         </div>
     );
 }
