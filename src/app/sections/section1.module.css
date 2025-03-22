@@ -1,0 +1,157 @@
+.mainSlider {
+  position: relative;
+  width: 100%;
+  height: 600px; /* يمكنك تعديل الارتفاع حسب الحاجة */
+  overflow: hidden;
+  direction: rtl;
+  padding-bottom: 30px;
+}
+
+.sliderContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  visibility: hidden; /* إخفاء الشرائح غير النشطة */
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  display: flex; /* استخدام Flexbox لتوسيط المحتوى */
+  justify-content: flex-end;
+  align-items: center; /* توسيط رأسي */
+  z-index: 0; /* z-index للشرائح غير النشطة */
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible; /* إظهار الشريحة النشطة فقط */
+  z-index: 1; /* z-index أعلى للشريحة النشطة */
+}
+
+.slideContent {
+  max-width: 40%; /* تقليل العرض لتناسب الجانب */
+  padding: 40px; /* التباعد الداخلي */
+  color: #171717; /* لون النص الأبيض */
+  text-align: center; /* محاذاة النص للجانب الأيمن */
+  z-index: 2;
+  margin-left: 7%; /* هامش من اليمين لإبعاده عن حافة الشاشة */
+}
+
+.slideTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #DD2946; /* لون ذهبي أصفر للعنوان */
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.slideDescription {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  max-width: 100%;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.slideButton {
+  display: inline-block;
+  background-color: #DD2946; /* لون فيروزي للزر */
+  color: white;
+  font-weight: 600;
+  padding: 14px 35px; /* حجم الزر */
+  text-decoration: none;
+  border-radius: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.slideButton:hover {
+  background-color: #c8233d;
+}
+
+.sliderNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px; /* حجم الأزرار */
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.5); /* خلفية شفافة */
+  border: none;
+  border-radius: 50%;
+  font-size: 1.8rem; /* حجم الأيقونات */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+  color: #333; /* لون الأيقونات */
+}
+
+.sliderNav:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.prevButton {
+  right: 20px;
+}
+
+.nextButton {
+  left: 20px;
+}
+
+/* تعديلات متجاوبة */
+@media (max-width: 768px) {
+  .slideContent {
+    max-width: 80%;
+    padding: 30px;
+    margin-right: 5%;
+  }
+
+  .slideTitle {
+    font-size: 2.5rem;
+  }
+
+  .slideDescription {
+    font-size: 1.1rem;
+  }
+
+  .sliderNav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .slideContent {
+    max-width: 90%;
+    padding: 20px;
+    margin-right: 5%;
+  }
+
+  .slideTitle {
+    font-size: 2rem;
+  }
+
+  .slideDescription {
+    font-size: 1rem;
+  }
+
+  .sliderNav {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+  }
+}

@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -38,21 +36,15 @@ export default function RegisterPage() {
 
     return (
         <div className={styles.pageContainer}>
-            <Header />
+            {/* صور الخلفية */}
+            <img src="/images/side1.png" alt="صورة يمين" className={styles.rightImage} />
+            <img src="/images/side2.png" alt="صورة يسار" className={styles.leftImage} />
+            
             <main className={styles.mainContent}>
                 <h1 className={styles.pageTitle}>إنشاء حساب جديد</h1>
                 <div className={styles.registerPageContainer}>
                     <div className={styles.imageSide}>
-                        <div className={styles.imageWrapper}>
-                            <Image
-                                src="/images/hello1.png"
-                                alt="صورة التسجيل"
-                                width={450}
-                                height={350}
-                                priority
-                                className={styles.registerImage}
-                            />
-                        </div>
+                        <img src="/images/hello2.jpg" alt="صورة التسجيل" className={styles.imagePlaceholder} />
                     </div>
                     <div className={styles.formSide}>
                         <form className={styles.registerForm} onSubmit={handleSubmit}>
@@ -160,18 +152,21 @@ export default function RegisterPage() {
                             </div>
 
                             <div className={styles.buttonContainer}>
-                                <button type="submit" className={styles.submitButton} disabled={!termsAgreed}>إتمام التسجيل</button>
+                                <button type="submit" className={styles.submitButton}>إتمام التسجيل</button>
                             </div>
                             <div className={styles.loginLinkContainer}>
                                 <span className={styles.loginLinkText}>
-                                    لديك حساب؟ <Link href="/auth/login" className={styles.loginLink}>تسجيل الدخول</Link>
+                                    لديك حساب؟ <Link href="/auth/login" className={styles.formLink}>تسجيل الدخول</Link>
                                 </span>
                             </div>
                         </form>
                     </div>
                 </div>
+                {/* إضافة رابط العودة إلى الصفحة الرئيسية خارج النموذج وفي منتصف الصفحة */}
+                <div className={styles.homePageLinkContainer}>
+                    <Link href="/" className={styles.homePageLink}>العودة إلى الصفحة الرئيسية</Link>
+                </div>
             </main>
-            <Footer />
         </div>
     );
 }

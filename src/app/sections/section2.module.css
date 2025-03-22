@@ -1,0 +1,69 @@
+.aboutUsSection {
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #DD2946;
+    margin-bottom: 40px;
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+  }
+  
+  .imageContainer {
+    margin-bottom: 20px;
+    display: flex; /* إضافة خاصية العرض كـ Flexbox */
+    justify-content: center; /* توسيط العناصر أفقياً */
+  }
+  
+  .aboutUsImage {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .sectionDescription {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #171717;
+    margin-bottom: 30px;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+  }
+  
+  .startButton {
+    display: inline-block;
+    background-color: #DD2946; /* لون فيروزي للزر */
+    color: white;
+    font-weight: 600;
+    padding: 14px 35px; /* حجم الزر */
+    text-decoration: none;
+    border-radius: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+  }
+  
+  .startButton:hover {
+    background-color: #c8233d;
+  }
+  
+  /* تعديلات متجاوبة */
+  @media (max-width: 768px) {
+    .sectionTitle {
+      font-size: 2rem;
+    }
+  
+    .sectionDescription {
+      font-size: 1rem;
+    }
+  
+    .startButton {
+      padding: 12px 30px;
+      font-size: 0.9rem;
+    }
+  }

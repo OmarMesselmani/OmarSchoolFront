@@ -6,11 +6,51 @@
     min-height: 100vh;
     direction: rtl;
     font-family: 'Tajawal', sans-serif;
-    color: #2e2e2e;
+    color: #171717;
     width: 100vw;
     min-width: 100vw;
     overflow-x: hidden;
-    background-color: #fff;
+    background: #f8f9fd;
+    align-items: center;
+    position: relative;
+}
+
+.rightImage {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    max-width: 15%;
+    object-fit: contain;
+    margin-top: 50px;
+    margin-right: 50px;
+    object-position: right top;
+    z-index: 0;
+    animation: moveUpDown 4s infinite ease-in-out alternate;
+}
+
+.leftImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    max-width: 15%;
+    margin-top: 50px;
+    margin-left: 50px;
+    object-fit: contain;
+    object-position: left top;
+    z-index: 0;
+    animation: moveLeftRight 4s infinite ease-in-out alternate;
+}
+
+@keyframes moveUpDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(20px); }
+}
+
+@keyframes moveLeftRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(20px); }
 }
 
 .mainContent {
@@ -18,61 +58,58 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: calc(100% - 150px);
     padding-left: 0;
     padding-right: 0;
     margin-left: 0;
     margin-right: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .pageTitle {
     font-size: 2.5rem;
     margin: 2rem;
     text-align: center;
+    font-weight: 500;
 }
 
 .registerPageContainer {
     display: flex;
     width: 100%;
-    max-width: 1500px;
-    padding: 2rem;
+    max-width: 1200px;
+    overflow: hidden;
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: 30px;
     margin-bottom: 2rem;
     flex-direction: row-reverse;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .imageSide {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 2rem;
-}
-
-.imageWrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.registerImage {
+.imagePlaceholder {
+    height: 100%;
     object-fit: contain;
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
+    font-size: 2rem;
+    color: #999;
 }
 
 .formSide {
     flex: 1;
-    padding: 2rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background-color: #DD2946;
+    color: #fff;
 }
 
 .registerForm {
@@ -83,13 +120,13 @@
 .formGroup {
     margin-bottom: 1.5rem;
     text-align: right;
+    width: 100%;
 }
 
 .formLabel {
     display: block;
     font-size: 1.1rem;
-    font-weight: bold;
-    color: #555;
+    color: #fff;
     margin-bottom: 0.5rem;
 }
 
@@ -97,11 +134,11 @@
     width: calc(100% - 20px);
     padding: 0.75rem 1rem;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    border-radius: 25px;
     margin-top: 0.25rem;
     font-family: inherit;
-    text-align: right;
+    border: none;
+    color: #171717;
 }
 
 .formSelect {
@@ -126,11 +163,12 @@
 }
 
 .submitButton {
+    width: 180px;
     padding: 0.8rem 2rem;
     font-size: 1.1rem;
     background-color: #DD2946;
-    color: white;
-    border: none;
+    color: #fff;
+    border: 1px solid #fff;
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -141,38 +179,43 @@
     background-color: #c8233d;
 }
 
-.submitButton:disabled {
+/* Removed the disabled styles since we're no longer using the disabled attribute */
+/* .submitButton:disabled {
     background-color: #cccccc;
+    border-color: #cccccc;
     cursor: not-allowed;
-}
+} */
 
 .loginLinkContainer {
-    text-align: right;
+    text-align: center;
     margin-top: 2rem;
     width: 100%;
 }
 
 .loginLinkText {
     font-size: 1.1rem;
-    color: #555;
+    color: #fff;
 }
 
-.loginLink {
-    color: #0070f3;
+.formLink {
+    color: #fff;
     text-decoration: none;
     margin-right: 0.5rem;
     font-size: 1.1rem;
 }
 
-.loginLink:hover {
+.formLink:hover {
     text-decoration: underline;
 }
 
+/* Modified radioGroup to ensure items stay on a single line */
 .radioGroup {
     display: flex;
     gap: 1.5rem;
     justify-content: flex-start;
     margin-top: 0.5rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .radioLabel {
@@ -181,7 +224,8 @@
     gap: 0.5rem;
     cursor: pointer;
     font-size: 1rem;
-    color: #555;
+    color: #fff;
+    white-space: nowrap;
 }
 
 .radioInput {
@@ -190,16 +234,16 @@
     -moz-appearance: none;
     width: 16px;
     height: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #fff;
     border-radius: 50%;
-    background-color: white;
+    background-color: transparent;
     cursor: pointer;
     position: relative;
     margin: 0;
 }
 
 .radioInput:checked {
-    border: 1px solid #DD2946;
+    border: 1px solid #fff;
 }
 
 .radioInput:checked::before {
@@ -212,12 +256,12 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #DD2946;
+    background-color: #fff;
 }
 
 .checkboxGroup {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     margin-bottom: 1.5rem;
 }
@@ -225,7 +269,7 @@
 .checkboxLabel {
     margin-right: 0.5rem;
     font-size: 1rem;
-    color: #555;
+    color: #fff;
     user-select: none;
 }
 
@@ -235,16 +279,16 @@
     -moz-appearance: none;
     width: 16px;
     height: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #fff;
     border-radius: 3px;
-    background-color: white;
+    background-color: transparent;
     cursor: pointer;
     position: relative;
 }
 
 .checkboxInput:checked {
-    background-color: #DD2946;
-    border-color: #DD2946;
+    background-color: transparent;
+    border-color: #fff;
 }
 
 .checkboxInput:checked::before {
@@ -255,35 +299,61 @@
     left: 5px;
     width: 5px;
     height: 10px;
-    border: solid white;
+    border: solid #fff;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
 
 .termsLink {
-    color: #0070f3;
-    text-decoration: none;
+    color: #fff;
+    text-decoration: underline;
 }
 
 .termsLink:hover {
+    text-decoration: none;
+}
+
+.homePageLinkContainer {
+    text-align: center;
+    margin-top: 1.2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.homePageLink {
+    color: #171717;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.homePageLink:hover {
     text-decoration: underline;
 }
 
 @media (max-width: 768px) {
+    .rightImage,
+    .leftImage {
+        display: none;
+    }
+
+    .mainContent {
+        width: calc(100% - 50px);
+    }
+
     .registerPageContainer {
+        border-radius: 20px;
         flex-direction: column;
         align-items: center;
-        padding: 1rem;
     }
 
     .imageSide {
-        display: none; /* إخفاء قسم الصورة بالكامل في وضع الهاتف */
+        display: none;
     }
 
     .formSide {
         width: 100%;
         flex: none;
-        padding: 1rem;
+        padding: 2rem;
         align-items: center;
     }
 
@@ -300,20 +370,18 @@
     }
 
     .submitButton {
+        padding: 0.8rem 2rem;
         align-self: center;
+        width: 180px;
     }
 
     .formLabel {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
 
     .formInput, .formSelect, .submitButton {
         font-size: 1rem;
         padding: 0.6rem 1rem;
-    }
-
-    .formSelect {
-        padding-right: 2rem;
     }
 
     .buttonContainer {
@@ -325,18 +393,17 @@
         margin-top: 1.5rem;
     }
 
-    .loginLinkText, .loginLink {
-        font-size: 1.1rem;
-    }
-
+    /* Ensure radio buttons stay in one row on mobile */
     .radioGroup {
         flex-direction: row;
         gap: 1rem;
         justify-content: flex-start;
+        flex-wrap: nowrap;
     }
 
     .radioLabel {
         font-size: 1rem;
+        white-space: nowrap;
     }
 
     .checkboxGroup {
