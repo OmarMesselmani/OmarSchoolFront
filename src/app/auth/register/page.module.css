@@ -63,6 +63,7 @@
     padding-right: 0;
     margin-left: 0;
     margin-right: 0;
+    margin-bottom: 2.5rem;
     position: relative;
     z-index: 1;
 }
@@ -179,13 +180,6 @@
     background-color: #c8233d;
 }
 
-/* Removed the disabled styles since we're no longer using the disabled attribute */
-/* .submitButton:disabled {
-    background-color: #cccccc;
-    border-color: #cccccc;
-    cursor: not-allowed;
-} */
-
 .loginLinkContainer {
     text-align: center;
     margin-top: 2rem;
@@ -208,7 +202,6 @@
     text-decoration: underline;
 }
 
-/* Modified radioGroup to ensure items stay on a single line */
 .radioGroup {
     display: flex;
     gap: 1.5rem;
@@ -318,16 +311,6 @@
     margin-top: 1.2rem;
     margin-bottom: 2rem;
     width: 100%;
-}
-
-.homePageLink {
-    color: #171717;
-    text-decoration: none;
-    font-size: 1.2rem;
-}
-
-.homePageLink:hover {
-    text-decoration: underline;
 }
 
 @media (max-width: 768px) {

@@ -39,7 +39,7 @@ const Slider01: React.FC = () => {
       description: "اكتشف ملخصات الدروس المصممة خصيصًا لتبسيط النقاط الأساسية وتقديم مراجعة شاملة للمادة، مما يُسهم في تعزيز الفهم وتثبيت المعلومات بأسلوب مبتكر وميسر.",
       buttonText: "استكشاف",
       buttonLink: "/online",
-      imageUrl: "/images/sections/slider01.jpg"
+      imageUrl: "/images/sections/slider03.jpg"
     }
   ];
 

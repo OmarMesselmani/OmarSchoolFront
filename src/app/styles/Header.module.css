@@ -1,13 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
+body {
+  padding-top: 60px; /* تعويض ارتفاع الهيدر */
+}
+
 .navbar {
   display: flex;
   justify-content: center;
   background-color: #fff;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 1000;
   width: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.headerHidden {
+  transform: translateY(-100%);
 }
 
 .headerContainer {
@@ -21,12 +32,21 @@
   direction: rtl;
 }
 
-/* التعديل الأساسي هنا */
+.headerContainer[data-search-open="true"] .navContainer {
+  transform: translateX(150px);
+  transition: transform 0.3s ease;
+}
+
+.headerContainer[data-search-open="true"] .searchInput {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .navContainer {
-  flex: 1; /* يأخذ المساحة المتبقية */
+  flex: 1;
   display: flex;
-  justify-content: center; /* توسيط الروابط */
-  margin: 0 2rem; /* مسافة جانبية */
+  justify-content: center;
+  margin: 0 3rem;
+  transition: transform 0.3s ease;
 }
 
 .navLinks {
@@ -35,46 +55,13 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
-/* بقية الأنماط بدون تغيير */
 .logo {
   width: 150px;
   height: 45px;
-  flex-shrink: 0; /* منع تصغير حجم اللوجو */
-}
-
-.buttons {
-  display: flex;
-  gap: 1rem;
-  flex-shrink: 0; /* منع تصغير الأزرار */
-}
-
-/* تحسينات للشاشات المتوسطة */
-@media (max-width: 1200px) {
-  .headerContainer {
-    padding: 1rem 2rem;
-  }
-  
-  .navLinks {
-    gap: 1.5rem;
-  }
-}
-
-/* تحسينات للجوال */
-@media (max-width: 1024px) {
-  .navContainer {
-    display: none; /* إخفاء الروابط في الجوال */
-  }
-  
-  .headerContainer {
-    padding: 1rem;
-    justify-content: space-between; /* توزيع العناصر بشكل صحيح */
-  }
-  
-  .logo {
-    margin: 0; /* إزالة الهوامش التلقائية */
-  }
+  flex-shrink: 0;
 }
 
 .logo img {
@@ -83,44 +70,29 @@
   object-fit: contain;
 }
 
-.navContainer {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.navLinks {
-  display: flex;
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2.5rem;
-}
-
-.navLinks a {
-  text-decoration: none;
-  color: #2e2e2e;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 1.2rem;
-}
-
 .buttons {
   display: flex;
   gap: 1rem;
+  flex-shrink: 0;
+  align-items: center;
 }
 
 .desktopButtons {
   margin-right: auto;
+  display: flex;
+  align-items: center;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #171717;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.2rem;
 }
 
 .createAccountButton, .loginButton {
   padding: 0.5rem 1.8rem;
   width: 11rem;
-  border: none;
   border-radius: 20px;
   cursor: pointer;
   font-family: 'Tajawal', sans-serif;
@@ -128,18 +100,25 @@
   transition: opacity 0.2s ease;
 }
 
-.createAccountButton:hover, .loginButton:hover {
-  opacity: 0.9;
-}
-
 .createAccountButton {
   background-color: var(--main-color);
   color: white;
+  border: 1px solid var(--main-color);
 }
 
 .loginButton {
-  background-color: #6c757d;
-  color: white;
+  color: #171717;
+  border: 1px solid #171717;
+}
+
+.createAccountButton:hover {
+  background-color: var(--main-color);
+}
+
+.loginButton:hover {
+  background-color: var(--main-color);
+  border: 1px solid var(--main-color);
+  color: #fff;
 }
 
 /* Dropdown Styles */
@@ -152,9 +131,10 @@
   top: 100%;
   right: 0;
   background-color: white;
+  border: 1px solid #ddd;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  min-width: 200px;
+  min-width: 230px;
   padding: 0.5rem 0;
   margin-top: 0.5rem;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -177,14 +157,12 @@
 .dropdown a {
   padding: 0.75rem 1.5rem;
   display: block;
-  transition: background-color 0.2s ease;
 }
 
 .dropdown a:hover {
-  background-color: #f8f9fa;
+  color: var(--main-color);
 }
 
-/* إضافة منطقة امتداد للقائمة المنسدلة لتسهيل التنقل */
 .dropdownContainer::after {
   content: '';
   position: absolute;
@@ -211,7 +189,7 @@
   transition: 0.3s;
 }
 
-/* Sidebar Styles */
+/* Overlay and Sidebar Styles */
 .overlay {
   position: fixed;
   inset: 0;
@@ -281,31 +259,236 @@
   visibility: visible;
 }
 
-/* Desktop Hover Effects */
-@media (min-width: 769px) {
-  .navLinks > li > a:hover {
-    color: var(--main-color);
+/* Logged-in State Styles */
+.loggedInContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.userAvatar {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  order: -1; /* Ensures avatar appears first */
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.welcomeText {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.usernamePlaceholder {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #171717;
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.settingsIcon,
+.notificationIcon {
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px; /* إضافة padding لمساحة أكبر حول الأيقونات */
+}
+
+.settingsIcon:hover,
+.notificationIcon:hover {
+  color: var(--main-color);
+}
+
+.notificationIcon {
+  display: flex;
+  align-items: center;
+}
+
+.notificationDot {
+  position: absolute;
+  top: -2px; /* تعديل الموقع ليتناسب مع الحجم الجديد */
+  left: -2px;
+  width: 12px; 
+  height: 12px; 
+  border-radius: 50%;
+  background-color: green;
+  border: 1px solid white;
+}
+
+.notificationDropdown {
+  position: absolute;
+  top: 40px; /* تعديل حسب التصميم */
+  left: -125px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 250px;
+  z-index: 1000;
+}
+
+.notificationDropdown p {
+  margin: 0;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #171717;
+}
+
+.notificationDropdown hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 8px 0;
+}
+
+.settingsDropdown {
+  position: absolute;
+  top: 40px; /* تعديل حسب التصميم */
+  left: -105px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 200px;
+  z-index: 1000;
+}
+
+.settingsDropdown p {
+  margin: 0;
+  padding: 8px 0;
+  font-size: 15px;
+  color: #171717;
+  cursor: pointer;
+}
+
+.settingsDropdown p:hover {
+  color: var(--main-color);
+}
+
+.settingsDropdown hr {
+  border: none;
+  margin: 8px 0;
+}
+
+.settingsLink {
+  display: block;
+  padding: 8px 0;
+  color: #171717;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.settingsLink:hover {
+  color: var(--main-color);
+}
+
+/* Search Section Styles */
+.searchSection {
+  display: flex;
+  align-items: center;
+  margin: 0 1rem; /* تقليل الهامش من 2rem إلى 1rem */
+  position: relative;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* تعديل أنماط البحث */
+.searchInput {
+  width: 0;
+  padding: 0;
+  border: none;
+  color: #171717;
+  margin-left: 0.7rem;
+  background: transparent;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+  position: absolute;
+  left: 30px; /* تغيير إلى left لتفتح في الاتجاه المعاكس */
+  direction: rtl;
+  transform-origin: left; /* تغيير نقطة بداية التحول */
+  transform: scaleX(0);
+}
+
+.searchInputVisible {
+  width: 300px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  opacity: 1;
+  background-color: white;
+  transform: scaleX(1);
+}
+
+.searchToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 6px; /* زيادة الـ padding من 5px إلى 6px */
+  transition: transform 0.2s ease;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.searchToggle:hover {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .headerContainer {
+    padding: 1rem 2rem;
+  }
+
+  .navLinks {
+    gap: 1.5rem;
   }
 }
 
-/* Mobile Styles */
 @media (max-width: 1024px) {
-  .headerContainer {
-    padding: 1rem;
-  }
-
-  .toggleButton {
-    display: flex;
-  }
-
   .navContainer {
     display: none;
   }
 
+  .headerContainer {
+    padding: 1rem;
+    justify-content: space-between;
+  }
+
   .logo {
+    margin: 0;
     width: 120px;
     height: 35px;
-    margin: 0 auto;
+  }
+
+  .toggleButton {
+    display: flex;
   }
 
   .desktopButtons {
@@ -318,5 +501,28 @@
 
   .sidebar .sidebarButton {
     width: 100%;
+  }
+
+  .sidebar .loggedInContainer {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar .userActions {
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .searchSection {
+    display: none;
+  }
+}
+
+/* Desktop Hover Effects */
+@media (min-width: 769px) {
+  .navLinks > li > a:hover {
+    color: var(--main-color);
   }
 }

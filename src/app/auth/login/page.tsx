@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import Link from 'next/link'; 
+import Link from 'next/link';
+import Header from '../../components/Header'; // تأكد من المسار الصحيح لمكون الهيدر
+import Footer from '../../components/Footer'; // تأكد من المسار الصحيح لمكون الفوتر
 
 export default function LoginPage() {
     const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -20,10 +22,11 @@ export default function LoginPage() {
 
     return (
         <div className={styles.pageContainer}>
+            <Header /> {/* إضافة الهيدر هنا */}
             {/* صور الخلفية */}
             <img src="/images/side1.png" alt="صورة يمين" className={styles.rightImage} />
             <img src="/images/side2.png" alt="صورة يسار" className={styles.leftImage} />
-            
+
             <main className={styles.mainContent}>
                 <h1 className={styles.pageTitle}>تسجيل الدخول</h1>
                 <div className={styles.registerPageContainer}>
@@ -72,11 +75,8 @@ export default function LoginPage() {
                         </div>
                     </div>
                 </div>
-                {/* إضافة رابط العودة إلى الصفحة الرئيسية خارج النموذج وفي منتصف الصفحة */}
-                <div className={styles.homePageLinkContainer}>
-                    <Link href="/" className={styles.homePageLink}>العودة إلى الصفحة الرئيسية</Link>
-                </div>
             </main>
+            <Footer /> {/* إضافة الفوتر هنا */}
         </div>
     );
 }

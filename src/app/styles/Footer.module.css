@@ -5,6 +5,7 @@
 .footerContainer {
     position: relative;
     background: transparent;
+    width: 100%; /* تأكد من أن الحاوية تأخذ كامل العرض */
 }
 
 .wave {
@@ -36,6 +37,7 @@
     font-family: 'Tajawal', sans-serif;
     text-align: right;
     position: relative;
+    width: 100%; /* تأكد من أن الفوتر نفسه يأخذ كامل العرض */
 }
 
 .topFooter {
@@ -110,11 +112,18 @@
 
 /* -------- إضافة التعديل هنا -------- */
 .footerInner {
-    max-width: 1500px; /* تحديد أقصى عرض */
-    margin-left: auto; /* توسيط أفقي */
-    margin-right: auto; /* توسيط أفقي */
+    max-width: 1500px; /* تحديد أقصى عرض للمحتوى الداخلي */
+    margin-left: auto; /* توسيط أفقي للمحتوى الداخلي */
+    margin-right: auto; /* توسيط أفقي للمحتوى الداخلي */
     padding-left: 5%; /* احتفاظ بالهامش الجانبي من الكود الأصلي */
     padding-right: 5%; /* احتفاظ بالهامش الجانبي من الكود الأصلي */
+    box-sizing: border-box; /* تضمين الحواف والبادينج في العرض والارتفاع */
+}
+
+.footer .topFooter,
+.footer .copyrightSection {
+    padding-left: 5%; /* تطبيق البادينج على العناصر الداخلية أيضًا لضمان التناسق */
+    padding-right: 5%;
 }
 /* -------- نهاية التعديل -------- */
 
@@ -135,5 +144,11 @@
         margin-left: 0;
         margin-right: 0;
         margin-bottom: 2rem;
+    }
+
+    .footer .topFooter,
+    .footer .copyrightSection {
+        padding-left: 2%; /* تحديث البادينج للعناصر الداخلية في وضع الهاتف */
+        padding-right: 2%;
     }
 }

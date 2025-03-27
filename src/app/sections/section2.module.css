@@ -40,7 +40,7 @@
     font-weight: 600;
     padding: 14px 35px; /* حجم الزر */
     text-decoration: none;
-    border-radius: 15px;
+    border-radius: 25px;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 1rem;
@@ -60,6 +60,7 @@
   
     .sectionDescription {
       font-size: 1rem;
+      max-width: 90%;
     }
   
     .startButton {

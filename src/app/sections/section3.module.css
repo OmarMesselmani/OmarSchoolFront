@@ -1,0 +1,135 @@
+.latestAdditionsSection {
+  padding: 80px 20px;
+  text-align: center;
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #DD2946;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.filterButtons {
+  display: flex;
+}
+
+.filterButton {
+  color: #555;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 25px;
+  border: solid 1px #555;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.filterButton:hover {
+  background-color: #DD2946;
+  color: white;
+  border: solid 1px #DD2946;
+}
+
+.filterButton.active {
+  background-color: #DD2946;
+  color: white;
+  border: solid 1px #DD2946;
+}
+
+.articlesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 20px;
+}
+
+.articleCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: right; /* محاذاة النص إلى اليمين */
+}
+
+.articleImage {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.articleTitle {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  padding: 15px;
+  margin: 0;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.articleCategory {
+  font-size: 0.9rem;
+  color: #777;
+  padding: 0 15px 10px 15px;
+  margin: 0;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.articleExcerpt {
+  font-size: 1rem;
+  color: #555;
+  padding: 0 15px 15px 15px;
+  margin: 0;
+  line-height: 1.6;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.viewMoreButton {
+  background-color: #007bff; /* لون أزرق جذاب */
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-top: 30px;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+
+.viewMoreButton:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filterButtons {
+    margin-top: 15px;
+  }
+
+  .articlesGrid {
+    grid-template-columns: repeat(1, minmax(150px, 1fr)); /* عرض عمودين في وضع الهاتف */
+  }
+
+  .sectionTitle {
+    font-size: 1.7rem;
+  }
+}
