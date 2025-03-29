@@ -4,18 +4,6 @@ import Image from 'next/image';
 export default function Footer() {
   return (
     <footer className={styles.footerContainer}>
-      <div className={styles.wave}>
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 1440 100" 
-          preserveAspectRatio="none"
-        >
-          <path 
-            d="M0,100 C480,0 960,0 1440,100 L1440,100 L0,100 Z" 
-            className={styles.shapeFill}
-          />
-        </svg>
-      </div>
       <div className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.topFooter}>

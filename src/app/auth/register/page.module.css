@@ -15,54 +15,14 @@
     position: relative;
 }
 
-.rightImage {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    max-width: 15%;
-    object-fit: contain;
-    margin-top: 50px;
-    margin-right: 50px;
-    object-position: right top;
-    z-index: 0;
-    animation: moveUpDown 4s infinite ease-in-out alternate;
-}
-
-.leftImage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    max-width: 15%;
-    margin-top: 50px;
-    margin-left: 50px;
-    object-fit: contain;
-    object-position: left top;
-    z-index: 0;
-    animation: moveLeftRight 4s infinite ease-in-out alternate;
-}
-
-@keyframes moveUpDown {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(20px); }
-}
-
-@keyframes moveLeftRight {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(20px); }
-}
-
 .mainContent {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(100% - 150px);
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-    margin-right: 0;
+    justify-content: center;
+    width: 100%;
+    padding: 2rem;
     margin-bottom: 2.5rem;
     position: relative;
     z-index: 1;
@@ -78,39 +38,22 @@
 .registerPageContainer {
     display: flex;
     width: 100%;
-    max-width: 1200px;
-    overflow: hidden;
-    background-color: #fff;
+    max-width: 600px;
     border-radius: 30px;
     margin-bottom: 2rem;
-    flex-direction: row-reverse;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.imageSide {
-    flex: 1;
-    padding: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.imagePlaceholder {
-    height: 100%;
-    object-fit: contain;
-    font-size: 2rem;
-    color: #999;
+    overflow: hidden;
 }
 
 .formSide {
     flex: 1;
-    padding: 3rem;
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     background-color: #DD2946;
     color: #fff;
+    width: 100%;
 }
 
 .registerForm {
@@ -119,7 +62,7 @@
 }
 
 .formGroup {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: right;
     width: 100%;
 }
@@ -132,7 +75,7 @@
 }
 
 .formInput, .formSelect {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 0.75rem 1rem;
     font-size: 1rem;
     border-radius: 25px;
@@ -140,9 +83,17 @@
     font-family: inherit;
     border: none;
     color: #171717;
+    background-color: white;
+    box-sizing: border-box;
 }
 
 .formSelect {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    border: none;
+    background-color: white;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -150,7 +101,13 @@
     background-repeat: no-repeat;
     background-position-x: calc(100% - 10px);
     background-position-y: center;
-    padding-right: 2rem;
+    padding-right: 2.5rem;
+    color: #171717;
+}
+
+.formSelect:focus {
+    outline: none;
+    border-color: var(--main-color);
 }
 
 .formSelect::-ms-expand {
@@ -313,30 +270,26 @@
     width: 100%;
 }
 
-@media (max-width: 768px) {
-    .rightImage,
-    .leftImage {
-        display: none;
-    }
+.formRow {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
 
+.formGroupHalf {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
     .mainContent {
-        width: calc(100% - 50px);
+        width: 100%;
     }
 
     .registerPageContainer {
         border-radius: 20px;
         flex-direction: column;
-        align-items: center;
-    }
-
-    .imageSide {
-        display: none;
-    }
-
-    .formSide {
-        width: 100%;
-        flex: none;
-        padding: 2rem;
         align-items: center;
     }
 
@@ -359,7 +312,7 @@
     }
 
     .formLabel {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
     .formInput, .formSelect, .submitButton {
@@ -375,7 +328,7 @@
         text-align: center;
         margin-top: 1.5rem;
     }
-
+     
     /* Ensure radio buttons stay in one row on mobile */
     .radioGroup {
         flex-direction: row;

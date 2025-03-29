@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import Link from 'next/link';
-import Header from '../../components/Header'; // تأكد من المسار الصحيح لمكون الهيدر
-import Footer from '../../components/Footer'; // تأكد من المسار الصحيح لمكون الفوتر
+import Header from '../../components/Header';
+import Footer from '../../components/Footer'; 
 
 export default function LoginPage() {
     const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -14,7 +14,7 @@ export default function LoginPage() {
         event.preventDefault();
         // هنا يمكنك إضافة كود لمعالجة تسجيل الدخول وإرسال البيانات إلى الخادم
         console.log({
-            loginIdentifier, // يمكن أن يكون بريد إلكتروني أو رقم هاتف
+            loginIdentifier,
             password,
         });
         alert('تم تقديم نموذج تسجيل الدخول (سيتم استبدال هذا بتنفيذ تسجيل الدخول الفعلي)');
@@ -22,11 +22,7 @@ export default function LoginPage() {
 
     return (
         <div className={styles.pageContainer}>
-            <Header /> {/* إضافة الهيدر هنا */}
-            {/* صور الخلفية */}
-            <img src="/images/side1.png" alt="صورة يمين" className={styles.rightImage} />
-            <img src="/images/side2.png" alt="صورة يسار" className={styles.leftImage} />
-
+            <Header />
             <main className={styles.mainContent}>
                 <h1 className={styles.pageTitle}>تسجيل الدخول</h1>
                 <div className={styles.registerPageContainer}>
@@ -76,7 +72,7 @@ export default function LoginPage() {
                     </div>
                 </div>
             </main>
-            <Footer /> {/* إضافة الفوتر هنا */}
+            <Footer />
         </div>
     );
 }
