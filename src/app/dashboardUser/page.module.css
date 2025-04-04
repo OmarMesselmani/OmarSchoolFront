@@ -2,118 +2,406 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
 }
 
 .dashboardContainer {
   flex: 1;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #fafafa;
+  padding: 40px;
 }
 
 .contentWrapper {
   display: flex;
-  flex-direction: row-reverse; /* عكس اتجاه المحتوى ليكون من اليمين إلى اليسار */
+  flex-direction: row;
   gap: 20px;
   height: 100%;
 }
 
 .mainContent {
+  color: #171717;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .infoHeader {
-  text-align: center;
   margin-bottom: 20px;
-  border: 1px solid #000;
   border-radius: 10px;
-  padding: 15px;
-  background-color: #fff;
+  background-color: var(--main-color);
+  padding: 8px 20px;
+  color: white;
 }
 
-.title {
-  font-size: 1.8rem;
-  color: #333;
-  font-weight: normal;
-  margin: 0;
-}
-
-.highlight {
-  text-decoration: underline;
-}
-
-.cardsContainer {
+.infoContainer {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  text-align: right;
+  flex: 1;
+}
+
+.infoLabel {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.infoValue {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dividerVertical {
+  width: 1px;
+  height: 20px;
+  background-color: #ddd;
+  margin: 0 10px;
+}
+
+/* تنسيق جديد للبطاقات */
+.newCardsContainer {
+  display: flex;
+  flex-direction: row;
   gap: 20px;
-  direction: rtl; /* للنص العربي */
+  direction: rtl;
+  height: 100%;
+}
+
+.rightSection {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.leftSection {
+  width: 30%;
+  display: flex;
+}
+
+.resultsCard {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: auto; /* تغيير من 500px إلى auto */
+  min-height: 400px; /* إضافة حد أدنى للارتفاع */
+}
+
+.adviceCard {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.subjectsSection {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.subjectCard {
+  flex: 1;
+  min-width: 0; /* لمنع تجاوز العرض */
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100px;
+}
+
+.cardHeader {
+  background-color: var(--main-color);
+  padding: 8px 15px;
+  color: white;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.cardContent {
+  padding: 5px 15px;
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center; /* توسيط العناصر أفقياً */
+  gap: 15px;
+  direction: ltr;
+}
+
+.resultsCard .cardContent {
+  padding: 20px;
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.scoreValue {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #171717;
+  }
+
+.percentageContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #22C55E;
+  flex-direction: row-reverse;
+}
+
+.percentageContainer.negative {
+  color: #EF4444; /* لون أحمر */
+}
+
+.percentage {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.arrowIcon {
+  font-size: 1.4rem;
+}
+
+/* تنسيقات القائمة الجانبية */
+.cardsContainer {
+  display: none; /* إخفاء القديم */
 }
 
 .column {
-  flex: 1;
+  display: none; /* إخفاء القديم */
+}
+
+.card {
+  display: none; /* إخفاء القديم */
+}
+
+.settingsCard {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: #333;
+  height: 100%;
+  justify-content: space-between;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.userSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.avatarContainer {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+  opacity: 1;
+  width: 100%;
+  overflow: hidden;
+  height: 24px; /* ارتفاع ثابت يساوي حجم الخط × 1.5 */
+  line-height: 24px;
+}
+
+.hideText {
+  transform: translateX(-20px);
+  opacity: 0;
+  width: 0;
+  height: 24px;
+}
+
+.divider {
+  height: 1px;
+  background-color: #ddd;
+  width: 100%;
+}
+
+.settingsSection {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.settingsColumn {
-  width: 120px;
-}
-
-.card {
-  border: 1px solid #000;
-  border-radius: 10px;
-  padding: 40px 20px;
-  background-color: #fff;
+.settingsItem {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: auto;
-}
-
-.cardText {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.settingsCard {
-  border: 1px solid #000;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
   border-radius: 10px;
-  padding: 20px;
-  background-color: #fff;
-  height: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 2;
+  width: 100%; /* إضافة عرض كامل */
+}
+
+.settingsItem span {
+  transform-origin: right;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+  opacity: 1;
+  display: inline-block; /* إضافة خاصية العرض */
+  width: calc(100% - 35px); /* تحديد عرض النص */
+}
+
+.settingsItem:hover {
+  color: var(--main-color);
+}
+
+.icon {
+  font-size: 26px;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 26px;
+  transform: scale(1);
+}
+
+.settingsTitle,
+.settingsOption,
+.underline {
+  display: none;
+}
+
+.logoutWrapper {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: 100%;
+  gap: 15px;
 }
 
-.settingsTitle {
-  font-size: 1.2rem;
-  margin: 0 0 20px 0;
+.logoutWrapper .settingsItem:hover {
+  color: var(--main-color);
 }
 
-.settingsOption {
-  margin: 0;
+/* يمكن حذف الأنماط القديمة */
+.logoutSection {
+  display: none;
 }
 
-.underline {
-  text-decoration: underline;
+.settingsColumn {
+  width: 250px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
-/* جعل البطاقات في العمود الثاني بارتفاعات مناسبة */
-.column:nth-child(2) .card {
-  flex: 1;
+.settingsColumn.collapsed {
+  width: 80px;
 }
 
-/* جعل بطاقات العمود الثاني أصغر قليلاً في الارتفاع */
-.column:nth-child(2) .card {
-  padding: 25px 20px;
+.settingsColumn.collapsed .icon {
+  font-size: 26px;
+  min-width: 30px;
+  transform: scale(1.2);
+  margin: 0; /* إزالة الهوامش */
 }
 
-/* جعل بطاقة العلوم الاجتماعية أكبر قليلاً */
-.column:nth-child(2) .card:last-child {
-  padding: 30px 20px;
+.settingsColumn.collapsed .settingsCard {
+  padding: 20px 10px;
+}
+
+.settingsColumn.collapsed .avatarContainer {
+  width: 50px;
+  height: 50px;
+}
+
+.settingsColumn.collapsed .settingsItem span {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.settingsColumn.collapsed .userName {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+.settingsColumn.collapsed .settingsItem {
+  width: 50px; /* تحديد عرض ثابت عند الإغلاق */
+  justify-content: center; /* توسيط الأيقونة */
+}
+
+/* حذف التنسيق القديم */
+.settingsColumn.collapsed .settingsItem {
+  width: fit-content;
+}
+
+.settingsItem.active {
+  background-color: rgba(221, 41, 70, 0.1);
+  color: var(--main-color);
+}
+
+.settingsItem.active .icon {
+  color: var(--main-color);
+}
+
+/* التنسيقات التكيفية للشاشات الصغيرة */
+@media (max-width: 992px) {
+  .newCardsContainer {
+    flex-direction: column;
+  }
+  
+  .rightSection, .leftSection {
+    width: 100%;
+  }
+  
+  .leftSection {
+    order: 2;
+  }
+  
+  .rightSection {
+    order: 1;
+  }
+  
+  .subjectCard {
+    min-width: calc(50% - 15px);
+  }
+}
+
+@media (max-width: 768px) {
+  .subjectCard {
+    min-width: 100%;
+  }
 }

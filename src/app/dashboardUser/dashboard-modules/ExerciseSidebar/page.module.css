@@ -1,0 +1,173 @@
+.sidebarContainer {
+  position: fixed;
+  left: 20px;
+  top: calc(50% - 320px);
+  width: 110px;
+  padding: 20px;
+}
+
+.sidebarContent {
+  border: 2px dashed var(--main-color);
+  border-radius: 60px;
+  padding: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+}
+
+.printSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.printIcon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.printSection:hover .printIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.arrowSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.arrowIcon {
+  width: 40px;
+  height: 40px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.arrowSection:hover .arrowIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.redoSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.redoIcon {
+  width: 30px;
+  height: 30px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.redoSection:hover .redoIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.prevSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.prevIcon {
+  width: 45px;
+  height: 45px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.prevSection:hover .prevIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.nextSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.nextIcon {
+  width: 45px;
+  height: 45px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.nextSection:hover .nextIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.checkSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.checkIcon {
+  width: 34px;
+  height: 34px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.checkSection:hover .checkIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
+
+.nextExerciseSection {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.nextExerciseIcon {
+  width: 34px;
+  height: 34px;
+  color: #171717;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.nextExerciseSection:hover .nextExerciseIcon {
+  transform: scale(1.1);
+  color: var(--main-color);
+}
