@@ -1,0 +1,46 @@
+/* المسار المقترح: app/exercises/year1/reading/introductory/exercise3/page.module.css */
+.pageContainer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fafafa;
+  }
+  
+  .exerciseContainer {
+    flex: 1;
+    width: 100%;
+  }
+  
+  .exerciseContent {
+    padding: 50px 20px;
+  }
+  
+  .exerciseTitle {
+    /* يمكنك استخدام متغير CSS للون الرئيسي إذا تم تعريفه في globals.css */
+    color: var(--main-color, #DD2946); /* استخدام لون احتياطي */
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 50px;
+  }
+  
+  .exerciseBody {
+    display: flex;
+    gap: 20px;
+    /* جعل العرض يستجيب بشكل أفضل للشاشات المختلفة */
+    max-width: 900px; /* تحديد عرض أقصى بدلاً من عرض ثابت */
+    width: 90%; /* استخدام نسبة مئوية */
+    margin: 0 auto 80px; /* لا يزال للتوسيط والهامش السفلي */
+  }
+  
+  .mainContent {
+    flex: 1; /* يأخذ المساحة المتاحة */
+    padding: 20px;
+    color: #171717;
+    position: relative; /* قد يكون مفيدًا لتحديد موضع العناصر */
+    min-height: 400px; /* الحفاظ على ارتفاع أدنى */
+  }
+  
+  /* أضف هنا أي أنماط إضافية خاصة بالتمرين الثالث لاحقًا */
+  
+  
