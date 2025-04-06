@@ -5,37 +5,8 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import delegationsByState from '../../data/delegation.json'; // Assuming you have a file for delegations
 
-const tunisianStates = [
-    "أريانة", "باجة", "بن عروس", "بنزرت", "تطاوين", "توزر", "تونس", "جندوبة", "زغوان", "سليانة", "سوسة", "سيدي بوزيد", "صفاقس", "قابس", "قفصة", "القصرين", "القيروان", "قبلي", "الكاف", "مدنين", "المنستير", "المهدية", "نابل"
-];
-
-const delegationsByState: { [key: string]: string[] } = {
-    "أريانة": ["أريانة المدينة", "التضامن", "قلعة الأندلس", "المنيهلة", "رواد", "سيدي ثابت", "سكرة"],
-    "باجة": ["عمدون", "باجة الشمالية", "باجة الجنوبية", "غوبلات", "مجاز الباب", "نفزة", "تبرسق", "تستور", "تيبار"],
-    "بن عروس": ["بن عروس", "بومهل", "المروج", "الزهراء", "فوشانة", "حمام الشط", "حمام الأنف", "المحمدية", "المدينة الجديدة", "مقرين", "مرناق", "رادس"],
-    "بنزرت": ["بنزرت الشمالية", "بنزرت الجنوبية", "جومين", "العالية", "غار الملح", "غزالة", "ماطر", "منزل بورقيبة", "منزل جميل", "رأس الجبل", "سجنان", "تينجة", "أوتيك", "زرزونة"],
-    "جندوبة": ["عين دراهم", "بلطة", "بوسالم", "فرنانة", "غار الدماء", "جندوبة", "جندوبة الشمالية", "وادي مليز", "طبرقة"],
-    "سيدي بوزيد": ["بئر الحفي", "جلمة", "المزونة", "المكناسي", "منزل بوزيان", "أولاد حفوز", "الرقاب", "السبالة أولاد عسكر", "سيدي علي بن عون", "سيدي بوزيد الشرقية", "سيدي بوزيد الغربية", "سوق الجديد"],
-    "سليانة": ["برقو", "بوعرادة", "العروسة", "الكريب", "قعفور", "كسرة", "مكثر", "الروحية", "سيدي بورويس", "سليانة الشمالية", "سليانة الجنوبية"],
-    "سوسة": ["أكودة", "بوفيشة", "النفيضة", "حمام سوسة", "هرقلة", "القلعة الكبرى", "القلعة الصغرى", "كندار", "مساكن", "سيدي بوعلي", "سيدي الهاني", "سوسة جوهرة", "سوسة المدينة", "سوسة الرياض", "سوسة سيدي عبد الحميد", "الزاوية القصيبة الثريات"],
-    "صفاقس": ["عقارب", "بئر علي بن خليفة", "العامرة", "الغريبة", "الحنشة", "جبنيانة", "قرقنة", "المحرس", "منزل شاكر", "ساقية الداير", "ساقية الزيت", "صفاقس المدينة", "صفاقس الغربية", "صفاقس الجنوبية", "الصخيرة", "طينة"],
-    "تطاوين": ["بئر الأحمر", "الذهيبة", "غمراسن", "رمادة", "الصمار", "تطاوين الشمالية", "تطاوين الجنوبية"],
-    "قابس": ["قابس المدينة", "قابس الغربية", "قابس الجنوبية", "غنوش", "الحامة", "مارث", "المطوية", "مطماطة الجديدة", "منزل الحبيب", "متوية"],
-    "قفصة": ["بلخير", "قفصة الشمالية", "قفصة الجنوبية", "القطار", "القصر", "المظيلة", "المتلوي", "أم العرائس", "الرديف", "السند", "سيدي عيش"],
-    "القصرين": ["العيون", "الزهور", "فريانة", "فوسانة", "حاسي الفريد", "حيدرة", "جدليان", "القصرين الشمالية", "القصرين الجنوبية", "ماجل بلعباس", "سبيطلة", "سبيبة", "تالة"],
-    "القيروان": ["العلا", "بوحجلة", "الشبيكة", "الشراردة", "حفوز", "حاجب العيون", "القيروان الشمالية", "القيروان الجنوبية", "نصر الله", "الوسلاتية", "السبيخة"],
-    "الكاف": ["الدهماني", "السرس", "جريصة", "القلعة الخصبة", "قلعة سنان", "الكاف الشرقية", "الكاف الغربية", "قصور", "نبر", "ساقية سيدي يوسف", "تاجروين"],
-    "المهدية": ["بومرداس", "الشابة", "شربان", "الجم", "هبيرة", "قصور الساف", "المهدية", "ملولش", "أولاد الشامخ", "سيدي علوان", "السواسي"],
-    "المنستير": ["البقالطة", "البمبلة", "بني حسان", "جمال", "قصيبة المديوني", "قصر هلال", "المكنين", "المنستير", "الوردانين", "الساحلين", "صيادة-لمطة-بوحجر", "طبلبة", "زرمدين"],
-    "مدنين": ["بن قردان", "بني خداش", "جربة أجيم", "جربة ميدون", "جربة حومة السوق", "مدنين الشمالية", "مدنين الجنوبية", "سيدي مخلوف", "جرجيس"],
-    "منوبة": ["برج العامري", "دوار هيشر", "البطان", "الجديدة", "منوبة", "مرناقية", "وادي الليل", "طبربة"],
-    "نابل": ["بني خيار", "بني خلاد", "بوعرقوب", "دار شعبان الفهري", "الميدة", "قرمبالية", "حمام الغزاز", "الحمامات", "الهوارية", "قليبية", "قربة", "منزل بوزلفة", "منزل تميم", "نابل", "سليمان", "تاكلسة"],
-    "توزر": ["دقاش", "حزوة", "نفطة", "تمغزة", "توزر"],
-    "تونس": ["باب بحر", "باب سويقة", "باردو", "البحيرة", "قرطاج", "الخضراء", "المنزه", "الوردية", "التحرير", "الزهور", "الحرايرية", "جبل الجلود", "الكبارية", "حلق الوادي", "المرسى", "الكرم", "المدينة", "العمران", "العمران الأعلى", "سيدي البشير", "سيدي حسين", "السيجومي"],
-    "زغوان": ["بئر مشارقة", "الفحص", "الناظور", "صواف", "زغوان", "الزريبة"],
-    "قبلي": ["دوز الشمالية", "دوز الجنوبية", "الفوار", "قبلي الشمالية", "قبلي الجنوبية", "سوق الأحد"]
-};
 
 export default function RegisterPage() {
     const [firstName, setFirstName] = useState('');
@@ -55,23 +26,41 @@ export default function RegisterPage() {
         setDelegation('');
     }, [state]);
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log({ 
-            firstName, 
-            lastName, 
-            gender, 
-            phoneNumber, 
-            email, 
+        const body = {
+            firstName,
+            lastName,
+            gender,
+            phoneNumber,
+            email,
             state,
             delegation,
             postalCode,
             address,
-            password, 
-            confirmPassword, 
-            termsAgreed 
-        });
-        alert('تم تقديم نموذج التسجيل (سيتم استبدال هذا بتنفيذ التسجيل الفعلي)');
+            password,
+            confirmPassword,
+            termsAgreed,
+        };
+        try {
+            const response = await fetch('http://127.0.0.1:8000/parent/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Registration successful:', data);
+            } else {
+                console.log('error')
+            }
+        } catch (error) {
+            console.log(error)
+        } finally {
+
+        }
     };
 
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,14 +155,14 @@ export default function RegisterPage() {
                                 <label htmlFor="state" className={styles.formLabel}>
                                     الولاية:
                                 </label>
-                                <select 
-                                    id="state" 
-                                    className={styles.formSelect} 
-                                    value={state} 
+                                <select
+                                    id="state"
+                                    className={styles.formSelect}
+                                    value={state}
                                     onChange={(e) => {
                                         setState(e.target.value);
                                         setDelegation('');
-                                    }} 
+                                    }}
                                     required
                                 >
                                     <option value="">اختر ولاية</option>
@@ -188,12 +177,12 @@ export default function RegisterPage() {
                                     <label htmlFor="delegation" className={styles.formLabel}>
                                         المعتمدية:
                                     </label>
-                                    <select 
-                                        id="delegation" 
-                                        className={styles.formSelect} 
-                                        value={delegation} 
+                                    <select
+                                        id="delegation"
+                                        className={styles.formSelect}
+                                        value={delegation}
                                         onChange={(e) => setDelegation(e.target.value)}
-                                        required 
+                                        required
                                     >
                                         <option value="">اختر معتمدية</option>
                                         {state && delegationsByState[state]?.map((delegationName) => (
@@ -207,14 +196,14 @@ export default function RegisterPage() {
                                     <label htmlFor="postalCode" className={styles.formLabel}>
                                         الترقيم البريدي:
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        id="postalCode" 
-                                        className={styles.formInput} 
+                                    <input
+                                        type="text"
+                                        id="postalCode"
+                                        className={styles.formInput}
                                         value={postalCode}
                                         onChange={handlePostalCodeChange}
                                         maxLength={4}
-                                        required 
+                                        required
                                     />
                                 </div>
                             </div>
@@ -223,13 +212,13 @@ export default function RegisterPage() {
                                 <label htmlFor="address" className={styles.formLabel}>
                                     العنوان:
                                 </label>
-                                <input 
-                                    type="text" 
-                                    id="address" 
-                                    className={styles.formInput} 
-                                    value={address} 
+                                <input
+                                    type="text"
+                                    id="address"
+                                    className={styles.formInput}
+                                    value={address}
                                     onChange={(e) => setAddress(e.target.value)}
-                                    required 
+                                    required
                                 />
                             </div>
 
@@ -237,13 +226,13 @@ export default function RegisterPage() {
                                 <label htmlFor="password" className={styles.formLabel}>
                                     كلمة السر:
                                 </label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    className={styles.formInput} 
+                                <input
+                                    type="password"
+                                    id="password"
+                                    className={styles.formInput}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    required 
+                                    required
                                 />
                             </div>
 

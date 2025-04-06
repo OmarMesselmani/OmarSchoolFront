@@ -36,7 +36,7 @@ export default function Header() {
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [hasNotifications, setHasNotifications] = useState<boolean>(true);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -92,7 +92,7 @@ export default function Header() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        searchContainerRef.current && 
+        searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target as Node) &&
         isSearchOpen
       ) {
@@ -109,7 +109,7 @@ export default function Header() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      
+
       if (
         isNotificationOpen &&
         notificationDropdownRef.current &&
@@ -129,7 +129,7 @@ export default function Header() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      
+
       if (
         isSettingsOpen &&
         settingsDropdownRef.current &&
@@ -225,11 +225,10 @@ export default function Header() {
               )}
             </a>
             <ul
-              className={`${styles.dropdown} ${
-                (isSidebar && isMobileDropdownOpen) || (!isSidebar && activeDropdown === index)
+              className={`${styles.dropdown} ${(isSidebar && isMobileDropdownOpen) || (!isSidebar && activeDropdown === index)
                   ? styles.dropdownOpen
                   : ''
-              }`}
+                }`}
               onMouseEnter={() => !isSidebar && handleDropdownMouseEnter(index)}
               onMouseLeave={() => !isSidebar && handleDropdownMouseLeave()}
             >
@@ -258,9 +257,9 @@ export default function Header() {
     if (isLoggedIn) {
       return (
         <div className={`${styles.loggedInContainer} ${isSidebar ? styles.sidebarButtons : ''}`}>
-          <img 
-            src="/male-avatar.png" 
-            alt="User Avatar" 
+          <img
+            src="/male-avatar.png"
+            alt="User Avatar"
             className={styles.userAvatar}
           />
           <div className={styles.userInfo}>
@@ -281,7 +280,7 @@ export default function Header() {
                   ref={settingsDropdownRef}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div 
+                  <div
                     className={styles.settingsLink}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -292,7 +291,7 @@ export default function Header() {
                     لوحة التحكم
                   </div>
                   <hr />
-                  <div 
+                  <div
                     className={styles.settingsLink}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -331,7 +330,7 @@ export default function Header() {
     return (
       <div className={`${styles.buttons} ${isSidebar ? '' : styles.desktopButtons}`}>
         <Link href="/auth/register" className={styles.createAccountLink}>
-          <button 
+          <button
             className={`${styles.createAccountButton} ${isSidebar ? styles.sidebarButton : ''}`}
             onClick={simulateLogin}
           >
@@ -339,7 +338,7 @@ export default function Header() {
           </button>
         </Link>
         <Link href="/auth/login" className={styles.loginLink}>
-          <button 
+          <button
             className={`${styles.loginButton} ${isSidebar ? styles.sidebarButton : ''}`}
             onClick={simulateLogin}
           >
@@ -386,7 +385,7 @@ export default function Header() {
                 onClick={toggleSearch}
                 className={styles.searchToggle}
               >
-                <IoSearchOutline size={26} /> 
+                <IoSearchOutline size={26} />
               </button>
               <input
                 ref={searchInputRef}
