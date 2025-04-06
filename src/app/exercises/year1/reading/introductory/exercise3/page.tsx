@@ -202,13 +202,13 @@ export default function Exercise3Page() {
         }
 
         const currentFinalPath = [...pathPoints];
-        // *** تعديل: زيادة عدد تكرارات التنعيم إلى 10 ***
-        const smoothedPolygon = smoothPathChaikin(currentFinalPath, 10); // <-- زيادة التكرارات هنا
+        // استخدام 10 تكرارات للتنعيم
+        const smoothedPolygon = smoothPathChaikin(currentFinalPath, 10);
 
         setFinalPolygon(smoothedPolygon); // تخزين المضلع المنعّم
         setPathPoints([]); // مسح المسار المؤقت
 
-        console.log("Drawing finished. Smoothed Polygon (10 iterations):", smoothedPolygon); // <-- تحديث الرسالة
+        console.log("Drawing finished. Smoothed Polygon (10 iterations):", smoothedPolygon);
 
         // تحديد العناصر داخل المضلع (باستخدام المضلع المنعّم)
         const itemsInside: string[] = [];
@@ -242,10 +242,6 @@ export default function Exercise3Page() {
     }, [isDrawing, handleMouseUp]);
 
     // --- دوال التحكم في الشريط الجانبي ---
-    const handleUndo = useCallback(() => {
-        console.log("Undo action for Exercise 3 (Not Implemented Yet)");
-    }, []);
-
     const handleReset = useCallback(() => {
         console.log("Reset action for Exercise 3");
         setIsDrawing(false);
@@ -259,6 +255,12 @@ export default function Exercise3Page() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }, []);
+
+    const handleUndo = useCallback(() => {
+        console.log("Undo action triggered (performing Reset for now).");
+        handleReset();
+    }, [handleReset]);
+
 
     // --- بناء واجهة المستخدم ---
     return (
@@ -289,10 +291,12 @@ export default function Exercise3Page() {
                             </div>
 
                             {/* --- منطقة التمرين --- */}
-                            <div id="exercise-area-div" className="exercise-area relative flex flex-col justify-center items-center p-16 min-h-[550px]">
+                             {/* *** تعديل: تقليل الحشو الأفقي px-12 والحفاظ على العمودي py-16 *** */}
+                            <div id="exercise-area-div" className="exercise-area relative flex flex-col justify-center items-center px-12 py-16 min-h-[550px]"> {/* تعديل الحشو هنا */}
 
                                 {/* شبكة لعرض العناصر */}
-                                <div className="relative z-0 grid grid-cols-4 gap-x-20 gap-y-16">
+                                {/* *** تعديل: زيادة الفجوات إلى gap-x-16 و gap-y-16 *** */}
+                                <div className="relative z-0 grid grid-cols-4 gap-x-16 gap-y-16"> {/* تعديل الفجوات هنا */}
                                     {displayItems.map((item) => (
                                         <div
                                           key={item.id}
