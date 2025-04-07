@@ -1,23 +1,27 @@
+// المسار: src/app/auth/login/page.tsx (أو المسار الصحيح لديك)
 'use client';
 
 import React, { useState } from 'react';
-import styles from './page.module.css';
+import styles from './page.module.css'; // الأنماط الخاصة بالصفحة
 import Link from 'next/link';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer'; 
+import Footer from '../../components/Footer';
+import SubmitButton from '../../components/SubmitButton/SubmitButton'; // *** جديد: استيراد المكون ***
 
 export default function LoginPage() {
     const [loginIdentifier, setLoginIdentifier] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // حالة تحميل (اختياري)
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        // هنا يمكنك إضافة كود لمعالجة تسجيل الدخول وإرسال البيانات إلى الخادم
-        console.log({
-            loginIdentifier,
-            password,
-        });
-        alert('تم تقديم نموذج تسجيل الدخول (سيتم استبدال هذا بتنفيذ تسجيل الدخول الفعلي)');
+        setIsLoading(true); // بدء التحميل (مثال)
+        console.log({ loginIdentifier, password });
+        // TODO: Implement actual login logic here
+        setTimeout(() => { // محاكاة طلب الشبكة
+             alert('تم تقديم نموذج تسجيل الدخول (سيتم استبدال هذا بتنفيذ تسجيل الدخول الفعلي)');
+             setIsLoading(false); // إيقاف التحميل
+        }, 1000);
     };
 
     return (
@@ -25,7 +29,7 @@ export default function LoginPage() {
             <Header />
             <main className={styles.mainContent}>
                 <h1 className={styles.pageTitle}>تسجيل الدخول</h1>
-                <div className={styles.registerPageContainer}>
+                <div className={styles.registerPageContainer}> {/* قد تحتاج لإعادة تسمية هذا الكلاس */}
                     <div className={styles.imageSide}>
                         <img src="/images/hello1.jpg" alt="صورة تسجيل الدخول" className={styles.imagePlaceholder} />
                     </div>
@@ -40,6 +44,7 @@ export default function LoginPage() {
                                     value={loginIdentifier}
                                     onChange={(e) => setLoginIdentifier(e.target.value)}
                                     required
+                                    disabled={isLoading} // تعطيل الحقل أثناء التحميل
                                 />
                             </div>
 
@@ -52,6 +57,7 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
+                                    disabled={isLoading} // تعطيل الحقل أثناء التحميل
                                 />
                             </div>
 
@@ -59,9 +65,12 @@ export default function LoginPage() {
                                 <a href="#" className={styles.formLink}>نسيت كلمة السر؟</a>
                             </div>
 
-                            <div className={styles.buttonContainer}>
-                                <button type="submit" className={styles.submitButton}>تسجيل الدخول</button>
-                            </div>
+                            {/* *** تعديل: استخدام المكون SubmitButton *** */}
+                            <SubmitButton
+                                buttonText="تسجيل الدخول"
+                                isLoading={isLoading}
+                            />
+                            {/* -------------------------------------- */}
                         </form>
 
                         <div className={styles.createAccountLinkContainer}>
