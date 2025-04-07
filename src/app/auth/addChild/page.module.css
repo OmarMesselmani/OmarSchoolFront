@@ -1,0 +1,225 @@
+/* المسار: src/app/parent/add-child/page.module.css */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  direction: rtl;
+  font-family: 'Tajawal', sans-serif;
+  background: #f8f9fd;
+  color: #171717;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.exerciseContainer { /* يستخدم كهامش لـ main */
+  flex: 1;
+  width: 100%;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 500;
+  color: var(--main-color, #DD2946);
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+}
+
+/* --- أنماط النموذج --- */
+.registerForm {
+    width: 100%;
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+  text-align: right;
+}
+
+.formLabel {
+  display: block;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.formInput, .formSelect {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  font-family: inherit;
+  border: 1px solid #ced4da;
+  box-sizing: border-box;
+  background-color: #fdfdff;
+  transition: border-color 0.2s ease;
+}
+
+.formInput:focus, .formSelect:focus {
+  border-color: #DD2946;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2);
+}
+
+
+.formSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="grey" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+  background-repeat: no-repeat;
+  background-position-x: 10px;
+  background-position-y: center;
+  padding-right: 1rem;
+  padding-left: 2rem;
+  cursor: pointer;
+}
+
+.formSelect::-ms-expand {
+  display: none;
+}
+
+.radioGroup {
+ display: flex;
+ gap: 1.5rem;
+ margin-top: 0.5rem;
+ color: #333;
+}
+
+.radioLabel {
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ cursor: pointer;
+ font-size: 1rem;
+}
+
+.radioInput {
+ appearance: none;
+ -webkit-appearance: none;
+ width: 1.1em;
+ height: 1.1em;
+ border: 2px solid #adb5bd;
+ border-radius: 50%;
+ cursor: pointer;
+ position: relative;
+ top: 1px;
+ transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.radioInput:checked {
+ background-color: #DD2946;
+ border-color: #DD2946;
+}
+
+.radioInput:focus {
+  box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2);
+  outline: none;
+}
+
+/* كلاس زر إضافة تلميذ */
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #DD2946;
+  background-color: #fff;
+  border: 2px dashed #DD2946;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.addButton:hover {
+  background-color: rgba(221, 41, 70, 0.05);
+  border-color: #c8233d;
+  color: #c8233d;
+}
+
+/* كلاسات رسائل الخطأ والنجاح */
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.successMessage {
+  color: #16a34a;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* كلاسات الحقل الشرطي (للظهور السلس) */
+.conditionalFieldContainer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out, margin-bottom 0.4s ease-out;
+  margin-bottom: 0 !important;
+}
+
+.conditionalFieldContainer.visible {
+  max-height: 10rem;
+  opacity: 1;
+  margin-bottom: 1.25rem !important;
+}
+
+/* كلاس رسالة الحد الأقصى */
+.limitMessage {
+  text-align: center;
+  /* *** تعديل: زيادة الهامش العلوي *** */
+  margin-top: 1.5rem; /* نفس هامش زر الإضافة */
+  margin-bottom: 0;
+  padding: 0.75rem 1rem;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 768px) {
+    /* ... (أنماط الشاشات الصغيرة الأخرى) ... */
+    .addButton {
+        font-size: 0.95rem;
+        padding: 0.65rem 1rem;
+        margin-top: 1rem; /* تعديل الهامش للشاشات الصغيرة */
+    }
+    .limitMessage {
+        font-size: 0.85rem;
+        padding: 0.65rem 1rem;
+        margin-top: 1rem; /* تعديل الهامش للشاشات الصغيرة */
+    }
+}
+

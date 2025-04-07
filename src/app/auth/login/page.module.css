@@ -1,4 +1,4 @@
-/* ./page.module.css (بعد حذف أنماط الزر) */
+/* المسار: src/app/auth/login/page.module.css */
 .pageContainer {
     display: flex;
     flex-direction: column;
@@ -7,6 +7,7 @@
     font-family: 'Tajawal', sans-serif;
     background: #f8f9fd;
     color: #171717;
+    align-items: center; /* توسيط المحتوى أفقيًا */
 }
 
 .mainContent {
@@ -14,35 +15,47 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(100% - 150px); /* قد تحتاج لتعديل هذا ليتناسب مع التصميم العام */
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 3rem;
-    position: relative;
-    z-index: 1;
+    justify-content: center; /* توسيط المحتوى عموديًا أيضًا */
+    width: 100%;
+    padding: 2rem 1rem; /* تقليل الحشو العمودي قليلاً */
+    /* إزالة الهوامش العمودية من هنا إذا كانت exerciseContainer مستخدمة */
+    /* margin-top: 3rem; */
+    /* margin-bottom: 3rem; */
 }
+
+/* يمكن استخدام هذا الكلاس لتطبيق الهوامش إذا أردت */
+.exerciseContainer {
+  flex: 1;
+  width: 100%;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  display: flex;        /* Ensure it passes flex properties down */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .pageTitle {
-    font-size: 2.5rem;
-    margin: 2rem;
-    margin-top: 3rem;
+    font-size: 2rem;
+    margin-bottom: 2rem;
     text-align: center;
     font-weight: 500;
+    color: var(--main-color, #DD2946);
 }
 
+/* الحفاظ على هيكل العمودين */
 .registerPageContainer {
     display: flex;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px; /* يمكن تعديل العرض الأقصى */
     overflow: hidden;
     background-color: #fff;
-    border-radius: 30px;
+    border-radius: 20px; /* تقليل تدوير الحواف قليلاً */
     margin-bottom: 2rem;
     flex-direction: row-reverse;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee; /* إطار أخف */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* ظل أخف */
 }
 
 .imageSide {
@@ -51,261 +64,145 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #fdfdff; /* خلفية فاتحة جدًا للصورة */
 }
 
-.imagePlaceholder {
-    height: 100%;
+.imagePlaceholder { /* يستخدم الآن لـ img */
+    max-width: 100%;
+    height: auto; /* السماح للصورة بتحديد ارتفاعها */
+    max-height: 400px; /* تحديد ارتفاع أقصى */
     object-fit: contain;
-    font-size: 2rem;
-    color: #999;
 }
 
 .formSide {
     flex: 1;
-    padding: 3rem;
+    padding: 3rem; /* زيادة الحشو قليلاً */
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* أو center إذا أردت توسيط النموذج */
-    background-color: #DD2946; /* اللون الرئيسي كمثال */
+    align-items: center; /* توسيط النموذج داخل هذا الجزء */
+    justify-content: center;
+    background-color: #DD2946;
     color: #fff;
 }
 
-.registerForm {
+.registerForm { /* يمكن إعادة تسميته إلى loginForm */
     width: 100%;
-    max-width: 500px; /* تحديد عرض أقصى للنموذج */
-    align-self: center; /* توسيط النموذج داخل formSide */
+    max-width: 400px; /* تحديد عرض أقصى للنموذج */
 }
 
 .formGroup {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem; /* تقليل المسافة */
     text-align: right;
+    width: 100%;
 }
 
 .formLabel {
     display: block;
-    font-size: 1.1rem;
+    font-size: 1rem; /* تصغير طفيف */
     color: #fff;
     margin-bottom: 0.5rem;
+    font-weight: 600; /* نفس الوزن */
 }
 
-.formInput, .formSelect {
-    width: 100%; /* جعل الحقول تأخذ العرض الكامل للحاوية */
-    padding: 0.75rem 1rem;
+/* *** تعديل: تحديث تنسيق الحقول *** */
+.formInput {
+    width: 100%;
+    padding: 0.65rem 1rem;
     font-size: 1rem;
-    border-radius: 25px; /* حواف دائرية أكثر */
+    border-radius: 8px; /* تدوير حواف أقل */
     margin-top: 0.25rem;
     font-family: inherit;
-    border: 1px solid #ced4da; /* إضافة إطار بسيط */
-    box-sizing: border-box; /* لضمان تضمين الحشو والإطار في العرض */
+    border: 1px solid #ced4da; /* إطار رمادي */
+    box-sizing: border-box;
+    background-color: #fdfdff; /* خلفية فاتحة جدًا */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: #171717; /* لون النص المدخل */
 }
 
-.formSelect {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="grey" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* تغيير لون السهم */
-    background-repeat: no-repeat;
-    background-position-x: 10px; /* تغيير موقع السهم لليمين في RTL */
-    background-position-y: center;
-    padding-right: 1rem; /* إزالة الحشو الإضافي لليمين */
-    padding-left: 2rem; /* إضافة حشو لليسار لموقع السهم */
+/* *** تعديل: تحديث تنسيق التركيز *** */
+.formInput:focus {
+    border-color: #DD2946; /* اللون الرئيسي */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2); /* ظل خفيف */
 }
-
-.formSelect::-ms-expand {
-    display: none;
-}
-
-/* --- تم حذف .submitButton و .buttonContainer من هنا --- */
 
 .forgotPasswordLink {
-    text-align: left;
+    text-align: left; /* محاذاة لليسار */
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
 .formLink {
     text-decoration: none;
-    font-size: 1.1rem;
-    color: #ffffff; /* تغيير لون الرابط ليتناسب مع الخلفية */
-}
-
-.formInput {
-    color: #171717; /* لون النص داخل حقول الإدخال */
+    font-size: 0.9rem; /* تصغير حجم الخط قليلاً */
+    color: #ffffff;
+    opacity: 0.9; /* شفافية بسيطة */
+    transition: opacity 0.2s ease;
 }
 
 .formLink:hover {
     text-decoration: underline;
+    opacity: 1;
 }
 
 .createAccountLinkContainer {
     text-align: center;
     margin-top: 2rem;
 }
-.createAccountText { /* كلاس جديد للنص لتطبيق اللون */
+.createAccountText {
+    font-size: 1rem; /* تصغير طفيف */
     color: #fff;
 }
 
-
-.homePageLinkContainer {
-    text-align: center;
-    margin-top: 1.2rem;
-    width: 100%;
-}
-
-.radioGroup {
- display: flex;
- gap: 1.5rem; /* مسافة بين خيارات الراديو */
- margin-top: 0.5rem;
-}
-
-.radioLabel {
- display: flex;
- align-items: center;
- gap: 0.5rem; /* مسافة بين زر الراديو والنص */
- cursor: pointer;
- font-size: 1rem;
- color: #fff;
-}
-
-.radioInput {
- appearance: none;
- -webkit-appearance: none;
- width: 1.15em;
- height: 1.15em;
- border: 2px solid #fff;
- border-radius: 50%;
- cursor: pointer;
- position: relative;
- top: 2px; /* محاذاة عمودية بسيطة */
-}
-
-.radioInput:checked {
- background-color: #fff; /* لون الدائرة الداخلية عند الاختيار */
- border: 4px solid #DD2946; /* تغيير الإطار ليبدو كدائرة داخلية */
- background-clip: content-box; /* لجعل الخلفية تظهر داخل الإطار */
+/* *** جديد: تنسيق رسالة الخطأ *** */
+.errorMessage {
+  color: #f8c146; /* لون أصفر فاتح للتباين على الخلفية الحمراء */
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  background-color: rgba(0, 0, 0, 0.1); /* خلفية داكنة شفافة بسيطة */
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
 
-.checkboxGroup {
- display: flex;
- align-items: center;
- gap: 0.75rem; /* مسافة بين الصندوق والنص */
- margin-top: 0.5rem;
-}
-
-.checkboxLabel {
- font-size: 1rem;
- color: #fff;
- cursor: pointer;
- line-height: 1.4; /* تحسين تباعد الأسطر إذا كان النص طويلاً */
-}
-
-.checkboxInput {
- appearance: none;
- -webkit-appearance: none;
- width: 1.15em;
- height: 1.15em;
- border: 2px solid #fff;
- border-radius: 0.25rem; /* مربع بحواف دائرية قليلاً */
- cursor: pointer;
- position: relative;
- top: 2px;
- margin-left: 5px; /* هامش أيسر في RTL */
-}
-
-.checkboxInput:checked {
- background-color: #fff; /* لون الخلفية عند الاختيار */
- background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%23DD2946"><path d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z"/></svg>'); /* علامة صح باللون الرئيسي */
- background-size: 80%;
- background-position: center;
- background-repeat: no-repeat;
- border-color: #fff;
-}
-
-.termsLink {
- color: #f8c146; /* لون مميز لرابط الشروط */
- text-decoration: underline;
-}
-.termsLink:hover {
- color: #fff;
-}
-
-.formRow {
- display: flex;
- gap: 1rem; /* مسافة بين الحقول في نفس السطر */
-}
-
-.formGroupHalf {
- flex: 1; /* جعل كل حقل يأخذ نصف المساحة */
-}
+/* --- تم حذف .submitButton و .buttonContainer --- */
 
 
-@media (max-width: 768px) {
-    .mainContent {
-        width: calc(100% - 40px); /* تعديل العرض للشاشات الصغيرة */
-        padding: 0 20px; /* إضافة حشو أفقي */
-    }
-
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 992px) { /* تعديل نقطة التوقف لتناسب التصميم */
     .registerPageContainer {
-        border-radius: 20px;
         flex-direction: column;
-        align-items: center;
-        box-shadow: none; /* إزالة الظل في الشاشات الصغيرة */
-        border: none; /* إزالة الإطار في الشاشات الصغيرة */
-        background-color: transparent; /* جعل الحاوية شفافة */
-        margin-bottom: 0;
+        max-width: 500px; /* تقليل العرض الأقصى في الشاشات المتوسطة والصغيرة */
     }
 
     .imageSide {
-        display: none;
+        display: none; /* إخفاء الصورة في الشاشات الأصغر */
     }
 
     .formSide {
-        width: 100%;
-        flex: none;
-        padding: 2rem 1rem; /* تقليل الحشو */
-        align-items: center;
-        background-color: #DD2946; /* الحفاظ على لون الخلفية للنموذج */
-        border-radius: 20px; /* إضافة تدوير للحواف */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* إضافة الظل هنا */
+        border-radius: 20px; /* تطبيق التدوير هنا عند إخفاء الصورة */
+        padding: 2rem; /* تقليل الحشو */
     }
-
-    .pageTitle {
-        text-align: center;
-        align-self: center;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
+     .mainContent {
+        /* إزالة الهوامش العمودية للسماح بالتحكم من exerciseContainer إذا استخدم */
+        /* margin-top: 1.5rem; */
+        /* margin-bottom: 1.5rem; */
+        padding: 1rem; /* تقليل الحشو */
     }
-
-    .registerForm {
-        align-self: center;
-        max-width: 100%;
+     .pageTitle {
+        font-size: 1.8rem;
     }
-
-    /* --- تم حذف .submitButton و .buttonContainer من هنا --- */
-
-    .formLabel {
-        font-size: 1.1rem; /* تصغير طفيف للعنوان */
+     .formLabel {
+        font-size: 0.95rem;
     }
-
-    .formInput, .formSelect { /* تنسيق موحد للحقول */
-        font-size: 1rem;
-        padding: 0.75rem 1rem; /* تعديل الحشو ليتناسب */
+     .formInput {
+        padding: 0.65rem 0.8rem;
+        font-size: 0.95rem;
     }
-
     .forgotPasswordLink, .createAccountLinkContainer {
         text-align: center;
     }
-
-     .formRow {
-        flex-direction: column; /* جعل الحقول تحت بعضها في الشاشات الصغيرة */
-        gap: 0; /* إزالة الفجوة العمودية الافتراضية */
-    }
-    .formGroupHalf {
-        margin-bottom: 1.5rem; /* إضافة هامش سفلي عند تكديس الحقول */
-    }
-     .formGroupHalf:last-child {
-        margin-bottom: 0; /* إزالة الهامش من الحقل الأخير في الصف */
-    }
-
 }
+

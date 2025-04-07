@@ -1,357 +1,280 @@
-/* app/auth/register/page.module.css */
-
+/* المسار: src/app/auth/register/page.module.css */
 .pageContainer {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     direction: rtl;
     font-family: 'Tajawal', sans-serif;
-    color: #171717;
-    width: 100vw;
-    min-width: 100vw;
-    overflow-x: hidden;
     background: #f8f9fd;
-    align-items: center;
-    position: relative;
-}
-
-.mainContent {
+    color: #171717;
+  }
+  
+  .mainContent {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    padding: 2rem 1rem;
     width: 100%;
-    padding: 2rem;
-    margin-bottom: 2.5rem;
-    position: relative;
-    z-index: 1;
-}
-
-.pageTitle {
-    font-size: 2.5rem;
-    margin: 2rem;
+    /* الهوامش العمودية يمكن التحكم بها من هنا أو من exerciseContainer */
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  /* يمكن الإبقاء على هذا الكلاس أو إزالته إذا لم يعد مستخدماً */
+  /* .exerciseContainer { ... } */
+  
+  .pageTitle {
+    font-size: 2rem;
+    margin-bottom: 2rem;
     text-align: center;
     font-weight: 500;
-}
-
-.registerPageContainer {
-    display: flex;
+    color: var(--main-color, #DD2946);
+  }
+  
+  /* *** جديد: استخدام نفس تنسيق حاوية النموذج *** */
+  .formContainer {
     width: 100%;
-    max-width: 600px;
-    border-radius: 30px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.formSide {
-    flex: 1;
-    padding: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #DD2946;
-    color: #fff;
-    width: 100%;
-}
-
-.registerForm {
-    width: 100%;
-    max-width: 500px;
-}
-
-.formGroup {
-    margin-bottom: 1rem;
+    max-width: 600px; /* نفس العرض الأقصى */
+    background-color: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eee;
+  }
+  
+  /* --- أنماط النموذج --- */
+  .registerForm {
+      width: 100%;
+  }
+  
+  .formGroup {
+    margin-bottom: 1.25rem;
     text-align: right;
-    width: 100%;
-}
-
-.formLabel {
+  }
+  
+  .formLabel {
     display: block;
-    font-size: 1.1rem;
-    color: #fff;
-    margin-bottom: 0.5rem;
-}
-
-.formInput, .formSelect {
-    width: 100%;
-    padding: 0.75rem 1rem;
     font-size: 1rem;
-    border-radius: 25px;
+    /* *** تعديل: تغيير لون العنوان الفرعي *** */
+    color: #333; /* لون أغمق للوضوح على خلفية بيضاء */
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  /* *** تعديل: تحديث تنسيق الحقول *** */
+  .formInput, .formSelect {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px; /* تدوير حواف أقل */
     margin-top: 0.25rem;
     font-family: inherit;
-    border: none;
-    color: #171717;
-    background-color: white;
+    border: 1px solid #ced4da; /* إطار رمادي */
     box-sizing: border-box;
-}
-
-.formSelect {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    border-radius: 25px;
-    border: none;
-    background-color: white;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 10px);
-    background-position-y: center;
-    padding-right: 2.5rem;
-    color: #171717;
-}
-
-.formSelect:focus {
+    background-color: #fdfdff; /* خلفية فاتحة جدًا */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* إضافة انتقال للظل */
+    color: #171717; /* لون النص المدخل */
+  }
+  
+  /* *** تعديل: تحديث تنسيق التركيز *** */
+  .formInput:focus, .formSelect:focus {
+    border-color: #DD2946; /* اللون الرئيسي */
     outline: none;
-    border-color: var(--main-color);
-}
-
-.formSelect::-ms-expand {
+    box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2); /* ظل خفيف */
+  }
+  
+  /* *** تعديل: تحديث تنسيق القائمة المنسدلة *** */
+  .formSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="grey" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: 10px; /* لليمين في RTL */
+    background-position-y: center;
+    padding-right: 1rem;
+    padding-left: 2rem; /* مسافة للسهم */
+    cursor: pointer;
+  }
+  
+  .formSelect::-ms-expand {
     display: none;
-}
-
-.buttonContainer {
+  }
+  
+  /* *** تعديل: تحديث تنسيق الراديو *** */
+  .radioGroup {
+   display: flex;
+   gap: 1.5rem;
+   margin-top: 0.5rem;
+   color: #333; /* لون النص */
+  }
+  
+  .radioLabel {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   cursor: pointer;
+   font-size: 1rem;
+  }
+  
+  .radioInput {
+   appearance: none;
+   -webkit-appearance: none;
+   width: 1.1em;
+   height: 1.1em;
+   border: 2px solid #adb5bd; /* إطار رمادي */
+   border-radius: 50%;
+   cursor: pointer;
+   position: relative;
+   top: 1px;
+   transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .radioInput:checked {
+   background-color: #DD2946; /* اللون الرئيسي عند الاختيار */
+   border-color: #DD2946;
+  }
+  
+  .radioInput:focus {
+    box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2);
+    outline: none;
+  }
+  
+  /* *** تعديل: تحديث تنسيق صندوق الاختيار *** */
+  .checkboxGroup {
+   display: flex;
+   align-items: flex-start; /* محاذاة للبداية للسماح بالتفاف النص */
+   gap: 0.75rem;
+   margin-top: 0.5rem;
+   margin-bottom: 1.5rem; /* هامش سفلي قبل الزر */
+  }
+  
+  .checkboxLabel {
+   font-size: 1rem;
+   color: #333; /* لون النص */
+   cursor: pointer;
+   line-height: 1.4;
+  }
+  
+  .checkboxInput {
+   appearance: none;
+   -webkit-appearance: none;
+   width: 1.15em;
+   height: 1.15em;
+   border: 2px solid #adb5bd; /* إطار رمادي */
+   border-radius: 0.25rem;
+   cursor: pointer;
+   position: relative;
+   top: 3px; /* ضبط المحاذاة العمودية مع النص */
+   margin-left: 5px; /* هامش أيسر في RTL */
+   flex-shrink: 0; /* منع الانكماش */
+  }
+  
+  .checkboxInput:checked {
+   background-color: #DD2946;
+   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white"><path d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z"/></svg>');
+   background-size: 80%;
+   background-position: center;
+   background-repeat: no-repeat;
+   border-color: #DD2946;
+  }
+  
+  .checkboxInput:focus {
+    box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2);
+    outline: none;
+  }
+  
+  /* *** تعديل: تحديث تنسيق الروابط *** */
+  .termsLink {
+   color: #DD2946; /* اللون الرئيسي */
+   text-decoration: underline;
+  }
+  .termsLink:hover {
+   color: #c8233d;
+  }
+  
+  .formLink { /* رابط تسجيل الدخول */
+      color: #DD2946; /* اللون الرئيسي */
+      text-decoration: none;
+      margin-right: 0.5rem;
+      font-size: 1rem; /* توحيد حجم الخط */
+  }
+  
+  .formLink:hover {
+      text-decoration: underline;
+  }
+  
+  .loginLinkContainer {
+      text-align: center;
+      margin-top: 2rem;
+      width: 100%;
+  }
+  
+  .loginLinkText { /* النص المحيط برابط تسجيل الدخول */
+      font-size: 1rem;
+      color: #333; /* لون النص العادي */
+  }
+  
+  /* --- تم حذف .submitButton و .buttonContainer --- */
+  /* --- تم حذف .imageSide, .formSide, .registerPageContainer --- */
+  /* --- تم حذف .forgotPasswordLink (إذا لم يعد مستخدماً) --- */
+  /* --- تم حذف .createAccountLinkContainer, .createAccountText (إذا لم تعد مستخدمة) --- */
+  /* --- تم حذف .homePageLinkContainer (إذا لم يعد مستخدماً) --- */
+  
+  .formRow {
+   display: flex;
+   gap: 1rem;
+  }
+  
+  .formGroupHalf {
+   flex: 1;
+  }
+  
+  /* *** جديد: تنسيقات رسائل الخطأ *** */
+  .errorMessage {
+    color: #ef4444;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     text-align: center;
-    margin-top: 1.5rem;
-    width: 100%;
-}
-
-.submitButton {
-    width: 180px;
-    padding: 0.8rem 2rem;
-    font-size: 1.1rem;
-    background-color: #DD2946;
-    color: #fff;
-    border: 1px solid #fff;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: inherit;
-}
-
-.submitButton:hover {
-    background-color: #c8233d;
-}
-
-.loginLinkContainer {
-    text-align: center;
-    margin-top: 2rem;
-    width: 100%;
-}
-
-.loginLinkText {
-    font-size: 1.1rem;
-    color: #fff;
-}
-
-.formLink {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 0.5rem;
-    font-size: 1.1rem;
-}
-
-.formLink:hover {
-    text-decoration: underline;
-}
-
-.radioGroup {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: flex-start;
-    margin-top: 0.5rem;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-.radioLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #fff;
-    white-space: nowrap;
-}
-
-.radioInput {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #fff;
-    border-radius: 50%;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
-    margin: 0;
-}
-
-.radioInput:checked {
-    border: 1px solid #fff;
-}
-
-.radioInput:checked::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #fff;
-}
-
-.checkboxGroup {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    margin-bottom: 1.5rem;
-}
-
-.checkboxLabel {
-    margin-right: 0.5rem;
-    font-size: 1rem;
-    color: #fff;
-    user-select: none;
-}
-
-.checkboxInput {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #fff;
-    border-radius: 3px;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
-}
-
-.checkboxInput:checked {
-    background-color: transparent;
-    border-color: #fff;
-}
-
-.checkboxInput:checked::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 2px;
-    left: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.termsLink {
-    color: #fff;
-    text-decoration: underline;
-}
-
-.termsLink:hover {
-    text-decoration: none;
-}
-
-.homePageLinkContainer {
-    text-align: center;
-    margin-top: 1.2rem;
-    margin-bottom: 2rem;
-    width: 100%;
-}
-
-.formRow {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.formGroupHalf {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-@media (max-width: 768px) {
-    .mainContent {
-        width: 100%;
-    }
-
-    .registerPageContainer {
-        border-radius: 20px;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .pageTitle {
-        text-align: center;
-        align-self: center;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .registerForm {
-        align-self: center;
-        max-width: 100%;
-    }
-
-    .submitButton {
-        padding: 0.8rem 2rem;
-        align-self: center;
-        width: 180px;
-    }
-
-    .formLabel {
-        font-size: 1rem;
-    }
-
-    .formInput, .formSelect, .submitButton {
-        font-size: 1rem;
-        padding: 0.6rem 1rem;
-    }
-
-    .buttonContainer {
-        text-align: center;
-    }
-
-    .loginLinkContainer {
-        text-align: center;
-        margin-top: 1.5rem;
-    }
-     
-    /* Ensure radio buttons stay in one row on mobile */
-    .radioGroup {
-        flex-direction: row;
-        gap: 1rem;
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-    }
-
-    .radioLabel {
-        font-size: 1rem;
-        white-space: nowrap;
-    }
-
-    .checkboxGroup {
-        justify-content: flex-start;
-        flex-direction: row;
-        align-items: flex-start;
-        margin-bottom: 1.5rem;
-    }
-
-    .checkboxLabel {
-        margin-right: 0.5rem;
-        text-align: right;
-        margin-top: 0;
-    }
-}
+    margin-bottom: 1rem;
+  }
+  
+  /* تعديلات للشاشات الصغيرة */
+  @media (max-width: 768px) {
+      .mainContent {
+          width: 100%;
+          padding: 1rem;
+          margin-top: 1.5rem;
+          margin-bottom: 1.5rem;
+      }
+      .formContainer {
+          padding: 1.5rem;
+      }
+      .pageTitle {
+          font-size: 1.8rem;
+      }
+      .formLabel {
+          font-size: 0.95rem;
+      }
+      .formInput, .formSelect {
+          padding: 0.65rem 0.8rem;
+          font-size: 0.95rem;
+      }
+       .formRow {
+          flex-direction: column;
+          gap: 0;
+      }
+      .formGroupHalf {
+          margin-bottom: 1.25rem;
+      }
+       .formGroupHalf:last-child {
+          margin-bottom: 0;
+      }
+      /* لا حاجة لتعديل الأزرار هنا لأنها في مكون منفصل */
+      .loginLinkContainer {
+          text-align: center;
+          margin-top: 1.5rem;
+      }
+  }
+  
