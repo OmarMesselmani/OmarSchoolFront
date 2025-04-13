@@ -6,7 +6,8 @@ import styles from '../styles/Header.module.css';
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { IoSearchOutline } from "react-icons/io5";
-
+import Cookies from 'js-cookie';
+import checkAuth from '../services/check-auth';
 interface NavLink {
   href: string;
   label: string;
@@ -31,12 +32,16 @@ const navLinks: NavLink[] = [
   { href: "#about", label: "من نحن؟" }
 ];
 
-export default function Header() {
+interface HeaderProps {
+  isLoggedIn: boolean;
+  setIsFullLoading: (isFullLoading: boolean) => void;
+}
+
+export default function Header({ isLoggedIn, setIsFullLoading }: HeaderProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [hasNotifications, setHasNotifications] = useState<boolean>(true);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -184,21 +189,32 @@ export default function Header() {
     setIsNotificationOpen(!isNotificationOpen);
   };
 
-  const handleSettingsClick = (action: string) => {
-    if (action === 'dashboard') {
-      window.location.href = '/dashboardUser';
-    } else if (action === 'logout') {
-      console.log('تسجيل الخروج');
+  const handleLogout = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      setIsFullLoading(true);
+      const token = Cookies.get('token');
+      const response = await fetch('http://127.0.0.1:8000/parent/sign-out', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        Cookies.remove('token');
+        window.location.href = "/auth/login";
+      } else {
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
     }
   };
 
-  const simulateLogin = () => {
-    setIsLoggedIn(true);
+  const handleSettingsClick = (action: string) => {
+    if (action === 'dashboard') {
+      window.location.href = '/dashboardUser';
+    }
   };
 
-  const simulateLogout = () => {
-    setIsLoggedIn(false);
-  };
 
   const renderNavLinks = (isSidebar: boolean = false) => {
     return navLinks.map((link, index) => {
@@ -226,8 +242,8 @@ export default function Header() {
             </a>
             <ul
               className={`${styles.dropdown} ${(isSidebar && isMobileDropdownOpen) || (!isSidebar && activeDropdown === index)
-                  ? styles.dropdownOpen
-                  : ''
+                ? styles.dropdownOpen
+                : ''
                 }`}
               onMouseEnter={() => !isSidebar && handleDropdownMouseEnter(index)}
               onMouseLeave={() => !isSidebar && handleDropdownMouseLeave()}
@@ -295,7 +311,7 @@ export default function Header() {
                     className={styles.settingsLink}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSettingsClick('logout');
+                      handleLogout(e);
                       setIsSettingsOpen(false);
                     }}
                   >
@@ -332,7 +348,7 @@ export default function Header() {
         <Link href="/auth/register" className={styles.createAccountLink}>
           <button
             className={`${styles.createAccountButton} ${isSidebar ? styles.sidebarButton : ''}`}
-            onClick={simulateLogin}
+          // onClick={simulateLogin}
           >
             إنشاء حساب
           </button>
@@ -340,7 +356,7 @@ export default function Header() {
         <Link href="/auth/login" className={styles.loginLink}>
           <button
             className={`${styles.loginButton} ${isSidebar ? styles.sidebarButton : ''}`}
-            onClick={simulateLogin}
+          // onClick={simulateLogin}
           >
             تسجيل الدخول
           </button>
