@@ -1,0 +1,92 @@
+/* المسار المقترح: src/app/dashboardUser/components/student-info-header/page.module.css */ /* تم تعديل المسار */
+
+.infoHeaderContainer {
+  background-color: #fce9ec;
+  color: #171717;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* العودة للتوزيع المتساوي */
+  align-items: center;
+  /* gap تم إزالته للاعتماد على space-between */
+  border: 1px solid #f8c1cb;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  /* استخدام border-right و padding-right */
+  border-right: 1px solid #f4a5b6; /* خط على اليمين */
+  padding-right: 1rem; /* مسافة بين النص والخط على اليمين */
+  box-sizing: border-box;
+}
+
+/* إزالة الخط والحشو من العنصر الأول (الذي يظهر أقصى اليمين في RTL) */
+.infoItem:first-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+
+.infoLabel {
+  font-weight: 600;
+  color: #171717;
+}
+
+.infoValue {
+  font-weight: 500;
+  color: #171717;
+}
+
+/* تعديلات للشاشات المتوسطة */
+@media (max-width: 992px) {
+   .infoHeaderContainer {
+     padding: 0.75rem 1rem;
+     /* لا نستخدم gap هنا بسبب space-between */
+   }
+    .infoItem {
+        padding-right: 1rem;
+    }
+     /* *** تمت إزالة القاعدة الفارغة من هنا *** */
+     /* .infoItem:nth-child(odd):not(:first-child) { ... } */
+
+      .infoItem:first-child { /* التأكد من أن الأول ليس له إطار */
+        border-right: none;
+        padding-right: 0;
+     }
+}
+
+/* تعديلات للشاشات الأصغر */
+@media (max-width: 768px) {
+  .infoHeaderContainer {
+    justify-content: flex-start; /* محاذاة لليمين */
+    padding: 0.5rem 1rem;
+    gap: 0.75rem; /* إعادة الفجوة هنا للشاشات الأصغر */
+  }
+  .infoItem {
+    font-size: 0.85rem;
+     width: calc(50% - 0.5rem);
+     flex-basis: calc(50% - 0.5rem);
+     /* إزالة كل الخطوط الفاصلة والحشو في هذا العرض */
+     border-right: none;
+     padding-right: 0;
+  }
+  /* تمت إزالة القاعدة الخاطئة :last-child التي كانت هنا */
+}
+
+/* تعديلات للشاشات الصغيرة جدًا */
+@media (max-width: 480px) {
+   .infoItem {
+     width: 100%;
+     flex-basis: 100%;
+     border-right: none;
+     padding-right: 0;
+     margin-bottom: 0.5rem;
+   }
+    .infoItem:last-child {
+        margin-bottom: 0;
+    }
+}

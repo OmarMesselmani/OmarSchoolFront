@@ -1,3 +1,5 @@
+/* dashboardUser/page.module.css */
+
 .pageContainer {
   display: flex;
   flex-direction: column;
@@ -7,8 +9,8 @@
 .dashboardContainer {
   flex: 1;
   padding: 20px;
-  background-color: #fafafa;
-  padding: 40px;
+  background-color: #f7f7f5;
+  margin-top: 1.3rem;
 }
 
 .contentWrapper {
@@ -16,6 +18,7 @@
   flex-direction: row;
   gap: 20px;
   height: 100%;
+  min-height: calc(100vh - 120px - 40px - 1.3rem);
 }
 
 .mainContent {
@@ -23,208 +26,62 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* <<< تمت إضافة هذا السطر */
 }
 
-.infoHeader {
-  margin-bottom: 20px;
-  border-radius: 10px;
-  background-color: var(--main-color);
-  padding: 8px 20px;
-  color: white;
-}
+/* --- أنماط الشريط الجانبي --- */
 
-.infoContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.infoSection {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-  text-align: right;
-  flex: 1;
-}
-
-.infoLabel {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  white-space: nowrap;
-}
-
-.infoValue {
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.dividerVertical {
-  width: 1px;
-  height: 20px;
-  background-color: #ddd;
-  margin: 0 10px;
-}
-
-/* تنسيق جديد للبطاقات */
-.newCardsContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  direction: rtl;
-  height: 100%;
-}
-
-.rightSection {
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.leftSection {
-  width: 30%;
-  display: flex;
-}
-
-.resultsCard {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.settingsColumn {
+  width: 250px;
+  transition: width 0.4s ease-in-out;
   overflow: hidden;
-  height: auto; /* تغيير من 500px إلى auto */
-  min-height: 400px; /* إضافة حد أدنى للارتفاع */
+  flex-shrink: 0;
 }
 
-.adviceCard {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-}
-
-.subjectsSection {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  justify-content: space-between;
-}
-
-.subjectCard {
-  flex: 1;
-  min-width: 0; /* لمنع تجاوز العرض */
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  height: 100px;
-}
-
-.cardHeader {
-  background-color: var(--main-color);
-  padding: 8px 15px;
-  color: white;
-}
-
-.cardTitle {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.cardContent {
-  padding: 5px 15px;
-  height: calc(100% - 40px);
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: center; /* توسيط العناصر أفقياً */
-  gap: 15px;
-  direction: ltr;
-}
-
-.resultsCard .cardContent {
-  padding: 20px;
-  height: calc(100% - 40px);
-  display: flex;
-  flex-direction: column;
-}
-
-.scoreValue {
-  font-size: 2rem;
-  font-weight: 500;
-  color: #171717;
-  }
-
-.percentageContainer {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #22C55E;
-  flex-direction: row-reverse;
-}
-
-.percentageContainer.negative {
-  color: #EF4444; /* لون أحمر */
-}
-
-.percentage {
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.arrowIcon {
-  font-size: 1.4rem;
-}
-
-/* تنسيقات القائمة الجانبية */
-.cardsContainer {
-  display: none; /* إخفاء القديم */
-}
-
-.column {
-  display: none; /* إخفاء القديم */
-}
-
-.card {
-  display: none; /* إخفاء القديم */
+.settingsColumn.collapsed {
+  width: 80px;
 }
 
 .settingsCard {
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 20px;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  color: #333;
+  gap: 1rem;
+  color: #374151;
   height: 100%;
   justify-content: space-between;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: padding 0.4s ease-in-out;
+}
+
+.settingsColumn.collapsed .settingsCard {
+  padding: 1.25rem 0.625rem;
+  align-items: center;
 }
 
 .userSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0.25rem;
 }
 
 .avatarContainer {
-  width: 65px;
-  height: 65px;
-  margin-bottom: 1rem;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.5rem;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s ease-in-out;
+  flex-shrink: 0;
+}
+
+.settingsColumn.collapsed .avatarContainer {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.75rem;
 }
 
 .avatar {
@@ -234,174 +91,153 @@
 }
 
 .userName {
-  font-size: 1.2rem;
-  color: #333;
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 500;
   margin: 0;
   text-align: center;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   transform: translateX(0);
   opacity: 1;
   width: 100%;
   overflow: hidden;
-  height: 24px; /* ارتفاع ثابت يساوي حجم الخط × 1.5 */
+  height: 32px;
   line-height: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 4 8px;
+  cursor: pointer;
+  outline: none;
+  direction: rtl;
+}
+
+.userName:focus {
+  border-color: var(--main-color);
+}
+
+.userName option {
+  background-color: white;
+  color: #1f2937;
 }
 
 .hideText {
-  transform: translateX(-20px);
   opacity: 0;
-  width: 0;
-  height: 24px;
+  transform: translateX(-10px);
+  pointer-events: none;
 }
 
 .divider {
   height: 1px;
-  background-color: #ddd;
+  background-color: #e5e7eb;
   width: 100%;
 }
 
 .settingsSection {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .settingsItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 1rem;
+  padding: 0.75rem;
   cursor: pointer;
-  border-radius: 10px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   white-space: nowrap;
   overflow: hidden;
-  z-index: 2;
-  width: 100%; /* إضافة عرض كامل */
+  width: 100%;
+  color: #4b5563;
+  position: relative;
 }
 
-.settingsItem span {
-  transform-origin: right;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(0);
+.menuText {
+  transition: opacity 0.3s ease-out, max-width 0.3s ease-out;
   opacity: 1;
-  display: inline-block; /* إضافة خاصية العرض */
-  width: calc(100% - 35px); /* تحديد عرض النص */
+  max-width: 150px;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.settingsColumn.collapsed .menuText {
+  opacity: 0;
+  max-width: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .settingsItem:hover {
-  color: var(--main-color);
+  background-color: #f3f4f6;
+  color: var(--main-color, #DD2946);
 }
 
 .icon {
-  font-size: 26px;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 26px;
-  transform: scale(1);
+  font-size: 1.75rem;
+  color: #171717;
+  flex-shrink: 0;
+  transition: transform 0.3s ease-in-out, color 0.2s ease-in-out;
+  margin-left: 0;
+  margin-right: 0;
 }
 
-.settingsTitle,
-.settingsOption,
-.underline {
-  display: none;
+.settingsColumn.collapsed .settingsItem {
+  width: 100%;
+  justify-content: right;
+  padding: 0.75rem 0.95rem 0.75rem 0rem;
+  gap: 0;
+}
+
+.settingsItem.active {
+  background-color: rgba(221, 41, 70, 0.1);
+  color: var(--main-color, #DD2946);
+  font-weight: 600;
 }
 
 .logoutWrapper {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .logoutWrapper .settingsItem:hover {
-  color: var(--main-color);
+  background-color: #fee2e2;
+  color: #dc2626;
 }
 
-/* يمكن حذف الأنماط القديمة */
-.logoutSection {
-  display: none;
+.logoutWrapper .settingsItem:hover .icon {
+  color: #dc2626;
 }
 
-.settingsColumn {
-  width: 250px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-.settingsColumn.collapsed {
-  width: 80px;
-}
-
-.settingsColumn.collapsed .icon {
-  font-size: 26px;
-  min-width: 30px;
-  transform: scale(1.2);
-  margin: 0; /* إزالة الهوامش */
-}
-
-.settingsColumn.collapsed .settingsCard {
-  padding: 20px 10px;
-}
-
-.settingsColumn.collapsed .avatarContainer {
-  width: 50px;
-  height: 50px;
-}
-
-.settingsColumn.collapsed .settingsItem span {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.settingsColumn.collapsed .userName {
-  transform: translateX(-20px);
-  opacity: 0;
-}
-
-.settingsColumn.collapsed .settingsItem {
-  width: 50px; /* تحديد عرض ثابت عند الإغلاق */
-  justify-content: center; /* توسيط الأيقونة */
-}
-
-/* حذف التنسيق القديم */
-.settingsColumn.collapsed .settingsItem {
-  width: fit-content;
-}
-
-.settingsItem.active {
-  background-color: rgba(221, 41, 70, 0.1);
-  color: var(--main-color);
-}
-
+.settingsItem:hover .icon,
 .settingsItem.active .icon {
-  color: var(--main-color);
+  color: var(--main-color, #DD2946);
 }
 
 /* التنسيقات التكيفية للشاشات الصغيرة */
 @media (max-width: 992px) {
-  .newCardsContainer {
-    flex-direction: column;
-  }
-  
-  .rightSection, .leftSection {
-    width: 100%;
-  }
-  
-  .leftSection {
-    order: 2;
-  }
-  
-  .rightSection {
-    order: 1;
-  }
-  
-  .subjectCard {
-    min-width: calc(50% - 15px);
-  }
+  /* ... */
 }
 
 @media (max-width: 768px) {
-  .subjectCard {
-    min-width: 100%;
+  .settingsColumn {
+    width: 200px;
+  }
+  .settingsColumn.collapsed {
+    width: 70px;
+  }
+  .contentWrapper {
+    flex-direction: row;
   }
 }

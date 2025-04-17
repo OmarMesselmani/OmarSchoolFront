@@ -1,0 +1,86 @@
+/* المسار: src/app/components/dashboard-card/page.module.css */
+
+.cardContainer {
+  /* *** تعديل: استخدام متغير CSS للخلفية *** */
+  background-color: var(--card-bg-color, #ffffff); /* استخدام المتغير مع لون افتراضي أبيض */
+  border-radius: 0.75rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between; /* يدفع العنوان والهاشتاج بعيدًا عن بعضهما */
+  align-items: center;
+  margin-bottom: 0.8rem; /* تقليل الهامش السفلي من 1rem إلى 0.5rem (أو قيمة أخرى مناسبة) */
+  gap: 0.5rem; /* إضافة فجوة صغيرة كإجراء احترازي */
+  /* إزالة padding من هنا إذا كانت موجودة ونقلها للعنوان أو تركها */
+  /* التأكد من عدم وجود background-color هنا */
+}
+
+.headerLeft { /* قد لا نحتاج هذا إذا كان الهيكل بسيطاً */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hashtagContainer {
+  padding: 0.25rem 0;
+  flex-shrink: 0; /* مهم جدًا: منع الهاشتاج من التقلص والاختفاء */
+  /* يمكن إضافة هوامش هنا إذا أردت */
+  /* margin-left: 0.5rem; */
+}
+
+.hashtag {
+  color: var(--main-color, #DD2946);
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.8;
+  white-space: nowrap; /* منع نص الهاشتاج من الالتفاف */
+}
+
+.cardIcon {
+  color: #DD2946; /* اللون الرئيسي */
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  /* <<< إزالة background-color من هنا */
+  /* background-color: var(--title-bg-color, #cccccc); */
+  flex-grow: 0; /* <<< منع العنوان من التمدد */
+  flex-shrink: 0; /* <<< منع العنوان من التقلص (أو 1 إذا أردت السماح بالتقلص) */
+  display: inline-block; /* جعله يتصرف ككتلة ولكن بحجم المحتوى */
+}
+
+.cardContent {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #4B5563; /* لون النص الرمادي الداكن */
+}
+
+.actionButton {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #DD2946;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #BB1F3A; /* لون الخلفية عند التمرير */
+}

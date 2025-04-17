@@ -1,0 +1,82 @@
+/* المسار المقترح: app/exercises/year1/reading/introductory/exercise4/page.module.css */
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif; /* الخط الافتراضي */
+    background: #f8f9fd;
+    color: #171717;
+    align-items: center;
+}
+
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* يأخذ العرض الكامل ضمن exerciseBody */
+    padding: 2rem 1rem; /* الحشو الداخلي للمحتوى */
+}
+
+.exerciseContainer { /* يتحكم في الهوامش العلوية والسفلية لـ main */
+    flex: 1;
+    width: 100%;
+    max-width: 1200px; /* تحديد عرض أقصى للمحتوى الكلي */
+    margin: 3rem auto; /* توسيط وإضافة هوامش عمودية */
+}
+
+.pageTitle {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 500;
+    color: var(--main-color, #DD2946); /* استخدام اللون الرئيسي */
+}
+
+/* استخدام نفس تنسيق الحاوية من صفحة إضافة الطفل */
+.formContainer, .exerciseAreaContainer { /* اسم بديل */
+  width: 100%;
+  max-width: 800px; /* يمكن تعديل العرض الأقصى لمنطقة التمرين */
+  background-color: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  margin: 0 auto; /* توسيط الحاوية */
+}
+
+/* يمكن إضافة تنسيقات خاصة لعناصر التمرين هنا لاحقًا */
+.exercise-specific-content {
+    /* مثال: */
+    width: 100%;
+}
+
+
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 992px) {
+    .exerciseContainer {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+     .formContainer, .exerciseAreaContainer {
+        max-width: 90%;
+        padding: 1.5rem;
+    }
+     .pageTitle {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContent {
+        padding: 1rem;
+    }
+    .pageTitle {
+        font-size: 1.6rem; /* تصغير إضافي */
+    }
+     .formContainer, .exerciseAreaContainer {
+        padding: 1.5rem 1rem;
+    }
+}
+

@@ -1,0 +1,55 @@
+/* المسار المقترح: src/app/components/exam-list-item/page.module.css */
+
+.itemContainer {
+    display: flex;
+    justify-content: space-between; /* لدفع الأيقونة لليسار */
+    align-items: center;
+    padding: 0.75rem 0; /* حشو عمودي فقط */
+    border-bottom: 1px solid #f3f4f6; /* خط فاصل خفيف بين العناصر */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .itemContainer:last-child {
+    border-bottom: none; /* إزالة الخط من العنصر الأخير */
+  }
+  
+  .itemContainer:hover {
+    background-color: #fafafa; /* خلفية خفيفة عند التحويم */
+  }
+  
+  .contentWrapper {
+    display: flex;
+    flex-direction: column; /* العنوان الرئيسي والعنوان الفرعي تحت بعضهما */
+    gap: 0.25rem; /* فجوة صغيرة بين العناوين */
+    text-align: right; /* محاذاة النص لليمين */
+  }
+  
+  .subjectTag {
+    font-size: 0.75rem; /* حجم خط أصغر لاسم المادة */
+    font-weight: 600;
+    color: #ffffff; /* لون النص أبيض */
+    padding: 0.15rem 0.5rem; /* حشو داخلي أصغر */
+    border-radius: 0.25rem; /* تدوير حواف أقل */
+    display: inline-block; /* للسماح بتطبيق الخلفية والحشو */
+    margin-bottom: 0.25rem; /* هامش سفلي صغير */
+    /* لون الخلفية سيتم تطبيقه عبر inline style باستخدام المتغير */
+    background-color: var(--title-bg-color, #cccccc);
+  }
+  
+  .examTitle {
+    font-size: 0.95rem; /* حجم خط مناسب لعنوان الامتحان */
+    font-weight: 500;
+  }
+  
+  .arrowIcon {
+    font-size: 1.25rem; /* حجم أيقونة السهم */
+    color: #9ca3af; /* gray-400 */
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .itemContainer:hover .arrowIcon {
+     color: var(--main-color, #DD2946); /* تغيير لون السهم عند التحويم */
+  }
+  
+  

@@ -1,0 +1,67 @@
+/* المسار المقترح: src/app/dashboardUser/components/SubjectProgressCardContent.module.css */
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.unitTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  min-height: 2.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #171717; /* لون أغمق */
+  margin-bottom: 0.25rem;
+}
+
+.progressBarBackground {
+  width: 100%;
+  height: 8px;
+  /* *** تعديل: تغيير لون الخلفية إلى أبيض *** */
+  background-color: #ffffff; /* أبيض */
+  /* إضافة إطار خفيف جدًا إذا أردت تحديد الشريط الأبيض على خلفية البطاقة البيضاء */
+  border: 1px solid #f3f4f6; /* gray-100 كإطار */
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--main-color, #DD2946);
+  border-radius: 4px;
+  transition: width 0.5s ease-in-out;
+}
+
+.continueButton {
+  margin-top: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--main-color, #DD2946);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-end; /* محاذاة لليسار في RTL */
+}
+
+.continueButton:hover {
+  background-color: #c8233d;
+}
+
