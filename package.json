@@ -13,6 +13,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "chart.js": "^4.4.8",
     "framer-motion": "^12.6.3",
+    "js-cookie": "^3.0.5",
     "jsxgraph": "^1.11.1",
     "konva": "^9.3.20",
     "next": "15.1.6",
