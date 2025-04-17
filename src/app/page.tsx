@@ -20,8 +20,8 @@ export default function Home() {
           setIsFullLoading(false);
           setIsLoggedIn(true);
         } else {
-          window.location.href = '/auth/login';
           setIsLoggedIn(false);
+          setIsFullLoading(false);
         }
       } catch (error) {
         console.error('Error checking authentication:', error);
@@ -29,7 +29,7 @@ export default function Home() {
     }
     checkUserAuth();
   }, []);
-  if (isFullLoading && !isLoggedIn) {
+  if (isFullLoading) {
     return <LoadingPage />;
   } else {
     return (
