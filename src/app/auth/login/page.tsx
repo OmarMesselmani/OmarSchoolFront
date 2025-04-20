@@ -9,7 +9,7 @@ import SubmitButton from '../../components/SubmitButton/SubmitButton'; // است
 
 import Cookies from 'js-cookie'; // استيراد مكتبة js-cookie لإدارة الكوكيز
 import checkAuth from '@/app/services/check-auth';
-import LoadingPage from '@/app/components/LoadingPage/LoadingPage';
+import LoadingPage from '@/app/components/loading-page/LoadingPage';
 export default function LoginPage() {
     const [loginIdentifier, setLoginIdentifier] = useState('');
     const [password, setPassword] = useState('');

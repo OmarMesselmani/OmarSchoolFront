@@ -13,33 +13,36 @@ import MiniCalendar from '@/app/components/mini-calendar/page';
 // --- استيراد المكون الجديد لتأثير الكتابة ---
 import TypingEffectText from '@/app/components/typing-effect-text/page'; // تأكد من المسار الصحيح
 
-// --- Interfaces and Mock Data (تبقى كما هي) ---
+// --- واجهة Props (تستقبل selectedChildId فقط) ---
 interface DashboardOverviewProps {
   selectedChildId: string;
 }
+
+// --- Interfaces and Mock Data (معرفة داخل المكون كما قدمتها) ---
+// ملاحظة: يفضل استيراد هذه البيانات من ملف مشترك
+interface StudentData { name: string; level: string; age: number; uniqueId: string; }
+interface StudentDetailsMap { [key: string]: StudentData; }
+
 const mockProgressData = [ { subject: 'الرياضيات', unit: 'أتعرف مجموعات حسب التقابل', progress: 65, id: 'math' }, { subject: 'الإيقاظ العلمي', unit: 'تعيين موقع جسم بالنسبة إلى جسم آخر أو معلم في المكان', progress: 30, id: 'science' }, { subject: 'القراءة', unit: 'يحدد أحداث النص وشخصياته، والأزمنة والأمكنة الواردة فيه', progress: 85, id: 'reading' }, { subject: 'الانتاج الكتابي', unit: 'تنظيم عناصر جملة', progress: 45, id: 'writing' }, ];
-const mockStudentDetails: { [key: string]: { name: string; level: string; age: number; uniqueId: string } } = { 'child1': { name: 'التلميذ الأول', level: 'السنة الأولى', age: 6, uniqueId: '123456789123' }, 'child2': { name: 'التلميذ الثاني', level: 'السنة الثالثة', age: 8, uniqueId: '987654321987' }, 'child3': { name: 'التلميذ الثالث', level: 'السنة الخامسة', age: 10, uniqueId: '112233445566' }, '': { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' } };
+const mockStudentDetails: StudentDetailsMap = { 'child1': { name: 'التلميذ الأول', level: 'السنة الأولى', age: 6, uniqueId: '123456789123' }, 'child2': { name: 'التلميذ الثاني', level: 'السنة الثالثة', age: 8, uniqueId: '987654321987' }, 'child3': { name: 'التلميذ الثالث', level: 'السنة الخامسة', age: 10, uniqueId: '112233445566' }, '': { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' } };
 const subjectCardBgColors: { [key: string]: string } = { math: '#D1FAE5', science: '#EDE9FE', reading: '#DBEAFE', writing: '#FFEDD5', };
 const subjectTitleBgColors: { [key: string]: string } = { math: '#059669', science: '#6D28D9', reading: '#2563EB', writing: '#F97316', };
 const defaultCardBgColor = '#ffffff';
 const mockSubjectChartData: { [key: string]: number[] } = { math: [15, 12, 18, 16, 19, 17], science: [14, 11, 16, 15, 17, 18], reading: [17, 18, 15, 19, 20, 16], writing: [10, 12, 15, 14, 16, 13], };
-// --- نهاية البيانات ---
-
-// === تعديل: دمج أول فقرتين في عنصر واحد ===
 const welcomeParagraphs = [
-  // القسم الأول (مدمج)
   "مرحباً بيك في عمر سكول! عمر سكول هي أول منصة تعليمية تونسية تفاعلية، مدعومة بالذكاء الاصطناعي وبطريقة مبتكرة. منصتنا تقوم بالتقييم الآلي والشامل لتقدم تلميذك وتساعدك باش تعرف بالضبط النقائص إلي لازم يركز عليها.",
-  // القسم الثاني (الفقرة الثالثة سابقاً)
   "أحنا نؤمنوا بالجيل الجديد وبالتعليم الذكي، ونسعاو إن صغيرك يستفيد بالحق من الأجهزة الحديثة في مراجعة دروسه، وما تكونش مجرد أداة للعب وتضييع الوقت.",
-  // القسم الثالث (الفقرة الرابعة سابقاً)
   "كيف يخدم صغيرك التمارين والامتحانات على المنصة، نقوم بجمع البيانات وتحليل أجوبته بدقة. بناءً على هذا التحليل، نقدمولك تقرير واضح حول المسائل إلي تستحق تركيز أكبر، مما يضمن تحسن مردوديته ونتائجه الدراسية."
 ];
-// === نهاية التعديل ===
+// --- نهاية البيانات ---
 
 
-export default function DashboardOverview({ selectedChildId }: DashboardOverviewProps) {
+export default function DashboardOverview({ selectedChildId }: DashboardOverviewProps) { // استقبال selectedChildId
 
+  // --- البحث عن بيانات الطالب داخل المكون ---
   const selectedStudentData = mockStudentDetails[selectedChildId] || mockStudentDetails[''];
+  // --- نهاية البحث ---
+
   const handleContinueClick = (subjectId: string) => { console.log(`Continue ${subjectId}`); };
   const statsSubjectsOrder = ['math', 'reading', 'writing', 'science'];
   const orderedSubjectsData = statsSubjectsOrder
@@ -50,12 +53,15 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
     <div className={overviewStyles.overviewContainer}>
       {/* === قسم معلومات التلميذ === */}
       <div className={overviewStyles.fullWidthSpan}>
-        <StudentInfoHeader
-          studentName={selectedStudentData.name}
-          schoolLevel={selectedStudentData.level}
-          age={selectedStudentData.age}
-          uniqueId={selectedStudentData.uniqueId}
-        />
+         {/* التأكد من وجود بيانات قبل العرض */}
+         {selectedStudentData && (
+             <StudentInfoHeader
+                 studentName={selectedStudentData.name}
+                 schoolLevel={selectedStudentData.level}
+                 age={selectedStudentData.age}
+                 uniqueId={selectedStudentData.uniqueId}
+             />
+         )}
       </div>
 
       {/* === قسم بطاقات التقدم === */}
@@ -142,19 +148,18 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
         {/* === حاوية البطاقتين السفليتين === */}
         <div className={overviewStyles.bottomCardsContainer}>
 
-          {/* === البطاقة اليسرى (تحتوي على النص التفاعلي) === */}
+          {/* === البطاقة اليسرى (النص التفاعلي) === */}
            <DashboardCard
                 style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
            >
                 <div className={overviewStyles.welcomeCardContent}>
-                  {/* تمرير مصفوفة الفقرات الجديدة المكونة من 3 عناصر */}
                   <TypingEffectText paragraphs={welcomeParagraphs} />
                 </div>
            </DashboardCard>
           {/* === نهاية البطاقة اليسرى === */}
 
 
-          {/* === البطاقة اليمنى (تحتوي على MiniCalendar) === */}
+          {/* === البطاقة اليمنى (التقويم) === */}
           <DashboardCard
             className={overviewStyles.calendarCard}
             style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}

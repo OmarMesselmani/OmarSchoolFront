@@ -3,7 +3,7 @@
 import React, { ReactNode, CSSProperties } from 'react';
 import cardStyles from './page.module.css';
 // لا نزال نحتاج overviewStyles هنا بسبب الهاشتاق في البطاقات الأخرى
-import overviewStyles from '@/app/dashboardUser/pages/DashboardOverview/page.module.css';
+import overviewStyles from '@/app/dashboard-user/pages/dashboard-overview/page.module.css';
 
 interface DashboardCardProps {
   title?: string; // <<< التعديل: جعل العنوان اختياريًا

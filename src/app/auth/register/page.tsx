@@ -12,7 +12,7 @@ import SubmitButton from '../../components/SubmitButton/SubmitButton'; // است
 import Cookies from 'js-cookie';
 
 import checkAuth from '@/app/services/check-auth';
-import LoadingPage from '@/app/components/LoadingPage/LoadingPage';
+import LoadingPage from '@/app/components/loading-page/LoadingPage';
 interface DelegationsData {
     [key: string]: string[];
 }

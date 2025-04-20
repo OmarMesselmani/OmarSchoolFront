@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import styles from '@/app/dashboardUser/pages/DashboardOverview/page.module.css';
+import styles from '@/app/dashboard-user/pages/dashboard-overview/page.module.css';
 import holidayData from '@/app/data/holidays.json'; // تأكد من صحة المسار
 
 const tunisianMonthNames = [

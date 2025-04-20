@@ -1,0 +1,14 @@
+{
+    "subjectCardBgColors": {
+      "math": "#D1FAE5",
+      "science": "#EDE9FE",
+      "reading": "#DBEAFE",
+      "writing": "#FFEDD5"
+    },
+    "subjectTitleBgColors": {
+      "math": "#059669",
+      "science": "#6D28D9",
+      "reading": "#2563EB",
+      "writing": "#F97316"
+    }
+  }

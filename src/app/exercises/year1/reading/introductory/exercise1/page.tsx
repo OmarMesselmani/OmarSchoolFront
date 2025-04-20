@@ -7,7 +7,7 @@ import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './page.module.css';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
-import ExerciseSidebar from '@/app/dashboardUser/dashboard-modules/ExerciseSidebar/page';
+import ExerciseSidebar from '@/app/dashboard-user/dashboard-modules/ExerciseSidebar/page';
 
 // تعريف واجهات البيانات
 interface Connection {

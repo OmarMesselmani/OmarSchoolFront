@@ -211,7 +211,7 @@ export default function Header({ isLoggedIn, setIsFullLoading }: HeaderProps) {
 
   const handleSettingsClick = (action: string) => {
     if (action === 'dashboard') {
-      window.location.href = '/dashboardUser';
+      window.location.href = '/dashboard-user';
     }
   };
 

@@ -1,7 +1,7 @@
 // المسار: src/app/components/typing-effect-text/page.tsx
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import styles from '@/app/dashboardUser/pages/DashboardOverview/page.module.css'; // أو ملف الستايل الخاص به
+import styles from '@/app/dashboard-user/pages/dashboard-overview/page.module.css'; // أو ملف الستايل الخاص به
 
 interface TypingEffectTextProps {
   paragraphs: string[];

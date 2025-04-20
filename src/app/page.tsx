@@ -8,7 +8,7 @@ import Section3 from './sections/Section3'
 import Footer from './components/Footer'
 import checkAuth from './services/check-auth'
 import { useState, useEffect } from 'react'
-import LoadingPage from './components/LoadingPage/LoadingPage'
+import LoadingPage from './components/loading-page/LoadingPage'
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isFullLoading, setIsFullLoading] = useState(true);
