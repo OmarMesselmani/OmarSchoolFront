@@ -50,6 +50,8 @@ export default function AddChildPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [isFullLoading, setIsFullLoading] = useState(false);
+
 
     // دالة لإضافة نموذج طفل جديد (بحد أقصى 3)
     const addChildForm = () => {
@@ -67,7 +69,7 @@ export default function AddChildPage() {
     const updateChildData = (index: number, field: keyof Omit<ChildData, 'id'>, value: string) => {
         setChildren(prev => {
             const updatedChildren = [...prev];
-            if(updatedChildren[index]) {
+            if (updatedChildren[index]) {
                 updatedChildren[index] = { ...updatedChildren[index], [field]: value };
                 if (field === 'hasFailedPreviously' && value === 'no') {
                     updatedChildren[index].failedYear = '';
@@ -98,9 +100,9 @@ export default function AddChildPage() {
                 return;
             }
             if (child.hasFailedPreviously === 'yes' && !child.failedYear) {
-                 setError(`يرجى تحديد سنة الرسوب للطفل ${getOrdinalWord(index)}.`);
-                 formIsValid = false;
-                 return;
+                setError(`يرجى تحديد سنة الرسوب للطفل ${getOrdinalWord(index)}.`);
+                formIsValid = false;
+                return;
             }
         });
 
@@ -130,7 +132,7 @@ export default function AddChildPage() {
             <Head>
                 <title>إضافة تلميذ</title>
             </Head>
-            <Header />
+            <Header setIsFullLoading={setIsFullLoading} />
             <main className={styles.exerciseContainer}>
                 <div className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>إضافة تلميذ</h1>
@@ -143,8 +145,8 @@ export default function AddChildPage() {
                                     {/* إضافة خط فاصل قبل الطفل الثاني والثالث */}
                                     {index > 0 && <hr className="border-gray-200 my-6" />}
 
-                                     {/* إظهار العنوان فقط إذا كان هناك أكثر من طفل وتغيير النص */}
-                                     {children.length > 1 && (
+                                    {/* إظهار العنوان فقط إذا كان هناك أكثر من طفل وتغيير النص */}
+                                    {children.length > 1 && (
                                         <h3 className="text-lg font-semibold mb-4 text-[#DD2946] text-center">
                                             بيانات التلميذ {getOrdinalWord(index)}
                                         </h3>
@@ -155,13 +157,13 @@ export default function AddChildPage() {
                                         {/* حقل الاسم الأول */}
                                         <div className={styles.formGroup}>
                                             <label htmlFor={`firstName-${index}`} className={styles.formLabel}>اسم التلميذ:</label>
-                                            <input type="text" id={`firstName-${index}`} className={styles.formInput} value={child.firstName} onChange={(e) => updateChildData(index, 'firstName', e.target.value)} required disabled={isLoading}/>
+                                            <input type="text" id={`firstName-${index}`} className={styles.formInput} value={child.firstName} onChange={(e) => updateChildData(index, 'firstName', e.target.value)} required disabled={isLoading} />
                                         </div>
 
                                         {/* حقل اللقب */}
                                         <div className={styles.formGroup}>
                                             <label htmlFor={`lastName-${index}`} className={styles.formLabel}>لقب التلميذ:</label>
-                                            <input type="text" id={`lastName-${index}`} className={styles.formInput} value={child.lastName} onChange={(e) => updateChildData(index, 'lastName', e.target.value)} required disabled={isLoading}/>
+                                            <input type="text" id={`lastName-${index}`} className={styles.formInput} value={child.lastName} onChange={(e) => updateChildData(index, 'lastName', e.target.value)} required disabled={isLoading} />
                                         </div>
 
                                         {/* حقل الجنس */}
@@ -169,10 +171,10 @@ export default function AddChildPage() {
                                             <label className={styles.formLabel}>جنس التلميذ:</label>
                                             <div className={styles.radioGroup}>
                                                 <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`childGender-${index}`} value="male" checked={child.gender === 'male'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading}/> ذكر
+                                                    <input type="radio" name={`childGender-${index}`} value="male" checked={child.gender === 'male'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading} /> ذكر
                                                 </label>
                                                 <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`childGender-${index}`} value="female" checked={child.gender === 'female'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading}/> أنثى
+                                                    <input type="radio" name={`childGender-${index}`} value="female" checked={child.gender === 'female'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading} /> أنثى
                                                 </label>
                                             </div>
                                         </div>
@@ -202,10 +204,10 @@ export default function AddChildPage() {
                                             <label className={styles.formLabel}>هل رسب التلميذ سابقًا؟</label>
                                             <div className={styles.radioGroup}>
                                                 <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`hasFailed-${index}`} value="yes" checked={child.hasFailedPreviously === 'yes'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading}/> نعم
+                                                    <input type="radio" name={`hasFailed-${index}`} value="yes" checked={child.hasFailedPreviously === 'yes'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading} /> نعم
                                                 </label>
                                                 <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`hasFailed-${index}`} value="no" checked={child.hasFailedPreviously === 'no'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading}/> لا
+                                                    <input type="radio" name={`hasFailed-${index}`} value="no" checked={child.hasFailedPreviously === 'no'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading} /> لا
                                                 </label>
                                             </div>
                                         </div>
@@ -239,14 +241,14 @@ export default function AddChildPage() {
                             {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
 
                             {/* زر الإرسال يأتي أولاً */}
-                             {/* *** تعديل: إعادة النص الديناميكي للزر *** */}
+                            {/* *** تعديل: إعادة النص الديناميكي للزر *** */}
                             <SubmitButton
                                 buttonText={children.length > 1 ? "إضافة التلاميذ" : "إضافة التلميذ"}
                                 isLoading={isLoading}
                             />
 
-                             {/* زر الإضافة أو رسالة الحد الأقصى تأتي ثانياً */}
-                             {children.length < 3 ? (
+                            {/* زر الإضافة أو رسالة الحد الأقصى تأتي ثانياً */}
+                            {children.length < 3 ? (
                                 <button
                                     type="button"
                                     onClick={addChildForm}

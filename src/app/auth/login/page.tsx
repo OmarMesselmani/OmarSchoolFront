@@ -18,6 +18,7 @@ export default function LoginPage() {
     const [isFullLoading, setIsFullLoading] = useState(true);
 
 
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
@@ -73,7 +74,7 @@ export default function LoginPage() {
     } else {
         return (
             <div className={styles.pageContainer}>
-                <Header />
+                <Header setIsFullLoading={setIsFullLoading} />
                 {/* استخدام mainContent مباشرة أو exerciseContainer إذا أردت نفس الهوامش */}
                 <main className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>تسجيل الدخول</h1>

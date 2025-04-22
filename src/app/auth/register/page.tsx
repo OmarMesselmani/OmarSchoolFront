@@ -89,7 +89,7 @@ export default function RegisterPage() {
             const data = await response.json();
             if (response.ok) {
                 Cookies.set('token', data.token, { path: '/', secure: true });
-                window.location.href = "/auth/addChild";
+                window.location.href = "/auth/add-child";
             } else {
                 setError(data.message || 'حدث خطأ أثناء التسجيل.');
             }
@@ -138,7 +138,7 @@ export default function RegisterPage() {
     } else {
         return (
             <div className={styles.pageContainer}>
-                <Header isLoggedIn={false} setIsFullLoading={setIsFullLoading} />
+                <Header setIsFullLoading={setIsFullLoading} />
                 <main className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>إنشاء حساب للولي</h1>
                     <div className={styles.formContainer}>

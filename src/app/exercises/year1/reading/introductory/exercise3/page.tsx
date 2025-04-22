@@ -13,10 +13,10 @@ import ExerciseSidebar from '@/app/dashboard-user/dashboard-modules/ExerciseSide
 
 // واجهة لوصف بيانات كل عنصر
 interface ItemInfo {
-  id: string;
-  name: string;
-  isCorrect: boolean;
-  imageUrl: string;
+    id: string;
+    name: string;
+    isCorrect: boolean;
+    imageUrl: string;
 }
 
 // واجهة لنقطة في المسار
@@ -31,14 +31,14 @@ export default function Exercise3Page() {
     // --- بيانات العناصر للتمرين ---
     const exerciseBasePath = '/exercices/year1/reading/introductory/exercise3';
     const itemsData: ItemInfo[] = [
-      { id: 'scissors', name: 'مِقَصٌّ', isCorrect: true, imageUrl: `${exerciseBasePath}/scissors.png` },
-      { id: 'book', name: 'كِتَابٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/book.png` },
-      { id: 'eraser', name: 'مِمْحَاةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/eraser.png` },
-      { id: 'bread', name: 'خُبْزٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/bread.png` },
-      { id: 'ball', name: 'كُرَةٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/ball.png` },
-      { id: 'ruler', name: 'مِسْطَرَةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/ruler.png` },
-      { id: 'board', name: 'لَوْحَةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/blackboard.png` },
-      { id: 'spoon', name: 'مِلْعَقَةٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/spoon.png` },
+        { id: 'scissors', name: 'مِقَصٌّ', isCorrect: true, imageUrl: `${exerciseBasePath}/scissors.png` },
+        { id: 'book', name: 'كِتَابٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/book.png` },
+        { id: 'eraser', name: 'مِمْحَاةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/eraser.png` },
+        { id: 'bread', name: 'خُبْزٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/bread.png` },
+        { id: 'ball', name: 'كُرَةٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/ball.png` },
+        { id: 'ruler', name: 'مِسْطَرَةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/ruler.png` },
+        { id: 'board', name: 'لَوْحَةٌ', isCorrect: true, imageUrl: `${exerciseBasePath}/blackboard.png` },
+        { id: 'spoon', name: 'مِلْعَقَةٌ', isCorrect: false, imageUrl: `${exerciseBasePath}/spoon.png` },
     ];
     // تحديد ترتيب العرض المطلوب ليطابق الصورة (الصفوف مبدلة)
     const displayOrderIds = ['scissors', 'book', 'eraser', 'bread', 'ball', 'ruler', 'board', 'spoon'];
@@ -51,6 +51,8 @@ export default function Exercise3Page() {
     const [finalPolygon, setFinalPolygon] = useState<Point[] | null>(null); // المضلع النهائي (المنعّم)
     const [isNearStart, setIsNearStart] = useState(false);
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [isFullLoading, setIsFullLoading] = useState(false);
+
 
 
     // Refs
@@ -157,12 +159,12 @@ export default function Exercise3Page() {
         setSelectedItems([]);
         const ctx = ctxRef.current;
         const canvas = canvasRef.current;
-        if(ctx && canvas) {
-             ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx && canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         setIsDrawing(true);
         setPathPoints([coords]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleMouseMove = useCallback((event: React.MouseEvent) => {
@@ -182,7 +184,7 @@ export default function Exercise3Page() {
         }
 
         setPathPoints(prevPoints => [...prevPoints, coords]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDrawing, pathPoints]);
 
     // تعديل: handleMouseUp لتنعيم المسار قبل التخزين والفحص
@@ -195,9 +197,9 @@ export default function Exercise3Page() {
             setPathPoints([]);
             const ctx = ctxRef.current;
             const canvas = canvasRef.current;
-             if(ctx && canvas) {
-                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-             }
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
             return;
         }
 
@@ -251,7 +253,7 @@ export default function Exercise3Page() {
         setSelectedItems([]);
         const ctx = ctxRef.current;
         const canvas = canvasRef.current;
-        if(ctx && canvas) {
+        if (ctx && canvas) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }, []);
@@ -266,13 +268,13 @@ export default function Exercise3Page() {
     return (
         <div className={styles.pageContainer}>
             <Head>
-                 <link rel="preconnect" href="https://fonts.googleapis.com" />
-                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
-                 <title>التمرين التمهيدي عدد 03</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
+                <title>التمرين التمهيدي عدد 03</title>
             </Head>
 
-            <Header />
+            <Header setIsFullLoading={setIsFullLoading} />
             <main className={styles.exerciseContainer}>
                 <div className={styles.exerciseContent}>
                     <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 03</h1>
@@ -291,7 +293,7 @@ export default function Exercise3Page() {
                             </div>
 
                             {/* --- منطقة التمرين --- */}
-                             {/* *** تعديل: تقليل الحشو الأفقي px-12 والحفاظ على العمودي py-16 *** */}
+                            {/* *** تعديل: تقليل الحشو الأفقي px-12 والحفاظ على العمودي py-16 *** */}
                             <div id="exercise-area-div" className="exercise-area relative flex flex-col justify-center items-center px-12 py-16 min-h-[550px]"> {/* تعديل الحشو هنا */}
 
                                 {/* شبكة لعرض العناصر */}
@@ -299,12 +301,11 @@ export default function Exercise3Page() {
                                 <div className="relative z-0 grid grid-cols-4 gap-x-16 gap-y-16"> {/* تعديل الفجوات هنا */}
                                     {displayItems.map((item) => (
                                         <div
-                                          key={item.id}
-                                          className={`flex flex-col items-center text-center p-2 rounded-lg transition-all duration-200 ease-in-out ${
-                                              selectedItems.includes(item.id)
-                                              ? 'border-4 border-green-500' // نمط التحديد
-                                              : 'border-4 border-transparent' // إطار شفاف للحفاظ على التخطيط
-                                          }`}
+                                            key={item.id}
+                                            className={`flex flex-col items-center text-center p-2 rounded-lg transition-all duration-200 ease-in-out ${selectedItems.includes(item.id)
+                                                ? 'border-4 border-green-500' // نمط التحديد
+                                                : 'border-4 border-transparent' // إطار شفاف للحفاظ على التخطيط
+                                                }`}
                                         >
                                             <div id={`item-${item.id}`} className="w-24 h-24 mb-2 flex items-center justify-center" aria-label={item.name} >
                                                 <img src={item.imageUrl} alt={item.name} width={96} height={96} className="object-contain max-w-full max-h-full" />
@@ -346,10 +347,10 @@ export default function Exercise3Page() {
                             {/* --- نهاية منطقة التمرين --- */}
                         </div>
 
-                         {/* الشريط الجانبي */}
-                         <div>
+                        {/* الشريط الجانبي */}
+                        <div>
                             <ExerciseSidebar onUndoClick={handleUndo} onResetClick={handleReset} />
-                         </div>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -366,9 +367,9 @@ function smoothPathChaikin(points: Point[], iterations: number = 1): Point[] {
     let smoothedPoints = [...points];
     for (let iter = 0; iter < iterations; iter++) {
         const currentPoints = [...smoothedPoints];
-         if (currentPoints.length > 1) {
-             currentPoints.push(currentPoints[0]);
-         } else { continue; }
+        if (currentPoints.length > 1) {
+            currentPoints.push(currentPoints[0]);
+        } else { continue; }
         const newPath: Point[] = [];
         if (currentPoints.length < 2) continue;
         for (let i = 0; i < currentPoints.length - 1; i++) {

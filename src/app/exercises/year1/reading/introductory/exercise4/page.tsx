@@ -17,6 +17,8 @@ import JXG from 'jsxgraph';
 export default function Exercise4Page() {
 
     // --- حالة التمرين ---
+    const [isFullLoading, setIsFullLoading] = useState(false);
+
     const [points, setPoints] = useState<JXG.Point[]>([]); // لتخزين النقاط المستخدمة للرسم الحالي
     const [drawingMode, setDrawingMode] = useState<'triangle' | 'circle' | null>(null); // وضع الرسم الحالي
     // *** جديد: حالة لتخزين الشكل الهندسي المرسوم ***
@@ -119,7 +121,7 @@ export default function Exercise4Page() {
                 boardRef.current = null;
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // مصفوفة اعتماديات فارغة للتشغيل مرة واحدة فقط
 
     // --- دوال التحكم في الشريط الجانبي ---
@@ -140,7 +142,7 @@ export default function Exercise4Page() {
             points.forEach(point => {
                 // التأكد أن النقطة لا تزال موجودة قبل محاولة حذفها (احتياطي)
                 if (board.objects[point.id]) {
-                     board.removeObject(point);
+                    board.removeObject(point);
                 }
             });
 
@@ -163,12 +165,12 @@ export default function Exercise4Page() {
         }
         // إذا لم يتم رسم الشكل وهناك نقاط، احذف النقطة الأخيرة
         else if (board && points.length > 0) {
-             const lastPoint = points[points.length - 1];
-             // التأكد أن النقطة لا تزال موجودة قبل محاولة حذفها
-             if (board.objects[lastPoint.id]) {
+            const lastPoint = points[points.length - 1];
+            // التأكد أن النقطة لا تزال موجودة قبل محاولة حذفها
+            if (board.objects[lastPoint.id]) {
                 board.removeObject(lastPoint);
-             }
-             setPoints(prevPoints => prevPoints.slice(0, -1));
+            }
+            setPoints(prevPoints => prevPoints.slice(0, -1));
         }
     }, [points, drawnShape, handleReset]); // يعتمد على points, drawnShape, handleReset
 
@@ -180,49 +182,49 @@ export default function Exercise4Page() {
             handleReset(); // مسح اللوحة عند تغيير الوضع
             setDrawingMode(mode);
         } else {
-             // إذا كان الوضع هو نفسه، يمكن مسح النقاط والشكل فقط للبدء من جديد بنفس الوضع
-             const board = boardRef.current;
-             if (board) {
-                 board.suspendUpdate();
-                 if (drawnShape) { board.removeObject(drawnShape); setDrawnShape(null); }
-                 points.forEach(point => { if (board.objects[point.id]) board.removeObject(point); });
-                 setPoints([]);
-                 board.unsuspendUpdate();
-             }
+            // إذا كان الوضع هو نفسه، يمكن مسح النقاط والشكل فقط للبدء من جديد بنفس الوضع
+            const board = boardRef.current;
+            if (board) {
+                board.suspendUpdate();
+                if (drawnShape) { board.removeObject(drawnShape); setDrawnShape(null); }
+                points.forEach(point => { if (board.objects[point.id]) board.removeObject(point); });
+                setPoints([]);
+                board.unsuspendUpdate();
+            }
         }
     };
 
     // --- تحديد نص التعليمات بناءً على الوضع ---
-    const getInstructions = () : string => {
-         if (!drawingMode) { return "اختر شكلًا لتبدأ الرسم (مثلث أو دائرة)."; }
-         if (drawingMode === 'triangle') {
-             if (points.length === 0) return "انقر لتحديد الرأس الأول للمثلث.";
-             if (points.length === 1) return "انقر لتحديد الرأس الثاني للمثلث.";
-             if (points.length === 2) return "انقر لتحديد الرأس الثالث والأخير للمثلث.";
-             return "تم رسم المثلث. اضغط إعادة تعيين أو اختر وضعًا آخر.";
-         }
-         if (drawingMode === 'circle') {
-              if (points.length === 0) return "انقر لتحديد مركز الدائرة.";
-              if (points.length === 1) return "انقر لتحديد نقطة على محيط الدائرة.";
-              return "تم رسم الدائرة. اضغط إعادة تعيين أو اختر وضعًا آخر.";
-         }
-         return "";
+    const getInstructions = (): string => {
+        if (!drawingMode) { return "اختر شكلًا لتبدأ الرسم (مثلث أو دائرة)."; }
+        if (drawingMode === 'triangle') {
+            if (points.length === 0) return "انقر لتحديد الرأس الأول للمثلث.";
+            if (points.length === 1) return "انقر لتحديد الرأس الثاني للمثلث.";
+            if (points.length === 2) return "انقر لتحديد الرأس الثالث والأخير للمثلث.";
+            return "تم رسم المثلث. اضغط إعادة تعيين أو اختر وضعًا آخر.";
+        }
+        if (drawingMode === 'circle') {
+            if (points.length === 0) return "انقر لتحديد مركز الدائرة.";
+            if (points.length === 1) return "انقر لتحديد نقطة على محيط الدائرة.";
+            return "تم رسم الدائرة. اضغط إعادة تعيين أو اختر وضعًا آخر.";
+        }
+        return "";
     }
 
     // --- بناء واجهة المستخدم ---
     return (
         <div className={styles.pageContainer}>
             <Head>
-                 <link rel="preconnect" href="https://fonts.googleapis.com" />
-                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
-                 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
-                 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph@latest/dist/jsxgraph.css" />
-                 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph@latest/dist/jsxgraphcore.js" defer></script>
-                 <title>التمرين التمهيدي عدد 04</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
+                <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+                <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph@latest/dist/jsxgraph.css" />
+                <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph@latest/dist/jsxgraphcore.js" defer></script>
+                <title>التمرين التمهيدي عدد 04</title>
             </Head>
 
-            <Header />
+            <Header setIsFullLoading={setIsFullLoading} />
             <main className={styles.exerciseContainer}>
                 <div className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>التمرين التمهيدي عدد 04</h1>
@@ -232,49 +234,49 @@ export default function Exercise4Page() {
                                 4
                             </span>
                             <span
-                              className="text-2xl font-bold"
-                              style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
+                                className="text-2xl font-bold"
+                                style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
                             >
                                 ارسم دائرة أو مثلث
                             </span>
                         </h2>
 
-                         {/* أزرار اختيار وضع الرسم */}
-                         <div className="flex justify-center gap-4 mb-4">
-                             <button
-                                 onClick={() => selectDrawingMode('triangle')}
-                                 className={`px-4 py-2 rounded ${drawingMode === 'triangle' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}
-                             >
-                                 رسم مثلث
-                             </button>
-                             <button
-                                 onClick={() => selectDrawingMode('circle')}
-                                 className={`px-4 py-2 rounded ${drawingMode === 'circle' ? 'bg-green-600 text-white shadow-md' : 'bg-green-100 text-green-800 hover:bg-green-300'}`}
-                             >
-                                 رسم دائرة
-                             </button>
-                         </div>
+                        {/* أزرار اختيار وضع الرسم */}
+                        <div className="flex justify-center gap-4 mb-4">
+                            <button
+                                onClick={() => selectDrawingMode('triangle')}
+                                className={`px-4 py-2 rounded ${drawingMode === 'triangle' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`}
+                            >
+                                رسم مثلث
+                            </button>
+                            <button
+                                onClick={() => selectDrawingMode('circle')}
+                                className={`px-4 py-2 rounded ${drawingMode === 'circle' ? 'bg-green-600 text-white shadow-md' : 'bg-green-100 text-green-800 hover:bg-green-300'}`}
+                            >
+                                رسم دائرة
+                            </button>
+                        </div>
 
-                         {/* عرض التعليمات الديناميكية */}
-                         <p className="text-center text-gray-600 mb-4 h-5">{getInstructions()}</p>
+                        {/* عرض التعليمات الديناميكية */}
+                        <p className="text-center text-gray-600 mb-4 h-5">{getInstructions()}</p>
 
 
                         {/* --- منطقة التمرين --- */}
                         <div className="exercise-specific-content p-0 w-full flex justify-center">
-                             <div
+                            <div
                                 id="jxgbox"
                                 className="jxgbox border"
                                 style={{ width: '500px', height: '450px', borderColor: '#ccc' }}
-                             ></div>
+                            ></div>
                         </div>
                         {/* --- نهاية منطقة التمرين --- */}
 
                     </div>
                 </div>
-                 {/* الشريط الجانبي */}
-                 <div className="mt-4 self-center">
+                {/* الشريط الجانبي */}
+                <div className="mt-4 self-center">
                     <ExerciseSidebar onUndoClick={handleUndo} onResetClick={handleReset} />
-                 </div>
+                </div>
             </main>
             <Footer />
         </div>

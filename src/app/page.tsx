@@ -10,7 +10,6 @@ import checkAuth from './services/check-auth'
 import { useState, useEffect } from 'react'
 import LoadingPage from './components/loading-page/LoadingPage'
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isFullLoading, setIsFullLoading] = useState(true);
   useEffect(() => {
     const checkUserAuth = async () => {
@@ -18,9 +17,7 @@ export default function Home() {
         const authStatus = await checkAuth();
         if (authStatus.status) {
           setIsFullLoading(false);
-          setIsLoggedIn(true);
         } else {
-          setIsLoggedIn(false);
           setIsFullLoading(false);
         }
       } catch (error) {
@@ -40,7 +37,7 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Header setIsFullLoading={setIsFullLoading} isLoggedIn={isLoggedIn} />
+        <Header setIsFullLoading={setIsFullLoading} />
 
         <Section1 />
         <Section2 />

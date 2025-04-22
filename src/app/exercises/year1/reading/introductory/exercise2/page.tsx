@@ -28,9 +28,9 @@ interface ColorInfo {
 
 // واجهة لتحديد شكل عنصر في تاريخ الحركات
 interface MoveHistoryItem {
-  dropzoneId: string;
-  draggedItem: ColorInfo;
-  previousItemInDropzone: ColorInfo | null;
+    dropzoneId: string;
+    draggedItem: ColorInfo;
+    previousItemInDropzone: ColorInfo | null;
 }
 
 // اسم المكون الجديد
@@ -56,6 +56,8 @@ export default function Exercise2Page() {
     const [draggableItems, setDraggableItems] = useState<ColorInfo[]>(initialColorsData);
     const [droppedItems, setDroppedItems] = useState<{ [dropzoneId: string]: ColorInfo | null }>({});
     const [history, setHistory] = useState<MoveHistoryItem[]>([]);
+    const [isFullLoading, setIsFullLoading] = useState(false);
+
 
     // إعداد حساسات الإدخال
     const sensors = useSensors(
@@ -144,11 +146,11 @@ export default function Exercise2Page() {
 
         return (
             <div
-              ref={setNodeRef}
-              style={style}
-              {...listeners}
-              {...attributes}
-              className={`bg-[#F6CAD1] text-gray-800 px-8 py-3 rounded-full text-2xl font-semibold cursor-grab shadow hover:shadow-md transition-shadow`}
+                ref={setNodeRef}
+                style={style}
+                {...listeners}
+                {...attributes}
+                className={`bg-[#F6CAD1] text-gray-800 px-8 py-3 rounded-full text-2xl font-semibold cursor-grab shadow hover:shadow-md transition-shadow`}
             >
                 {color.name}
             </div>
@@ -166,16 +168,16 @@ export default function Exercise2Page() {
 
         return (
             <div
-              ref={setNodeRef}
-              className={`w-40 h-16 border-2 rounded-full flex items-center justify-center transition-colors 
+                ref={setNodeRef}
+                className={`w-40 h-16 border-2 rounded-full flex items-center justify-center transition-colors 
                          ${borderStyle} 
                          ${isOver ? 'border-blue-500 bg-blue-100' : `${borderColor} bg-gray-50`}
                         `}
             >
                 {droppedItem && (
                     <span
-                      className="text-2xl font-semibold text-gray-800"
-                      style={{ fontFamily: "'Scheherazade New', serif" }}
+                        className="text-2xl font-semibold text-gray-800"
+                        style={{ fontFamily: "'Scheherazade New', serif" }}
                     >
                         {droppedItem.name}
                     </span>
@@ -189,13 +191,13 @@ export default function Exercise2Page() {
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className={styles.pageContainer}>
                 <Head>
-                     <link rel="preconnect" href="https://fonts.googleapis.com" />
-                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                     <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
-                     <title>التمرين التمهيدي عدد 02</title>
+                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet" />
+                    <title>التمرين التمهيدي عدد 02</title>
                 </Head>
 
-                <Header />
+                <Header setIsFullLoading={setIsFullLoading} />
                 <main className={styles.exerciseContainer}>
                     <div className={styles.exerciseContent}>
                         <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 02</h1>
@@ -206,8 +208,8 @@ export default function Exercise2Page() {
                                     <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#DD2946] text-white text-base font-bold"> 2 </span>
                                     {/* *** تعديل: تغيير نص السؤال *** */}
                                     <span
-                                      className="text-2xl font-bold"
-                                      style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
+                                        className="text-2xl font-bold"
+                                        style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
                                     >
                                         أَضَعُ اِسْمَ ٱللَّوْنِ ٱلْمُنَاسِبِ تَحْتَ كُلِّ دَائِرَةٍ
                                     </span>
@@ -215,8 +217,8 @@ export default function Exercise2Page() {
                                 <div className="exercise-area flex flex-col items-center gap-12">
                                     {/* 1. حاوية أسماء الألوان القابلة للسحب */}
                                     <div className="color-names-container flex flex-wrap justify-center gap-4 p-4 min-h-[80px]">
-                                        {draggableItems.map((color) => ( <DraggableColor key={color.id} color={color} /> ))}
-                                        {draggableItems.length === 0 && ( <p className="text-gray-500">تم سحب كل الألوان!</p> )}
+                                        {draggableItems.map((color) => (<DraggableColor key={color.id} color={color} />))}
+                                        {draggableItems.length === 0 && (<p className="text-gray-500">تم سحب كل الألوان!</p>)}
                                     </div>
                                     {/* 2. حاوية الدوائر الملونة ومناطق الإسقاط */}
                                     <div className="color-targets-container w-full max-w-2xl grid grid-cols-3 gap-x-8 gap-y-10">
@@ -229,9 +231,9 @@ export default function Exercise2Page() {
                                     </div>
                                 </div>
                             </div>
-                             <div>
+                            <div>
                                 <ExerciseSidebar onUndoClick={handleUndo} onResetClick={handleReset} />
-                             </div>
+                            </div>
                         </div>
                     </div>
                 </main>

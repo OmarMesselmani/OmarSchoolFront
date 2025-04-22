@@ -33,11 +33,13 @@ const navLinks: NavLink[] = [
 ];
 
 interface HeaderProps {
-  isLoggedIn: boolean;
   setIsFullLoading: (isFullLoading: boolean) => void;
 }
 
-export default function Header({ isLoggedIn, setIsFullLoading }: HeaderProps) {
+export default function Header({ setIsFullLoading }: HeaderProps) {
+  console.log("Header component rendered");
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -54,6 +56,25 @@ export default function Header({ isLoggedIn, setIsFullLoading }: HeaderProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollYRef = useRef<number>(0);
+
+  useEffect(() => {
+    console.log('Checking user authentication...');
+    const checkUserAuth = async () => {
+      try {
+        const authStatus = await checkAuth();
+        if (authStatus.status) {
+          setIsFullLoading(false);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+          setIsFullLoading(false);
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+      }
+    }
+    checkUserAuth();
+  }, []);
 
   useEffect(() => {
     let lastScrollY = 0;

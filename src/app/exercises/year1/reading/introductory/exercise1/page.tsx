@@ -25,6 +25,8 @@ export default function Exercise1Page() {
     const [connections, setConnections] = useState<Connection[]>([]); // التوصيلات بين النقاط
     const [startPoint, setStartPoint] = useState<string | null>(null); // نقطة البداية المحددة
     const [mousePos, setMousePos] = useState<Position | null>(null); // موضع المؤشر
+    const [isFullLoading, setIsFullLoading] = useState(false);
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     // بيانات النصوص
@@ -55,7 +57,7 @@ export default function Exercise1Page() {
     // معالجة حركة المؤشر
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!startPoint || !containerRef.current) {
-            if(mousePos !== null) setMousePos(null);
+            if (mousePos !== null) setMousePos(null);
             return;
         };
         const containerRect = containerRef.current.getBoundingClientRect();
@@ -173,7 +175,7 @@ export default function Exercise1Page() {
                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
             </Head>
 
-            <Header />
+            <Header setIsFullLoading={setIsFullLoading} />
             <main className={styles.exerciseContainer}>
                 <div className={styles.exerciseContent}>
                     <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 01</h1>
@@ -218,11 +220,10 @@ export default function Exercise1Page() {
                                                         </span>
                                                         <div
                                                             id={pointId}
-                                                            className={`w-3 h-3 rounded-full transition-colors ${
-                                                                isConnected ? 'bg-gray-400' :
+                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' :
                                                                 isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' :
-                                                                'bg-[#DD2946]'
-                                                            }`}
+                                                                    'bg-[#DD2946]'
+                                                                }`}
                                                             title={isConnected ? `"${item.text}" متصلة بالفعل` : `اربط من: ${item.text}`}
                                                         ></div>
                                                     </div>
@@ -242,11 +243,10 @@ export default function Exercise1Page() {
                                                     >
                                                         <div
                                                             id={pointId}
-                                                            className={`w-3 h-3 rounded-full transition-colors ${
-                                                                isConnected ? 'bg-gray-400' :
+                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' :
                                                                 isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' :
-                                                                'bg-[#DD2946]'
-                                                            }`}
+                                                                    'bg-[#DD2946]'
+                                                                }`}
                                                             title={isConnected ? `الصورة متصلة بالفعل` : `اربط إلى الصورة`}
                                                         ></div>
                                                         <div
