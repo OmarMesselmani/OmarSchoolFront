@@ -2,22 +2,26 @@
 
 import { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '../components/Header'; // تأكد من المسار الصحيح
+import Footer from '../components/Footer'; // تأكد من المسار الصحيح
 import { RiFileListLine } from 'react-icons/ri';
 import { IoSettingsOutline, IoPersonOutline } from 'react-icons/io5';
 import { LuChartLine, LuLogOut } from 'react-icons/lu';
 import { MdOutlineLocalOffer } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
+import { LiaClipboardListSolid } from "react-icons/lia"; // استيراد أيقونة الامتحانات
+// استيراد Hook السياق الخاص بالهيدر
+import { useHeaderVisibility } from '../contexts/header-context'; // تأكد من المسار الصحيح
 
-// --- استيراد المكونات ---
-import DashboardOverview from './pages/dashboard-overview/page';
+// --- استيراد مكونات الصفحات الفرعية ---
+import DashboardOverview from './pages/dashboard-overview/page'; // تأكد من المسار kebab-case
 import ExercisesListPage from './pages/exercises-list/page';
 import LoadingPage from '../components/loading-page/LoadingPage';
 import checkAuth from '../services/check-auth';
+import ExamsPage from './pages/exams/page';
 // --- تعريف المكونات المؤقتة الأخرى أو استيرادها ---
-interface StudentData { name: string; level: string; age: number; uniqueId: string; } // تعريف الواجهة هنا
-interface StudentDetailsMap { [key: string]: StudentData; } // تعريف الواجهة هنا
+interface StudentData { name: string; level: string; age: number; uniqueId: string; }
+interface StudentDetailsMap { [key: string]: StudentData; }
 interface PageProps { selectedChildId: string; studentDetailsMap: StudentDetailsMap; }
 const StudentResults: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة النتائج والاحصائيات للطالب: {selectedChildId || 'N/A'}</div>);
 const ProfilePage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">الملف الشخصي للطالب: {selectedChildId || 'N/A'}</div>);
@@ -27,7 +31,7 @@ const SettingsPage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap 
 
 interface Child { id: string; name: string; }
 
-// واجهة Props للمكونات الفرعية (موحدة الآن)
+// واجهة Props للمكونات الفرعية
 interface SubPageProps {
   selectedChildId: string;
   studentDetailsMap: StudentDetailsMap;
@@ -48,42 +52,53 @@ const mockStudentDetails: StudentDetailsMap = {
 
 
 export default function DashboardUserPage() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [isOpen, setIsOpen] = useState(false); // الشريط مغلق افتراضياً
+  const [currentPage, setCurrentPage] = useState('dashboard'); // لوحة التحكم هي الافتراضية
   const sidebarRef = useRef<HTMLDivElement>(null); // المرجع للشريط الجانبي
 
   const [childrenList, setChildrenList] = useState<Child[]>(mockChildren);
   const [selectedChildId, setSelectedChildId] = useState<string>(mockChildren[0]?.id || '');
 
   // حالات مؤقتة لـ Header
-  const [isFullLoading, setIsFullLoading] = useState(true);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
+  // استخدام Hook السياق للحصول على حالة الهيدر
+  const { isHeaderVisible } = useHeaderVisibility();
+
+  // دالة معالجة النقر على عناصر القائمة الجانبية
   const handleItemClick = (page: string) => (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation(); // منع إغلاق الشريط عند النقر على عنصر داخله
     setCurrentPage(page);
+    
+    // إضافة هذا السطر لإعادة تعيين موضع التمرير إلى الأعلى
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // دالة عرض المحتوى بناءً على الصفحة الحالية
   const renderPage = () => {
+    // تجميع الـ props لتمريرها للمكونات الفرعية
     const propsToPass: SubPageProps = {
       selectedChildId: selectedChildId,
-      studentDetailsMap: mockStudentDetails
+      studentDetailsMap: mockStudentDetails // تمرير الكائن كاملاً
     };
 
     switch (currentPage) {
       case 'dashboard': return <DashboardOverview {...propsToPass} />;
       case 'home': return <ExercisesListPage {...propsToPass} />;
+      case 'exams': return <ExamsPage {...propsToPass} />;
       case 'results': return <StudentResults {...propsToPass} />;
       case 'profile': return <ProfilePage {...propsToPass} />;
       case 'offers': return <OffersPage {...propsToPass} />;
       case 'settings': return <SettingsPage {...propsToPass} />;
-      default: return <DashboardOverview {...propsToPass} />;
+      default: return <DashboardOverview {...propsToPass} />; // الافتراضي
     }
   };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setIsOpen(false); // إغلاق الشريط
+        setIsOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -122,27 +137,70 @@ export default function DashboardUserPage() {
     return <LoadingPage />;
   }
   return (
-    <div className={styles.pageContainer}>
-      <Header setIsFullLoading={setIsFullLoading} />
-      <main className={styles.dashboardContainer}>
-        <div className={styles.contentWrapper}>
-          {/* الشريط الجانبي (تأكد من وجود ref) */}
-          <div ref={sidebarRef} className={`${styles.settingsColumn} ${!isOpen ? styles.collapsed : ''}`} onClick={() => !isOpen && setIsOpen(true)} title={!isOpen ? "فتح القائمة" : ""} role="navigation" >
-            <div className={styles.settingsCard}>
-              {/* ... محتوى الشريط الجانبي ... */}
-              <div className={styles.userSection}> <div className={styles.avatarContainer}> <img src="/male-avatar.png" alt="صورة المستخدم" className={styles.avatar} /> </div> <select value={selectedChildId} onChange={(e) => setSelectedChildId(e.target.value)} className={`${styles.userName} ${styles.menuText} ${!isOpen ? styles.hideText : ''}`} aria-label="اختر التلميذ" disabled={childrenList.length === 0} onClick={(e) => e.stopPropagation()} > {childrenList.length === 0 && <option value="">لا يوجد تلاميذ</option>} {childrenList.map(child => (<option key={child.id} value={child.id}> {child.name} </option>))} </select> </div>
-              <div className={styles.divider}></div>
-              <div className={styles.settingsSection}> <div className={`${styles.settingsItem} ${currentPage === 'dashboard' ? styles.active : ''}`} onClick={handleItemClick('dashboard')} title="لوحة التحكم" > <RxDashboard className={styles.icon} /> <span className={styles.menuText}>لوحة التحكم</span> </div> <div className={`${styles.settingsItem} ${currentPage === 'home' ? styles.active : ''}`} onClick={handleItemClick('home')} title="قوائم التمارين" > <RiFileListLine className={styles.icon} /> <span className={styles.menuText}>قوائم التمارين</span> </div> <div className={`${styles.settingsItem} ${currentPage === 'results' ? styles.active : ''}`} onClick={handleItemClick('results')} title="النتائج والاحصائيات" > <LuChartLine className={styles.icon} /> <span className={styles.menuText}>النتائج والاحصائيات</span> </div> <div className={`${styles.settingsItem} ${currentPage === 'profile' ? styles.active : ''}`} onClick={handleItemClick('profile')} title="الملف الشخصي" > <IoPersonOutline className={styles.icon} /> <span className={styles.menuText}>الملف الشخصي</span> </div> <div className={`${styles.settingsItem} ${currentPage === 'offers' ? styles.active : ''}`} onClick={handleItemClick('offers')} title="عروضنا" > <MdOutlineLocalOffer className={styles.icon} /> <span className={styles.menuText}>عروضنا</span> </div> </div>
-              <div className={styles.logoutWrapper}> <div className={styles.divider}></div> <div className={`${styles.settingsItem} ${currentPage === 'settings' ? styles.active : ''}`} onClick={handleItemClick('settings')} title="إعدادات الحساب" > <IoSettingsOutline className={styles.icon} /> <span className={styles.menuText}>إعدادات الحساب</span> </div> <div className={styles.settingsItem} onClick={() => alert('تسجيل الخروج!')} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div> </div>
-            </div>
-          </div>
-          {/* منطقة عرض المحتوى */}
-          <div className={styles.mainContent}>
-            {renderPage()}
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+     <div className={styles.pageContainer}>
+       {/* تمرير props المطلوبة للهيدر */}
+       <Header isLoggedIn={isUserLoggedIn} setIsFullLoading={setIsPageLoading} />
+
+       <main className={styles.dashboardContainer}>
+         <div className={styles.contentWrapper}>
+           {/* الشريط الجانبي مع تطبيق الكلاس الشرطي */}
+           <div
+             ref={sidebarRef} // ربط المرجع
+             className={`
+                ${styles.settingsColumn}
+                ${!isOpen ? styles.collapsed : ''}
+                ${!isHeaderVisible ? styles.settingsColumnHeaderHidden : ''}
+             `}
+             onClick={() => !isOpen && setIsOpen(true)} // النقر للفتح فقط
+             title={!isOpen ? "فتح القائمة" : ""}
+             role="navigation"
+           >
+             <div className={styles.settingsCard}>
+               {/* قسم معلومات المستخدم */}
+               <div className={styles.userSection}>
+                 <div className={styles.avatarContainer}>
+                     <img src="/male-avatar.png" alt="صورة المستخدم" className={styles.avatar} />
+                 </div>
+                 <select
+                    value={selectedChildId}
+                    onChange={(e) => setSelectedChildId(e.target.value)}
+                    className={`${styles.userName} ${styles.menuText} ${!isOpen ? styles.hideText : ''}`} // استخدام hideText هنا للإخفاء
+                    aria-label="اختر التلميذ"
+                    disabled={childrenList.length === 0}
+                    onClick={(e) => e.stopPropagation()} // منع إغلاق الشريط
+                 >
+                   {childrenList.length === 0 && <option value="">لا يوجد تلاميذ</option>}
+                   {childrenList.map(child => ( <option key={child.id} value={child.id}> {child.name} </option> ))}
+                 </select>
+               </div>
+               <div className={styles.divider}></div>
+
+               {/* قسم القائمة الرئيسية */}
+               <div className={styles.settingsSection}>
+                 <div className={`${styles.settingsItem} ${currentPage === 'dashboard' ? styles.active : ''}`} onClick={handleItemClick('dashboard')} title="لوحة التحكم" > <RxDashboard className={styles.icon} /> <span className={styles.menuText}>لوحة التحكم</span> </div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'home' ? styles.active : ''}`} onClick={handleItemClick('home')} title="قوائم التمارين" > <RiFileListLine className={styles.icon} /> <span className={styles.menuText}>قوائم التمارين</span> </div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'exams' ? styles.active : ''}`} onClick={handleItemClick('exams')} title="الامتحانات" > <LiaClipboardListSolid className={styles.icon} /> <span className={styles.menuText}>الامتحانات</span> </div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'results' ? styles.active : ''}`} onClick={handleItemClick('results')} title="النتائج والاحصائيات" > <LuChartLine className={styles.icon} /> <span className={styles.menuText}>النتائج والاحصائيات</span> </div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'profile' ? styles.active : ''}`} onClick={handleItemClick('profile')} title="الملف الشخصي" > <IoPersonOutline className={styles.icon} /> <span className={styles.menuText}>الملف الشخصي</span> </div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'offers' ? styles.active : ''}`} onClick={handleItemClick('offers')} title="عروضنا" > <MdOutlineLocalOffer className={styles.icon} /> <span className={styles.menuText}>عروضنا</span> </div>
+               </div>
+
+               {/* قسم تسجيل الخروج والإعدادات */}
+               <div className={styles.logoutWrapper}>
+                 <div className={styles.divider}></div>
+                 <div className={`${styles.settingsItem} ${currentPage === 'settings' ? styles.active : ''}`} onClick={handleItemClick('settings')} title="إعدادات الحساب" > <IoSettingsOutline className={styles.icon} /> <span className={styles.menuText}>إعدادات الحساب</span> </div>
+                 <div className={styles.settingsItem} onClick={() => alert('تسجيل الخروج!')} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div>
+               </div>
+             </div>
+           </div>
+
+           {/* منطقة عرض المحتوى الرئيسي للصفحة */}
+           <div className={styles.mainContent}>
+               {renderPage()}
+           </div>
+         </div>
+       </main>
+       <Footer />
+     </div>
+   );
 }

@@ -8,9 +8,9 @@
 
 .dashboardContainer {
   flex: 1;
-  padding: 20px;
+  padding: 45px 20px 20px 20px; /* زيادة المسافة من 30px إلى 50px (وسط بين 30 و70) */
   background-color: #f7f7f5;
-  margin-top: 1.3rem;
+  position: relative; /* مهم لـ sticky context */
 }
 
 .contentWrapper {
@@ -18,25 +18,43 @@
   flex-direction: row;
   gap: 20px;
   height: 100%;
-  min-height: calc(100vh - 120px - 40px - 1.3rem);
+  /* === تأكد من وجود هذه القاعدة === */
+  align-items: flex-start; /* <-- تمنع تمدد العناصر عمودياً وتسمح لكل عنصر بأخذ ارتفاعه */
+  /* === نهاية التأكيد === */
 }
 
 .mainContent {
   color: #171717;
-  flex: 1;
+  flex: 1; /* يأخذ المساحة الأفقية المتبقية */
   display: flex;
   flex-direction: column;
-  min-width: 0; /* <<< تمت إضافة هذا السطر */
+  min-width: 0;
+  /* يجب ألا يتأثر بالـ top الخاص بالشريط الجانبي بسبب align-items: flex-start */
 }
 
 /* --- أنماط الشريط الجانبي --- */
 
 .settingsColumn {
   width: 250px;
-  transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out, top 0.3s ease-in-out;
   overflow: hidden;
   flex-shrink: 0;
+  height: 750px;
+  position: sticky;
+  /* زيادة المسافة من الأعلى لتجنب التداخل مع الهيدر */
+  top: 100px; /* زيادة من 75px إلى 85px */
+  /* تعديل max-height ليطابق */
+  max-height: calc(100vh - 85px - 40px);
+  /* تأكد من أن z-index أقل من الهيدر */
+  z-index: 100; /* تأكد من أن الهيدر له قيمة أعلى، مثل 200 */
 }
+
+/* القاعدة عندما يكون الهيدر مخفياً (تُطبق بواسطة JS/Context) */
+.settingsColumnHeaderHidden {
+  top: 20px; /* <-- تقليل المسافة من الأعلى */
+  max-height: calc(100vh - 20px - 40px); /* تعديل max-height ليناسب */
+}
+
 
 .settingsColumn.collapsed {
   width: 80px;
@@ -55,189 +73,95 @@
   height: 100%;
   justify-content: space-between;
   transition: padding 0.4s ease-in-out;
+  overflow-y: auto;
 }
 
 .settingsColumn.collapsed .settingsCard {
   padding: 1.25rem 0.625rem;
   align-items: center;
+  overflow-y: hidden;
 }
 
-.userSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.avatarContainer {
-  width: 60px;
-  height: 60px;
+/* بقية التنسيقات كما هي */
+.userSection { 
+  display: flex; 
+  flex-direction: column; /* تغيير من row إلى column */
+  align-items: center; 
+  justify-content: center; /* محاذاة العناصر للمركز */
+  width: 100%; 
+  padding: 0.5rem;
   margin-bottom: 0.5rem;
-  overflow: hidden;
-  transition: all 0.4s ease-in-out;
-  flex-shrink: 0;
 }
-
-.settingsColumn.collapsed .avatarContainer {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.75rem;
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.userName {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 500;
+.avatarContainer { width: 60px; height: 60px; margin-bottom: 0.75rem; overflow: hidden; transition: all 0.4s ease-in-out; flex-shrink: 0; }
+.settingsColumn.collapsed .avatarContainer { width: 48px; height: 48px; margin-bottom: 0.75rem; }
+.avatar { width: 100%; height: 100%; object-fit: cover; }
+.userName { 
+  font-size: 1rem; 
+  color: #1f2937; 
+  font-weight: 500; 
   margin: 0;
   text-align: center;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  transform: translateX(0);
-  opacity: 1;
-  width: 100%;
-  overflow: hidden;
-  height: 32px;
-  line-height: 24px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  background: transparent;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 4 8px;
-  cursor: pointer;
-  outline: none;
-  direction: rtl;
+  transition: opacity 0.3s ease-out, visibility 0s ease-out 0.3s, transform 0.3s ease-out; 
+  transform: translateX(0); 
+  opacity: 1; 
+  width: 100%; 
+  overflow: hidden; 
+  height: 32px; 
+  line-height: 24px; 
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
+  background: transparent; 
+  border: 1px solid #e5e7eb; 
+  border-radius: 10px; 
+  padding: 4px 8px; 
+  cursor: pointer; 
+  outline: none; 
+  direction: rtl; 
+  visibility: visible;
+  /* تعديلات جديدة لجعلها تأخذ العرض المناسب */
+  max-width: 90%;
+  /* تعديلات مظهر القائمة المنسدلة */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 6.646a.5.5 0 0 1 .708 0L8 9.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.5rem center;
+  padding-left: 1.75rem;
+}
+.userName:focus { border-color: var(--main-color); }
+.userName option { background-color: white; color: #1f2937; text-align: right; /* محاذاة النص لليمين في القائمة المنسدلة */ }
+.settingsColumn.collapsed .userName { opacity: 0; visibility: hidden; pointer-events: none; }
+.divider { height: 1px; background-color: #e5e7eb; width: 100%; }
+.settingsSection { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+.settingsItem { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; cursor: pointer; border-radius: 0.5rem; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; white-space: nowrap; overflow: hidden; width: 100%; color: #4b5563; position: relative; }
+.menuText { transition: opacity 0.3s ease-out, max-width 0.3s ease-out, visibility 0s ease-out 0.3s; opacity: 1; overflow: hidden; text-overflow: ellipsis; font-weight: 500; display: inline-block; visibility: visible; }
+.settingsColumn.collapsed .menuText { opacity: 0; max-width: 0; width: 0; overflow: hidden; pointer-events: none; visibility: hidden; }
+.settingsItem:hover { background-color: #f3f4f6; color: var(--main-color, #DD2946); }
+.icon { font-size: 1.75rem; flex-shrink: 0; transition: transform 0.3s ease-in-out, color 0.2s ease-in-out; margin-left: 0; margin-right: 0; color: inherit; }
+.settingsColumn.collapsed .settingsItem { width: 100%; justify-content: center; padding: 0.75rem 0; gap: 0; }
+.settingsColumn.collapsed .settingsItem .icon { margin: 0; color: #4b5563; }
+.settingsItem:hover .icon { color: var(--main-color, #DD2946); }
+.settingsColumn.collapsed .settingsItem:hover .icon { color: var(--main-color, #DD2946); }
+.settingsItem.active { 
+  background-color: rgba(221, 41, 70, 0.1); 
+  color: var(--main-color, #DD2946); 
+  font-weight: 600; 
 }
 
-.userName:focus {
-  border-color: var(--main-color);
+.settingsItem.active .icon { 
+  color: var(--main-color, #DD2946); 
 }
 
-.userName option {
-  background-color: white;
-  color: #1f2937;
-}
-
-.hideText {
-  opacity: 0;
-  transform: translateX(-10px);
-  pointer-events: none;
-}
-
-.divider {
-  height: 1px;
-  background-color: #e5e7eb;
-  width: 100%;
-}
-
-.settingsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.settingsItem {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  color: #4b5563;
-  position: relative;
-}
-
-.menuText {
-  transition: opacity 0.3s ease-out, max-width 0.3s ease-out;
-  opacity: 1;
-  max-width: 150px;
-  width: auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 500;
-  display: inline-block;
-}
-
-.settingsColumn.collapsed .menuText {
-  opacity: 0;
-  max-width: 0;
-  width: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.settingsItem:hover {
-  background-color: #f3f4f6;
+/* تلوين الأيقونة باللون الرئيسي عندما يكون العنصر نشطاً في الحالة المطوية */
+.settingsColumn.collapsed .settingsItem.active .icon {
   color: var(--main-color, #DD2946);
 }
 
-.icon {
-  font-size: 1.75rem;
-  color: #171717;
-  flex-shrink: 0;
-  transition: transform 0.3s ease-in-out, color 0.2s ease-in-out;
-  margin-left: 0;
-  margin-right: 0;
-}
+.logoutWrapper { margin-top: auto; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+.logoutWrapper .settingsItem:hover { background-color: #fee2e2; color: #dc2626; }
+.logoutWrapper .settingsItem:hover .icon { color: #dc2626; }
 
-.settingsColumn.collapsed .settingsItem {
-  width: 100%;
-  justify-content: right;
-  padding: 0.75rem 0.95rem 0.75rem 0rem;
-  gap: 0;
-}
-
-.settingsItem.active {
-  background-color: rgba(221, 41, 70, 0.1);
-  color: var(--main-color, #DD2946);
-  font-weight: 600;
-}
-
-.logoutWrapper {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.logoutWrapper .settingsItem:hover {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-.logoutWrapper .settingsItem:hover .icon {
-  color: #dc2626;
-}
-
-.settingsItem:hover .icon,
-.settingsItem.active .icon {
-  color: var(--main-color, #DD2946);
-}
-
-/* التنسيقات التكيفية للشاشات الصغيرة */
-@media (max-width: 992px) {
-  /* ... */
-}
-
-@media (max-width: 768px) {
-  .settingsColumn {
-    width: 200px;
-  }
-  .settingsColumn.collapsed {
-    width: 70px;
-  }
-  .contentWrapper {
-    flex-direction: row;
-  }
-}
+/* التنسيقات التكيفية */
+@media (max-width: 992px) { /* ... */ }
+@media (max-width: 768px) { /* ... */ }
