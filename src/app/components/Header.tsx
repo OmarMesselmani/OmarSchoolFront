@@ -9,6 +9,7 @@ import styles from '../styles/Header.module.css'; // تأكد من المسار
 import { IoSettingsOutline, IoNotificationsOutline, IoSearchOutline } from "react-icons/io5";
 import Cookies from 'js-cookie';
 import { useHeaderVisibility } from '../contexts/header-context'; // استيراد Hook السياق (عدّل المسار)
+import checkAuth from '../services/check-auth';
 // import checkAuth from '../services/check-auth';
 
 interface NavLink {
@@ -31,14 +32,12 @@ const navLinks: NavLink[] = [
   { href: "#about", label: "من نحن؟" }
 ];
 
-interface HeaderProps {
-  setIsFullLoading: (isFullLoading: boolean) => void;
-}
+export default function Header() {
+  // الحصول على حالة الهيدر من السياق
+  const { isHeaderVisible } = useHeaderVisibility();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // حالة تسجيل الدخول
 
-export default function Header({ setIsFullLoading }: HeaderProps) {
-  console.log("Header component rendered");
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // بقية الحالات والمراجع الخاصة بالهيدر
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -56,25 +55,6 @@ export default function Header({ setIsFullLoading }: HeaderProps) {
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // const lastScrollYRef = useRef<number>(0); // <- تم حذفه
   const router = useRouter();
-
-  useEffect(() => {
-    console.log('Checking user authentication...');
-    const checkUserAuth = async () => {
-      try {
-        const authStatus = await checkAuth();
-        if (authStatus.status) {
-          setIsFullLoading(false);
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-          setIsFullLoading(false);
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-      }
-    }
-    checkUserAuth();
-  }, []);
 
 
   // useEffects (بدون useEffect الخاص بالتمرير لحساب isHeaderVisible)
@@ -117,7 +97,6 @@ export default function Header({ setIsFullLoading }: HeaderProps) {
   const handleLogout = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      setIsFullLoading(true);
       const token = Cookies.get('token');
       const response = await fetch('http://127.0.0.1:8000/parent/sign-out', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` } });
       const data = await response.json();
@@ -138,6 +117,22 @@ export default function Header({ setIsFullLoading }: HeaderProps) {
       return (<li key={index} className={isSidebar ? styles.sidebarLinks : ''}> <Link href={link.href} onClick={handleLinkClick}> {link.label} </Link> </li>);
     });
   };
+
+  useEffect(() => {
+    const checkUserAuth = async () => {
+      try {
+        const authStatus = await checkAuth();
+        if (authStatus.status) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('Error checking token:', error);
+      }
+    }
+    checkUserAuth();
+  }, []);
 
 
   // دالة عرض أزرار المستخدم/الدخول

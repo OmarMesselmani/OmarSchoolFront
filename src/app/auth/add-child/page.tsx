@@ -51,6 +51,7 @@ export default function AddChildPage() {
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isFullLoading, setIsFullLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // حالة تسجيل الدخول
 
 
     // دالة لإضافة نموذج طفل جديد (بحد أقصى 3)
@@ -132,7 +133,7 @@ export default function AddChildPage() {
             <Head>
                 <title>إضافة تلميذ</title>
             </Head>
-            <Header setIsFullLoading={setIsFullLoading} />
+            <Header />
             <main className={styles.exerciseContainer}>
                 <div className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>إضافة تلميذ</h1>

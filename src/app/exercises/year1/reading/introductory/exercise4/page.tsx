@@ -224,7 +224,7 @@ export default function Exercise4Page() {
                 <title>التمرين التمهيدي عدد 04</title>
             </Head>
 
-            <Header setIsFullLoading={setIsFullLoading} />
+            <Header />
             <main className={styles.exerciseContainer}>
                 <div className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>التمرين التمهيدي عدد 04</h1>

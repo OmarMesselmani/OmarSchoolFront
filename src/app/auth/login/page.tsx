@@ -74,7 +74,7 @@ export default function LoginPage() {
     } else {
         return (
             <div className={styles.pageContainer}>
-                <Header setIsFullLoading={setIsFullLoading} />
+                <Header />
                 {/* استخدام mainContent مباشرة أو exerciseContainer إذا أردت نفس الهوامش */}
                 <main className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>تسجيل الدخول</h1>

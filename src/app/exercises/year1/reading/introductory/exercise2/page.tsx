@@ -197,7 +197,7 @@ export default function Exercise2Page() {
                     <title>التمرين التمهيدي عدد 02</title>
                 </Head>
 
-                <Header setIsFullLoading={setIsFullLoading} />
+                <Header />
                 <main className={styles.exerciseContainer}>
                     <div className={styles.exerciseContent}>
                         <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 02</h1>

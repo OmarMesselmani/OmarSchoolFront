@@ -61,7 +61,8 @@ export default function DashboardUserPage() {
 
   // حالات مؤقتة لـ Header
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
-  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [isFullLoading, setIsFullLoading] = useState(true);
+
 
   // استخدام Hook السياق للحصول على حالة الهيدر
   const { isHeaderVisible } = useHeaderVisibility();
@@ -70,7 +71,7 @@ export default function DashboardUserPage() {
   const handleItemClick = (page: string) => (e: React.MouseEvent) => {
     e.stopPropagation(); // منع إغلاق الشريط عند النقر على عنصر داخله
     setCurrentPage(page);
-    
+
     // إضافة هذا السطر لإعادة تعيين موضع التمرير إلى الأعلى
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -137,70 +138,70 @@ export default function DashboardUserPage() {
     return <LoadingPage />;
   }
   return (
-     <div className={styles.pageContainer}>
-       {/* تمرير props المطلوبة للهيدر */}
-       <Header isLoggedIn={isUserLoggedIn} setIsFullLoading={setIsPageLoading} />
+    <div className={styles.pageContainer}>
+      {/* تمرير props المطلوبة للهيدر */}
+      <Header />
 
-       <main className={styles.dashboardContainer}>
-         <div className={styles.contentWrapper}>
-           {/* الشريط الجانبي مع تطبيق الكلاس الشرطي */}
-           <div
-             ref={sidebarRef} // ربط المرجع
-             className={`
+      <main className={styles.dashboardContainer}>
+        <div className={styles.contentWrapper}>
+          {/* الشريط الجانبي مع تطبيق الكلاس الشرطي */}
+          <div
+            ref={sidebarRef} // ربط المرجع
+            className={`
                 ${styles.settingsColumn}
                 ${!isOpen ? styles.collapsed : ''}
                 ${!isHeaderVisible ? styles.settingsColumnHeaderHidden : ''}
              `}
-             onClick={() => !isOpen && setIsOpen(true)} // النقر للفتح فقط
-             title={!isOpen ? "فتح القائمة" : ""}
-             role="navigation"
-           >
-             <div className={styles.settingsCard}>
-               {/* قسم معلومات المستخدم */}
-               <div className={styles.userSection}>
-                 <div className={styles.avatarContainer}>
-                     <img src="/male-avatar.png" alt="صورة المستخدم" className={styles.avatar} />
-                 </div>
-                 <select
-                    value={selectedChildId}
-                    onChange={(e) => setSelectedChildId(e.target.value)}
-                    className={`${styles.userName} ${styles.menuText} ${!isOpen ? styles.hideText : ''}`} // استخدام hideText هنا للإخفاء
-                    aria-label="اختر التلميذ"
-                    disabled={childrenList.length === 0}
-                    onClick={(e) => e.stopPropagation()} // منع إغلاق الشريط
-                 >
-                   {childrenList.length === 0 && <option value="">لا يوجد تلاميذ</option>}
-                   {childrenList.map(child => ( <option key={child.id} value={child.id}> {child.name} </option> ))}
-                 </select>
-               </div>
-               <div className={styles.divider}></div>
+            onClick={() => !isOpen && setIsOpen(true)} // النقر للفتح فقط
+            title={!isOpen ? "فتح القائمة" : ""}
+            role="navigation"
+          >
+            <div className={styles.settingsCard}>
+              {/* قسم معلومات المستخدم */}
+              <div className={styles.userSection}>
+                <div className={styles.avatarContainer}>
+                  <img src="/male-avatar.png" alt="صورة المستخدم" className={styles.avatar} />
+                </div>
+                <select
+                  value={selectedChildId}
+                  onChange={(e) => setSelectedChildId(e.target.value)}
+                  className={`${styles.userName} ${styles.menuText} ${!isOpen ? styles.hideText : ''}`} // استخدام hideText هنا للإخفاء
+                  aria-label="اختر التلميذ"
+                  disabled={childrenList.length === 0}
+                  onClick={(e) => e.stopPropagation()} // منع إغلاق الشريط
+                >
+                  {childrenList.length === 0 && <option value="">لا يوجد تلاميذ</option>}
+                  {childrenList.map(child => (<option key={child.id} value={child.id}> {child.name} </option>))}
+                </select>
+              </div>
+              <div className={styles.divider}></div>
 
-               {/* قسم القائمة الرئيسية */}
-               <div className={styles.settingsSection}>
-                 <div className={`${styles.settingsItem} ${currentPage === 'dashboard' ? styles.active : ''}`} onClick={handleItemClick('dashboard')} title="لوحة التحكم" > <RxDashboard className={styles.icon} /> <span className={styles.menuText}>لوحة التحكم</span> </div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'home' ? styles.active : ''}`} onClick={handleItemClick('home')} title="قوائم التمارين" > <RiFileListLine className={styles.icon} /> <span className={styles.menuText}>قوائم التمارين</span> </div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'exams' ? styles.active : ''}`} onClick={handleItemClick('exams')} title="الامتحانات" > <LiaClipboardListSolid className={styles.icon} /> <span className={styles.menuText}>الامتحانات</span> </div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'results' ? styles.active : ''}`} onClick={handleItemClick('results')} title="النتائج والاحصائيات" > <LuChartLine className={styles.icon} /> <span className={styles.menuText}>النتائج والاحصائيات</span> </div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'profile' ? styles.active : ''}`} onClick={handleItemClick('profile')} title="الملف الشخصي" > <IoPersonOutline className={styles.icon} /> <span className={styles.menuText}>الملف الشخصي</span> </div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'offers' ? styles.active : ''}`} onClick={handleItemClick('offers')} title="عروضنا" > <MdOutlineLocalOffer className={styles.icon} /> <span className={styles.menuText}>عروضنا</span> </div>
-               </div>
+              {/* قسم القائمة الرئيسية */}
+              <div className={styles.settingsSection}>
+                <div className={`${styles.settingsItem} ${currentPage === 'dashboard' ? styles.active : ''}`} onClick={handleItemClick('dashboard')} title="لوحة التحكم" > <RxDashboard className={styles.icon} /> <span className={styles.menuText}>لوحة التحكم</span> </div>
+                <div className={`${styles.settingsItem} ${currentPage === 'home' ? styles.active : ''}`} onClick={handleItemClick('home')} title="قوائم التمارين" > <RiFileListLine className={styles.icon} /> <span className={styles.menuText}>قوائم التمارين</span> </div>
+                <div className={`${styles.settingsItem} ${currentPage === 'exams' ? styles.active : ''}`} onClick={handleItemClick('exams')} title="الامتحانات" > <LiaClipboardListSolid className={styles.icon} /> <span className={styles.menuText}>الامتحانات</span> </div>
+                <div className={`${styles.settingsItem} ${currentPage === 'results' ? styles.active : ''}`} onClick={handleItemClick('results')} title="النتائج والاحصائيات" > <LuChartLine className={styles.icon} /> <span className={styles.menuText}>النتائج والاحصائيات</span> </div>
+                <div className={`${styles.settingsItem} ${currentPage === 'profile' ? styles.active : ''}`} onClick={handleItemClick('profile')} title="الملف الشخصي" > <IoPersonOutline className={styles.icon} /> <span className={styles.menuText}>الملف الشخصي</span> </div>
+                <div className={`${styles.settingsItem} ${currentPage === 'offers' ? styles.active : ''}`} onClick={handleItemClick('offers')} title="عروضنا" > <MdOutlineLocalOffer className={styles.icon} /> <span className={styles.menuText}>عروضنا</span> </div>
+              </div>
 
-               {/* قسم تسجيل الخروج والإعدادات */}
-               <div className={styles.logoutWrapper}>
-                 <div className={styles.divider}></div>
-                 <div className={`${styles.settingsItem} ${currentPage === 'settings' ? styles.active : ''}`} onClick={handleItemClick('settings')} title="إعدادات الحساب" > <IoSettingsOutline className={styles.icon} /> <span className={styles.menuText}>إعدادات الحساب</span> </div>
-                 <div className={styles.settingsItem} onClick={() => alert('تسجيل الخروج!')} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div>
-               </div>
-             </div>
-           </div>
+              {/* قسم تسجيل الخروج والإعدادات */}
+              <div className={styles.logoutWrapper}>
+                <div className={styles.divider}></div>
+                <div className={`${styles.settingsItem} ${currentPage === 'settings' ? styles.active : ''}`} onClick={handleItemClick('settings')} title="إعدادات الحساب" > <IoSettingsOutline className={styles.icon} /> <span className={styles.menuText}>إعدادات الحساب</span> </div>
+                <div className={styles.settingsItem} onClick={() => alert('تسجيل الخروج!')} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div>
+              </div>
+            </div>
+          </div>
 
-           {/* منطقة عرض المحتوى الرئيسي للصفحة */}
-           <div className={styles.mainContent}>
-               {renderPage()}
-           </div>
-         </div>
-       </main>
-       <Footer />
-     </div>
-   );
+          {/* منطقة عرض المحتوى الرئيسي للصفحة */}
+          <div className={styles.mainContent}>
+            {renderPage()}
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

@@ -175,7 +175,7 @@ export default function Exercise1Page() {
                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
             </Head>
 
-            <Header setIsFullLoading={setIsFullLoading} />
+            <Header />
             <main className={styles.exerciseContainer}>
                 <div className={styles.exerciseContent}>
                     <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 01</h1>

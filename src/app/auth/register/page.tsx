@@ -138,7 +138,7 @@ export default function RegisterPage() {
     } else {
         return (
             <div className={styles.pageContainer}>
-                <Header setIsFullLoading={setIsFullLoading} />
+                <Header />
                 <main className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>إنشاء حساب للولي</h1>
                     <div className={styles.formContainer}>

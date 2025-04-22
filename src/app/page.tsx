@@ -11,13 +11,16 @@ import { useState, useEffect } from 'react'
 import LoadingPage from './components/loading-page/LoadingPage'
 export default function Home() {
   const [isFullLoading, setIsFullLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const checkUserAuth = async () => {
       try {
         const authStatus = await checkAuth();
         if (authStatus.status) {
+          setIsLoggedIn(true);
           setIsFullLoading(false);
         } else {
+          setIsLoggedIn(false);
           setIsFullLoading(false);
         }
       } catch (error) {
@@ -37,7 +40,7 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Header setIsFullLoading={setIsFullLoading} />
+        <Header />
 
         <Section1 />
         <Section2 />
