@@ -10,6 +10,7 @@ import { IoSettingsOutline, IoNotificationsOutline, IoSearchOutline } from "reac
 import Cookies from 'js-cookie';
 import { useHeaderVisibility } from '../contexts/header-context'; // استيراد Hook السياق (عدّل المسار)
 import checkAuth from '../services/check-auth';
+import { Parent } from '../data-structures/Parent';
 // import checkAuth from '../services/check-auth';
 
 interface NavLink {
@@ -43,6 +44,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   // const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true); // <- تم حذفه
   const [hasNotifications, setHasNotifications] = useState<boolean>(true);
+  const [parentData, setParentData] = useState<Parent>();
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
@@ -103,8 +105,18 @@ export default function Header() {
       if (response.ok) { Cookies.remove('token'); window.location.href = "/auth/login"; }
       else { /* Handle error */ }
     } catch (error) { console.error('Error during logout:', error); }
-    // finally { setIsFullLoading(false); } // إعادة التحميل قد تكون أسرع
   };
+  const getProfileDate = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await fetch('http://127.0.0.1:8000/parent/me', { method: 'GET', headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` } });
+      const data = await response.json();
+      if (response.ok) { setParentData(data.user_data); }
+      else { /* Handle error */ }
+    } catch (error) { console.error('Error during logout:', error); }
+  };
+  useEffect(() => { getProfileDate(); }, []);
+
   const handleSettingsClick = (action: string) => { if (action === 'dashboard') { router.push('/dashboard-user'); } }; // استخدام router
 
 
@@ -141,7 +153,7 @@ export default function Header() {
       return (
         <div className={`${styles.loggedInContainer} ${isSidebar ? styles.sidebarButtons : ''}`}>
           <img src="/male-avatar.png" alt="User Avatar" className={styles.userAvatar} />
-          <div className={styles.userInfo}> <span className={styles.welcomeText}>مرحبا بك</span> <span className={styles.usernamePlaceholder}>اسم المستخدم</span> </div>
+          <div className={styles.userInfo}> <span className={styles.welcomeText}>مرحبا بك</span> <span className={styles.usernamePlaceholder}>{`${parentData.first_name} ${parentData.last_name}`}</span> </div>
           <div className={styles.userActions}>
             <div className={styles.settingsIcon}>
               <div onClick={(e) => { e.stopPropagation(); setIsSettingsOpen(!isSettingsOpen); }}> <IoSettingsOutline size={28} /> </div>
