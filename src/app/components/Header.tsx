@@ -153,7 +153,8 @@ export default function Header() {
       return (
         <div className={`${styles.loggedInContainer} ${isSidebar ? styles.sidebarButtons : ''}`}>
           <img src="/male-avatar.png" alt="User Avatar" className={styles.userAvatar} />
-          <div className={styles.userInfo}> <span className={styles.welcomeText}>مرحبا بك</span> <span className={styles.usernamePlaceholder}>{`${parentData.first_name} ${parentData.last_name}`}</span> </div>
+          <div className={styles.userInfo}> <span className={styles.welcomeText}>مرحبا بك</span> <span className={styles.usernamePlaceholder}>{parentData ? `${parentData.first_name} ${parentData.last_name}` : "جار التحميل..."}
+          </span> </div>
           <div className={styles.userActions}>
             <div className={styles.settingsIcon}>
               <div onClick={(e) => { e.stopPropagation(); setIsSettingsOpen(!isSettingsOpen); }}> <IoSettingsOutline size={28} /> </div>
