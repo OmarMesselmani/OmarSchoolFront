@@ -3,58 +3,73 @@
 // استيراد المكتبات والمكونات اللازمة
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation'; // إضافة استيراد Router للتنقل عند الإغلاق
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './page.module.css';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
-import ExerciseSidebar from '@/app/dashboard-user/dashboard-modules/ExerciseSidebar/page';
+import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
+import ExerciseHeader from '@/app/components/exercise-header/page';
+// حذف استيرادات Header و Footer
+import AiTalker from '@/app/components/ai-talker/page';
 
 // تعريف واجهات البيانات
 interface Connection {
-    start: string; // معرف نقطة البداية
-    end: string;   // معرف نقطة النهاية
+    start: string;
+    end: string;
 }
 
 interface Position {
-    x: number; // الموضع الأفقي
-    y: number; // الموضع العمودي
+    x: number;
+    y: number;
 }
 
+// تعريف المكون الرئيسي للصفحة
 export default function Exercise1Page() {
+    const router = useRouter(); // إضافة Router للتنقل
     // تعريف متغيرات الحالة
-    const [connections, setConnections] = useState<Connection[]>([]); // التوصيلات بين النقاط
-    const [startPoint, setStartPoint] = useState<string | null>(null); // نقطة البداية المحددة
-    const [mousePos, setMousePos] = useState<Position | null>(null); // موضع المؤشر
+    const [connections, setConnections] = useState<Connection[]>([]);
+    const [startPoint, setStartPoint] = useState<string | null>(null);
+    const [mousePos, setMousePos] = useState<Position | null>(null);
     const [isFullLoading, setIsFullLoading] = useState(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // بيانات النصوص
+    // بيانات الهيدر
+    const headerData = {
+        trimester: "الثلاثي الأول",
+        unit: "الوحدة التمهيدية",
+        title: "تمرين عدد 01",
+        grade: "السنة الأولى",
+        studentName: "أحمد بن علي"
+    };
+
+    // دالة إغلاق التمرين والتوجيه مباشرة إلى قسم قوائم التمارين في لوحة التحكم
+    const handleClose = () => {
+        // توجيه المستخدم إلى لوحة التحكم مع تحديد قسم "قوائم التمارين"
+        router.push('/dashboard-user?section=home');
+    };
+
+    // بيانات التمرين (النصوص والصور)
     const items = [
         { id: 'text1', text: 'تِلْمِيذٌ' },
         { id: 'text2', text: 'تِلْمِيذَةٌ' },
         { id: 'text3', text: 'تَلَامِيذٌ' },
     ];
-
-    // بيانات الصور
     const images = [
         { id: 'img2', url: '/exercices/year1/reading/introductory/exercice1/studentGirl.png' },
         { id: 'img3', url: '/exercices/year1/reading/introductory/exercice1/students.png' },
         { id: 'img1', url: '/exercices/year1/reading/introductory/exercice1/studentBoy.png' },
     ];
 
-    // دوال مساعدة للحصول على معرفات النقاط
+    // --- الدوال المساعدة ومعالجات الأحداث ---
     const getTextPointId = (itemId: string) => `point-text-${itemId}`;
     const getImagePointId = (imageId: string) => `point-image-${imageId}`;
 
-    // دالة إلغاء التوصيل الحالي
     const cancelConnection = useCallback(() => {
         setStartPoint(null);
         setMousePos(null);
         console.log("تم إلغاء التوصيل.");
     }, []);
 
-    // معالجة حركة المؤشر
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!startPoint || !containerRef.current) {
             if (mousePos !== null) setMousePos(null);
@@ -72,7 +87,6 @@ export default function Exercise1Page() {
 
     const handlePointClick = (e: React.MouseEvent, pointId: string) => {
         e.stopPropagation();
-
         if (!startPoint) {
             if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
                 console.log("النقطة متصلة بالفعل.");
@@ -84,32 +98,23 @@ export default function Exercise1Page() {
                 cancelConnection();
                 return;
             }
-
             const isStartText = startPoint.startsWith('point-text-');
             const isCurrentText = pointId.startsWith('point-text-');
             const isStartImage = startPoint.startsWith('point-image-');
             const isCurrentImage = pointId.startsWith('point-image-');
-
             if ((isStartText && isCurrentText) || (isStartImage && isCurrentImage)) {
                 console.log("لا يمكن توصيل نقاط من نفس النوع.");
                 cancelConnection();
                 return;
             }
-
             if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
                 console.log("النقطة الهدف متصلة بالفعل.");
                 cancelConnection();
                 return;
             }
-
             const finalStart = isStartText ? startPoint : pointId;
             const finalEnd = isCurrentImage ? pointId : startPoint;
-
-            setConnections(prevConnections => [
-                ...prevConnections,
-                { start: finalStart, end: finalEnd }
-            ]);
-
+            setConnections(prevConnections => [...prevConnections, { start: finalStart, end: finalEnd }]);
             setStartPoint(null);
             setMousePos(null);
         }
@@ -167,18 +172,40 @@ export default function Exercise1Page() {
         return 'صورة توضيحية';
     };
 
+    // --- بنية الـ JSX للمكون ---
     return (
-        <div className={styles.pageContainer}>
+        <div className={styles.pageContainer} style={{ paddingTop: 0, marginTop: 0 }}>
             <Head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
             </Head>
 
-            <Header />
-            <main className={styles.exerciseContainer}>
+            {/* تمت إزالة الهيدر */}
+
+            {/* أيقونة الإغلاق - رمادية أفتح مع X أبيض وأبعد عن الزاوية */}
+            <div 
+                className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-600 transition-colors"
+                onClick={handleClose}
+                title="إغلاق التمرين"
+                style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+
+            <main className={styles.exerciseContainer} style={{ paddingTop: '1rem' }}>
                 <div className={styles.exerciseContent}>
-                    <h1 className={styles.exerciseTitle}>التمرين التمهيدي عدد 01</h1>
+                    <ExerciseHeader
+                        trimester={headerData.trimester}
+                        unit={headerData.unit}
+                        title={headerData.title}
+                        grade={headerData.grade}
+                        studentName={headerData.studentName}
+                    />
+
                     <Xwrapper>
                         <div className={styles.exerciseBody}>
                             <div
@@ -200,6 +227,7 @@ export default function Exercise1Page() {
                                             أَرْبُطُ كُلَّ جُمْلَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ
                                         </span>
                                     </h2>
+
                                     <div className="flex h-full items-start justify-between">
                                         <div className="space-y-6 flex flex-col justify-around h-full min-h-[300px]">
                                             {items.map((item) => {
@@ -220,16 +248,14 @@ export default function Exercise1Page() {
                                                         </span>
                                                         <div
                                                             id={pointId}
-                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' :
-                                                                isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' :
-                                                                    'bg-[#DD2946]'
-                                                                }`}
+                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' : isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' : 'bg-[#DD2946]'}`}
                                                             title={isConnected ? `"${item.text}" متصلة بالفعل` : `اربط من: ${item.text}`}
                                                         ></div>
                                                     </div>
                                                 );
                                             })}
                                         </div>
+
                                         <div className="space-y-6 flex flex-col justify-around h-full min-h-[300px]">
                                             {images.map((image) => {
                                                 const pointId = getImagePointId(image.id);
@@ -243,10 +269,7 @@ export default function Exercise1Page() {
                                                     >
                                                         <div
                                                             id={pointId}
-                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' :
-                                                                isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' :
-                                                                    'bg-[#DD2946]'
-                                                                }`}
+                                                            className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' : isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' : 'bg-[#DD2946]'}`}
                                                             title={isConnected ? `الصورة متصلة بالفعل` : `اربط إلى الصورة`}
                                                         ></div>
                                                         <div
@@ -272,17 +295,11 @@ export default function Exercise1Page() {
                                 {mousePos && startPoint && (
                                     <div
                                         id="temp-mouse-target"
-                                        style={{
-                                            position: 'absolute',
-                                            top: `${mousePos.y}px`,
-                                            left: `${mousePos.x}px`,
-                                            width: '1px',
-                                            height: '1px',
-                                            pointerEvents: 'none',
-                                        }}
+                                        style={{ position: 'absolute', top: `${mousePos.y}px`, left: `${mousePos.x}px`, width: '1px', height: '1px', pointerEvents: 'none' }}
                                     />
                                 )}
                             </div>
+
                             <ExerciseSidebar
                                 onUndoClick={handleUndo}
                                 onResetClick={handleReset}
@@ -292,34 +309,32 @@ export default function Exercise1Page() {
                         {connections.map((conn, index) => (
                             <Xarrow
                                 key={`conn-${conn.start}-${conn.end}-${index}`}
-                                start={conn.start}
-                                end={conn.end}
-                                color="#171717"
-                                strokeWidth={2}
-                                headSize={6}
-                                path="straight"
-                                showHead={true}
+                                start={conn.start} end={conn.end}
+                                color="#171717" strokeWidth={2} headSize={6}
+                                path="straight" showHead={true}
                             />
                         ))}
 
                         {startPoint && mousePos && (
                             <Xarrow
                                 key="temp-arrow"
-                                start={startPoint}
-                                end="temp-mouse-target"
-                                color="#171717"
-                                strokeWidth={2}
-                                headSize={0}
-                                path="straight"
-                                showHead={false}
-                                dashness={true}
+                                start={startPoint} end="temp-mouse-target"
+                                color="#171717" strokeWidth={2} headSize={0}
+                                path="straight" showHead={false} dashness={true}
                                 passProps={{ pointerEvents: "none" }}
                             />
                         )}
                     </Xwrapper>
                 </div>
             </main>
-            <Footer />
+
+            {/* إضافة المكون الجديد AI Talker */}
+            <AiTalker 
+                exerciseType="قراءة"
+                onHelpRequest={() => console.log("طلب مساعدة")}
+                onExplainRequest={() => console.log("طلب شرح")}
+            />
+            {/* تمت إزالة الفوتر */}
         </div>
     );
 }

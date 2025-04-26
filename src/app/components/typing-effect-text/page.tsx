@@ -1,121 +1,120 @@
-// المسار: src/app/components/typing-effect-text/page.tsx
-'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import styles from '@/app/dashboard-user/pages/dashboard-overview/page.module.css'; // أو ملف الستايل الخاص به
+// الملف: ../typing-effect-text/page.tsx (أو TypingEffectText.tsx)
 
+'use client';
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+
+// لا نستورد أي ملف CSS Module هنا لأننا نستخدم Tailwind و CSS عام
+
+// واجهة الخصائص
 interface TypingEffectTextProps {
   paragraphs: string[];
   speed?: number;
   initialDelay?: number;
-  interParagraphDelay?: number; // تأخير بين الفقرات
+  interParagraphDelay?: number;
+  onTypingComplete?: () => void;
 }
 
 const TypingEffectText: React.FC<TypingEffectTextProps> = ({
   paragraphs = [],
-  speed = 45, // يمكن تعديل السرعة حسب الرغبة
-  initialDelay = 500,
-  interParagraphDelay = 5000, // <-- تأخير 5 ثواني
+  speed = 50,
+  initialDelay = 0,
+  interParagraphDelay = 500,
+  onTypingComplete,
 }) => {
-  // حالة لتخزين نص الفقرة الظاهرة حالياً
-  const [currentVisibleText, setCurrentVisibleText] = useState('');
-  // حالة لتتبع مؤشر الفقرة التي يجب عرضها
-  const [visibleParagraphIndex, setVisibleParagraphIndex] = useState(0);
-  // حالة لإظهار/إخفاء المؤشر
+  const [displayedText, setDisplayedText] = useState('');
   const [showCursor, setShowCursor] = useState(false);
-
-  // Refs لتخزين القيم الحالية وتجنب مشاكل الإغلاق (closures) في setTimeout
   const paragraphIndexRef = useRef(0);
   const charIndexRef = useRef(0);
   const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 
+  // useEffect للكتابة (المنطق الداخلي يبقى كما هو)
   useEffect(() => {
-    // إعادة الضبط عند تغيير المدخلات
-    setVisibleParagraphIndex(0);
-    setCurrentVisibleText('');
-    setShowCursor(false);
+    let startTimeoutId: NodeJS.Timeout | undefined;
+
+    // إعادة الضبط
     paragraphIndexRef.current = 0;
     charIndexRef.current = 0;
-    // إلغاء أي مؤقت سابق
-    if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
-    }
+    setDisplayedText('');
+    setShowCursor(false);
+    if (timeoutIdRef.current) { clearTimeout(timeoutIdRef.current); timeoutIdRef.current = null; }
 
+    // دالة الكتابة الداخلية
     const typeCharacter = () => {
       const currentPIndex = paragraphIndexRef.current;
-
-      // التوقف إذا تجاوزنا عدد الفقرات
-      if (currentPIndex >= paragraphs.length) {
-        setShowCursor(false);
-        return;
-      }
-
-      // التأكد من أننا نعرض الفقرة الصحيحة
-      if (visibleParagraphIndex !== currentPIndex) {
-         setVisibleParagraphIndex(currentPIndex);
-      }
-
-      const currentFullParagraph = paragraphs[currentPIndex];
       const currentCharIndex = charIndexRef.current;
+      let isTypingFinished = false;
+      let shouldShowCursorAfter = true;
 
-      // التحقق إذا كنا لا نزال نكتب في الفقرة الحالية
-      if (currentCharIndex < currentFullParagraph.length) {
-        // تحديث النص الظاهر بإضافة الحرف التالي
-        setCurrentVisibleText(currentFullParagraph.substring(0, currentCharIndex + 1));
-        charIndexRef.current++;
-        // جدولة الحرف التالي
-        timeoutIdRef.current = setTimeout(typeCharacter, speed);
+      if (!paragraphs || paragraphs.length === 0 || currentPIndex >= paragraphs.length) {
+        isTypingFinished = true; shouldShowCursorAfter = false;
       } else {
-        // انتهت كتابة الفقرة الحالية
-        // التحقق إذا كانت هذه آخر فقرة
-        if (currentPIndex < paragraphs.length - 1) {
-          // ليست الأخيرة، انتظر التأخير المحدد ثم انتقل للتالية
-          timeoutIdRef.current = setTimeout(() => {
-            paragraphIndexRef.current++; // الانتقال للفقرة التالية
-            charIndexRef.current = 0;     // إعادة مؤشر الحرف للصفر
-            setCurrentVisibleText('');    // مسح النص استعداداً للفقرة الجديدة
-            setShowCursor(true);          // إظهار المؤشر للفقرة الجديدة
-            typeCharacter();              // بدء كتابة الفقرة الجديدة
-          }, interParagraphDelay);
-          // إخفاء المؤشر أثناء فترة الانتظار الطويلة
-          setShowCursor(false);
+        const currentParagraph = paragraphs[currentPIndex];
+        if (typeof currentParagraph !== 'string') {
+           isTypingFinished = true; shouldShowCursorAfter = false;
+        } else if (currentCharIndex < currentParagraph.length) {
+            setDisplayedText(prev => prev + currentParagraph[currentCharIndex]);
+            charIndexRef.current++;
+            timeoutIdRef.current = setTimeout(typeCharacter, speed);
         } else {
-          // هذه كانت آخر فقرة، أبقِ النص ظاهراً وأخفِ المؤشر
-          setShowCursor(false);
+            // نهاية الفقرة
+            if (currentPIndex >= paragraphs.length - 1) {
+                isTypingFinished = true; shouldShowCursorAfter = false;
+            } else {
+                shouldShowCursorAfter = false; // إخفاء أثناء التأخير
+                timeoutIdRef.current = setTimeout(() => {
+                    paragraphIndexRef.current++;
+                    charIndexRef.current = 0;
+                    setDisplayedText(prev => prev + '\n');
+                    timeoutIdRef.current = null;
+                    setShowCursor(true); // إظهار لبدء الفقرة الجديدة
+                    typeCharacter();
+                }, interParagraphDelay);
+            }
         }
       }
-    };
+      setShowCursor(shouldShowCursorAfter); // تحديث حالة المؤشر
+      if (isTypingFinished && onTypingComplete) { onTypingComplete(); }
+    }; // نهاية typeCharacter
 
-    // بدء العملية بعد التأخير الأولي
-    const startTimeoutId = setTimeout(() => {
-      setShowCursor(true); // إظهار المؤشر للفقرة الأولى
-      setVisibleParagraphIndex(0); // التأكد من البدء بالمؤشر 0
-      typeCharacter();
-    }, initialDelay);
+    // بدء العملية
+    if (paragraphs && paragraphs.length > 0) {
+        startTimeoutId = setTimeout(() => {
+            setShowCursor(true);
+            typeCharacter();
+        }, initialDelay);
+    } else {
+       setShowCursor(false);
+       if (onTypingComplete) { onTypingComplete(); }
+    }
 
     // دالة التنظيف
     return () => {
       clearTimeout(startTimeoutId);
-      if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
-      }
+      if (timeoutIdRef.current) { clearTimeout(timeoutIdRef.current); timeoutIdRef.current = null; }
     };
-  }, [paragraphs, speed, initialDelay, interParagraphDelay]); // الاعتماديات
+  }, [JSON.stringify(paragraphs), speed, initialDelay, interParagraphDelay, onTypingComplete]);
 
+
+  // ===> التعديل في العرض هنا <===
   return (
-    // عرض فقرة واحدة فقط في كل مرة
-    // الحاوية الأم (.welcomeCardContent) يجب أن يكون لها ارتفاع محدد أو min-height
-    // لمنع قفز التخطيط عند تغيير طول الفقرة
-    <div>
-      {/* عرض الفقرة الحالية فقط */}
-      {paragraphs.map((_, index) => (
-         <p key={index} style={{ display: index === visibleParagraphIndex ? 'block' : 'none' }}>
-            {index === visibleParagraphIndex ? currentVisibleText : ''}
-            {showCursor && index === visibleParagraphIndex && <span className={styles.typingCursor}></span>}
-         </p>
-      ))}
-      {/* قد تحتاج لإضافة عناصر p فارغة بنفس عدد الفقرات مع visibility: hidden
-          إذا أردت الحفاظ على الارتفاع ثابتاً بشكل مضمون، لكن overflow-y: auto
-          في الحاوية الأم هو الحل الأبسط غالباً. */}
+    // تمت إزالة textAlign: 'center' من الـ style المضمن
+    <div style={{ whiteSpace: 'pre-line', width: '100%' }}>
+      {displayedText}
+      {/* تطبيق كلاسات Tailwind وكلاس الأنيميشن العام للمؤشر */}
+      {showCursor && (
+         <span
+            className={`
+              inline-block
+              w-[2px]
+              h-[1em]
+              bg-[#DD2946]  /* تأكد من استخدام اللون المناسب */
+              mr-[2px]
+              align-middle
+              typing-cursor-blink /* اسم الكلاس للأنيميشن من CSS العام */
+            `}
+          ></span>
+        )}
     </div>
   );
 };

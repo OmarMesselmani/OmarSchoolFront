@@ -1,0 +1,39 @@
+/* الملف: components/ai-talker/AiTalker.module.css */
+
+/* ... (تنسيقات .robotContainer, .robotWrapper, .dialogContainer, .dialogContentWrapper كما هي) ... */
+.robotContainer { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 10px; position: absolute; right: 20px; top: 30%; z-index: 100; }
+.robotWrapper { cursor: pointer; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px; position: relative; z-index: 2; transition: transform 0.2s ease; }
+.robotAnimation { width: 100%; height: 100%; }
+.robotWrapper:hover { transform: scale(1.05); }
+.robotWrapper:active { transform: scale(0.95); }
+.dialogContainer { position: relative; width: 220px; min-height: 60px; height: auto; display: flex; background-color: white; padding: 0; margin-right: 10px; box-sizing: border-box; border: 2px dashed #DD2946; border-radius: 15px 0px 15px 15px; overflow: hidden; }
+.dialogContentWrapper { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
+
+
+/* ===> تعديل تنسيق منطقة النص هنا <=== */
+.dialogTextContent {
+  flex-grow: 1;              /* السماح للمنطقة بالتمدد عموديًا داخل الحاوية الأم */
+  /* display: flex;         <-- تمت إزالة هذه */
+  /* align-items: center;   <-- تمت إزالة هذه */
+  text-align: right;         /* تحديد محاذاة النص لليمين */
+  white-space: pre-line;     /* الحفاظ على فواصل الأسطر */
+  padding: 15px 20px;        /* الحشوة الداخلية (متساوية عمودياً) */
+  box-sizing: border-box;
+  width: 100%;
+  direction: rtl;            /* اتجاه النص */
+  font-family: 'Noto Sans Arabic', sans-serif;
+  color: #444;
+  font-size: 16px;
+  font-weight: 500;
+  min-height: 30px;
+}
+
+/* ... (باقي التنسيقات لـ .dialogActions, .actionButton, المؤشر, والشاشات الصغيرة كما هي) ... */
+.dialogActions { display: flex; justify-content: center; gap: 15px; padding: 5px 20px 12px 20px; width: 100%; box-sizing: border-box; flex-shrink: 0; }
+.actionButton { padding: 5px 15px; font-size: 14px; font-weight: bold; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; border-radius: 5px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; }
+.actionButton:hover { background-color: #eee; border-color: #bbb; }
+.yesButton:hover { border-color: #4CAF50; background-color: #e8f5e9; }
+.noButton:hover { border-color: #f44336; background-color: #ffebee; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.typingCursor { display: inline-block; width: 2px; height: 1em; background-color: #DD2946; margin-right: 2px; animation: blink 1s infinite; vertical-align: middle; }
+@media (max-width: 768px) { /* ... التنسيقات الاستجابية ... */ .dialogTextContent { padding: 12px 15px; /* ... */ } .dialogActions { padding: 5px 15px 10px 15px; /* ... */ } /* ... */ }

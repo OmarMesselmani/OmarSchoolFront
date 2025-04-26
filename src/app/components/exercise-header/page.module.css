@@ -1,0 +1,58 @@
+.headerContainer {
+    display: flex;
+    direction: rtl;
+    background-color: #f3f4f6; /* لون خلفية رمادي فاتح */
+    border: 1px solid #171717; /* إطار رمادي */
+    border-radius: 0.5rem;  /* حواف دائرية (8px) */
+    overflow: hidden;
+    margin-bottom: 1rem;  /* تقليل المسافة أسفل العنوان */
+    font-weight: bold;      /* خط عريض بشكل عام للعناصر غير المحددة */
+    margin-left: auto;
+    margin-right: auto;
+    color: #171717;          /* لون الخط الافتراضي (#171717) */
+    width: 60%;              /* العرض 70% */
+    margin-top: 0;  /* إزالة أي هامش علوي */
+  }
+  
+  .column {
+    flex: 1;                 /* توزيع المساحة بالتساوي */
+    padding: 0.85rem 1.1rem;   /* حشوة داخلية */
+    text-align: center;      /* محاذاة النص في المنتصف */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* إضافة خط فاصل على يمين العمود الأوسط والعمود الأيسر */
+  .columnMiddle,
+  .columnLeft {
+    border-right: 1px solid #171717; /* لون الخط الفاصل */
+  }
+  
+  /* أحجام الخطوط المحدثة */
+  .textLine {
+    margin: 0.1rem 0;
+    font-size: 1rem;    /* تكبير حجم الخط */
+    color: #171717;     /* تأكيد اللون */
+  }
+  
+  .titleText {
+    margin: 0;
+    font-size: 1.25rem; /* تكبير حجم الخط للعنوان */
+    font-weight: bold;  /* تأكيد الخط العريض للعنوان */
+    color: #171717;     /* تأكيد اللون */
+  }
+  
+  .studentNameText {
+    margin-top: 0.25rem;
+    font-size: 0.95rem; /* تكبير حجم الخط */
+    color: #171717;     /* تأكيد اللون */
+    /* تم إزالة font-weight: normal; للسماح لـ <strong> بالعمل */
+  }
+  
+  /* تنسيق اختياري لـ strong داخل studentNameText إذا لزم الأمر */
+  /*
+  .studentNameText strong {
+    margin-left: 0.25em;
+  }
+  */

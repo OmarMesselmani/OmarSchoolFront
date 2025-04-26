@@ -9,7 +9,7 @@ import styles from './page.module.css';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 // استيراد الشريط الجانبي - تأكد من أن المسار صحيح
-import ExerciseSidebar from '@/app/dashboard-user/dashboard-modules/ExerciseSidebar/page';
+import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 
 // واجهة لوصف بيانات كل عنصر
 interface ItemInfo {

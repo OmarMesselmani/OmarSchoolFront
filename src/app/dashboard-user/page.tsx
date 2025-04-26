@@ -19,6 +19,7 @@ import ExercisesListPage from './pages/exercises-list/page';
 import LoadingPage from '../components/loading-page/LoadingPage';
 import checkAuth from '../services/check-auth';
 import ExamsPage from './pages/exams/page';
+import { useSearchParams } from 'next/navigation';
 // --- تعريف المكونات المؤقتة الأخرى أو استيرادها ---
 interface StudentData { name: string; level: string; age: number; uniqueId: string; }
 interface StudentDetailsMap { [key: string]: StudentData; }
@@ -66,6 +67,9 @@ export default function DashboardUserPage() {
 
   // استخدام Hook السياق للحصول على حالة الهيدر
   const { isHeaderVisible } = useHeaderVisibility();
+
+  // استخدام useSearchParams للحصول على معلمات البحث من URL
+  const searchParams = useSearchParams();
 
   // دالة معالجة النقر على عناصر القائمة الجانبية
   const handleItemClick = (page: string) => (e: React.MouseEvent) => {
@@ -133,6 +137,16 @@ export default function DashboardUserPage() {
     checkUserAuth();
   }, []);
 
+  useEffect(() => {
+    // قراءة معلمة القسم من عنوان URL
+    const section = searchParams.get('section');
+    
+    // إذا كانت المعلمة هي "home"، اعرض قسم قوائم التمارين
+    if (section === 'home' || section === 'exercises') {
+        // تعيين الصفحة الحالية إلى قوائم التمارين
+        setCurrentPage('home'); // استخدام اسم الصفحة الفعلي في تطبيقك
+    }
+  }, [searchParams]);
 
   if (isFullLoading) {
     return <LoadingPage />;

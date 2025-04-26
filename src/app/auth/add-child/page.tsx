@@ -100,8 +100,10 @@ export default function AddChildPage() {
                 formIsValid = false;
                 return;
             }
+            
+            // تحقق من اختيار سنة رسوب على الأقل إذا كان الجواب نعم
             if (child.hasFailedPreviously === 'yes' && !child.failedYear) {
-                setError(`يرجى تحديد سنة الرسوب للطفل ${getOrdinalWord(index)}.`);
+                setError(`يرجى تحديد السنة الدراسية التي رسب فيها الطفل ${getOrdinalWord(index)}.`);
                 formIsValid = false;
                 return;
             }
@@ -213,25 +215,38 @@ export default function AddChildPage() {
                                             </div>
                                         </div>
 
-                                        {/* حقل سنة الرسوب (يظهر شرطيًا بسلاسة) */}
+                                        {/* حقل سنة الرسوب (يظهر شرطيًا بسلاسة) - مع دعم الاختيار المتعدد */}
                                         <div className={`${styles.formGroup} ${styles.conditionalFieldContainer} ${child.hasFailedPreviously === 'yes' ? styles.visible : ''}`}>
-                                            <label htmlFor={`failedYear-${index}`} className={styles.formLabel}>ماهي السنة الدراسية التي سبق له الرسوب فيها؟</label>
-                                            <select
-                                                id={`failedYear-${index}`}
-                                                className={styles.formSelect}
-                                                value={child.failedYear || ''}
-                                                onChange={(e) => updateChildData(index, 'failedYear', e.target.value)}
-                                                disabled={isLoading || child.hasFailedPreviously !== 'yes'}
-                                                tabIndex={child.hasFailedPreviously === 'yes' ? 0 : -1}
-                                            >
-                                                <option value="" disabled>-- اختر السنة --</option>
-                                                <option value="السنة الأولى">السنة الأولى</option>
-                                                <option value="السنة الثانية">السنة الثانية</option>
-                                                <option value="السنة الثالثة">السنة الثالثة</option>
-                                                <option value="السنة الرابعة">السنة الرابعة</option>
-                                                <option value="السنة الخامسة">السنة الخامسة</option>
-                                                <option value="السنة السادسة">السنة السادسة</option>
-                                            </select>
+                                            <label className={styles.formLabel}>ماهي السنة الدراسية التي سبق له الرسوب فيها؟</label>
+                                            <div className={styles.checkboxGroup}>
+                                                {['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة', 'السنة الخامسة', 'السنة السادسة'].map((year) => (
+                                                    <label key={year} className={styles.checkboxLabel}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={(child.failedYear || '').includes(year)}
+                                                            onChange={(e) => {
+                                                                // حفظ الاختيارات المتعددة في مصفوفة نصية
+                                                                const currentYears = child.failedYear || '';
+                                                                let newYears;
+                                                                if (e.target.checked) {
+                                                                    // إضافة السنة للاختيارات
+                                                                    newYears = currentYears ? `${currentYears},${year}` : year;
+                                                                } else {
+                                                                    // إزالة السنة من الاختيارات
+                                                                    newYears = currentYears
+                                                                        .split(',')
+                                                                        .filter(y => y !== year)
+                                                                        .join(',');
+                                                                }
+                                                                updateChildData(index, 'failedYear', newYears);
+                                                            }}
+                                                            disabled={isLoading || child.hasFailedPreviously !== 'yes'}
+                                                            className={styles.checkboxInput}
+                                                        />
+                                                        {year}
+                                                    </label>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </React.Fragment>
@@ -242,7 +257,6 @@ export default function AddChildPage() {
                             {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
 
                             {/* زر الإرسال يأتي أولاً */}
-                            {/* *** تعديل: إعادة النص الديناميكي للزر *** */}
                             <SubmitButton
                                 buttonText={children.length > 1 ? "إضافة التلاميذ" : "إضافة التلميذ"}
                                 isLoading={isLoading}

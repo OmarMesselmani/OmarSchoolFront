@@ -17,7 +17,7 @@ import {
 import styles from './page.module.css';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
-import ExerciseSidebar from '@/app/dashboard-user/dashboard-modules/ExerciseSidebar/page';
+import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 
 // تعريف واجهة لبيانات الألوان
 interface ColorInfo {

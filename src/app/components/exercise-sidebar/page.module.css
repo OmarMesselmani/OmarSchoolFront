@@ -1,7 +1,9 @@
 .sidebarContainer {
   position: fixed;
   left: 20px;
-  top: calc(50% - 320px);
+  /* تعديل الموقع ليكون في المنتصف تماماً */
+  top: 50%;
+  transform: translateY(-50%);
   width: 110px;
   padding: 20px;
 }
@@ -170,4 +172,42 @@
 .nextExerciseSection:hover .nextExerciseIcon {
   transform: scale(1.1);
   color: var(--main-color);
+}
+
+/* تعديل تنسيقات الخانة الجانبية ExerciseSidebar ليتم وضعها في منتصف الصفحة عموديًا */
+
+.exerciseSidebar {
+  position: fixed; /* لتثبيت الخانة على الشاشة */
+  top: 50%; /* وضعها في منتصف الارتفاع */
+  transform: translateY(-50%); /* تعديل موضعها لتكون متمركزة بدقة */
+  left: 12px; /* المسافة من اليسار */
+  z-index: 50; /* للتأكد من ظهورها فوق العناصر الأخرى */
+  border: 1px dashed #DD2946; /* حدود متقطعة بنفس اللون الأحمر */
+  border-radius: 25px; /* حواف دائرية مطابقة للتصميم الحالي */
+  padding: 10px 0; /* حشوة علوية وسفلية */
+  background-color: transparent; /* خلفية شفافة */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* مسافة بين الأزرار */
+  align-items: center;
+}
+
+/* التأكد من أن الأزرار في الخانة الجانبية تحافظ على مظهرها الحالي */
+.exerciseSidebar button {
+  /* تنسيقات الأزرار الحالية */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #111;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* تنسيقات التحويم على الأزرار */
+.exerciseSidebar button:hover {
+  background-color: #333;
 }
