@@ -2,12 +2,15 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import styles from './page.module.css'; // استخدام الأنماط الجديدة
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import SubmitButton from '@/app/components/SubmitButton/SubmitButton'; // استيراد زر الإرسال
+import checkAuth from '@/app/services/check-auth';
+import Cookies from 'js-cookie'; // استيراد مكتبة الكوكيز
+import LoadingPage from '@/app/components/loading-page/LoadingPage';
 
 // واجهة لبيانات الطفل
 interface ChildData {
@@ -50,7 +53,7 @@ export default function AddChildPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [isFullLoading, setIsFullLoading] = useState(false);
+    const [isFullLoading, setIsFullLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // حالة تسجيل الدخول
 
 
@@ -89,6 +92,7 @@ export default function AddChildPage() {
     // دالة إرسال النموذج (ترسل بيانات كل الأطفال)
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        setIsLoading(true);
         setError(null);
         setSuccessMessage(null);
         let formIsValid = true;
@@ -100,8 +104,7 @@ export default function AddChildPage() {
                 formIsValid = false;
                 return;
             }
-            
-            // تحقق من اختيار سنة رسوب على الأقل إذا كان الجواب نعم
+
             if (child.hasFailedPreviously === 'yes' && !child.failedYear) {
                 setError(`يرجى تحديد السنة الدراسية التي رسب فيها الطفل ${getOrdinalWord(index)}.`);
                 formIsValid = false;
@@ -111,24 +114,64 @@ export default function AddChildPage() {
 
         if (!formIsValid) return;
 
-        setIsLoading(true);
-        const childrenDataToSend = children.map(({ id, ...rest }) => rest);
-        console.log("بيانات الأطفال للإرسال:", childrenDataToSend);
+        const childrenDataToSend = children.map(({ id, ...child }) => ({
+            name: child.firstName,
+            surname: child.lastName,
+            gender: child.gender,
+            date_of_birth: child.dateOfBirth,
+            current_level: child.schoolLevel,
+            has_failed_before: child.hasFailedPreviously === 'yes',
+            failed_years: child.failedYear ? child.failedYear.split(',') : [], // array of years if failed
+        }));
 
-        // --- محاكاة إرسال البيانات إلى الخادم ---
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            console.log('Children added successfully');
-            setSuccessMessage(`تمت إضافة ${children.length} تلميذ/تلاميذ بنجاح!`);
-            setChildren([createEmptyChild()]);
-        } catch (err) {
-            console.error(err);
-            setError('حدث خطأ في الشبكة أو مشكلة أخرى.');
+            const token = Cookies.get('token'); // Assuming you stored the parent token during signup
+            const response = await fetch('http://127.0.0.1:8000/student/add-student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${token}`,
+                },
+                body: JSON.stringify({ students: childrenDataToSend }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setSuccessMessage('تمت إضافة التلاميذ بنجاح.');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                setError(data.message || 'حدث خطأ أثناء إضافة التلاميذ.');
+            }
+        } catch (error) {
+            console.error(error);
+            setError('حدث خطأ في الشبكة.');
         } finally {
             setIsLoading(false);
         }
-        // --- نهاية محاكاة الإرسال ---
     };
+
+
+    useEffect(() => {
+        const checkUserAuth = async () => {
+            try {
+                const authStatus = await checkAuth();
+                if (!authStatus.status) {
+                    window.location.href = '/login';
+                } else {
+                    setIsFullLoading(false);
+                }
+            } catch (error) {
+                console.error('Error checking token:', error);
+            }
+        }
+        checkUserAuth();
+    }, []);
+
+    if (isFullLoading) {
+        return <LoadingPage />;
+    }
 
     return (
         <div className={styles.pageContainer}>
