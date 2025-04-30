@@ -2,19 +2,18 @@
 
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import styles from './page.module.css'; // استخدام الأنماط الجديدة
+import styles from './page.module.css';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
-import SubmitButton from '@/app/components/SubmitButton/SubmitButton'; // استيراد زر الإرسال
+import SubmitButton from '@/app/components/SubmitButton/SubmitButton';
 import checkAuth from '@/app/services/check-auth';
-import Cookies from 'js-cookie'; // استيراد مكتبة الكوكيز
+import Cookies from 'js-cookie';
 import LoadingPage from '@/app/components/loading-page/LoadingPage';
 
 // واجهة لبيانات الطفل
 interface ChildData {
-    id: number; // معرف فريد لكل طفل في الحالة المؤقتة
     firstName: string;
     lastName: string;
     gender: string;
@@ -24,105 +23,47 @@ interface ChildData {
     failedYear?: string;
 }
 
-// دالة لإنشاء بيانات طفل فارغة بمعرف فريد
-const createEmptyChild = (): ChildData => ({
-    id: Date.now() + Math.random(), // معرف مؤقت بسيط
-    firstName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth: '',
-    schoolLevel: '',
-    hasFailedPreviously: '',
-    failedYear: '',
-});
-
-// دالة مساعدة للحصول على الكلمة الترتيبية
-const getOrdinalWord = (index: number): string => {
-    if (index === 0) return "الأول";
-    if (index === 1) return "الثاني";
-    if (index === 2) return "الثالث";
-    return `${index + 1}`; // كاحتياط إذا زاد العدد عن 3
-};
-
-
 export default function AddChildPage() {
-    // استخدام مصفوفة لتخزين بيانات الأطفال
-    const [children, setChildren] = useState<ChildData[]>([createEmptyChild()]); // ابدأ بطفل واحد
+    // استخدام كائن واحد لتخزين بيانات التلميذ
+    const [childData, setChildData] = useState<ChildData>({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        dateOfBirth: '',
+        schoolLevel: '',
+        hasFailedPreviously: '',
+        failedYear: '',
+    });
 
-    // حالة التحميل والخطأ (مشتركة لكل النموذج)
+    // حالة التحميل والخطأ
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [failedYearError, setFailedYearError] = useState<string | null>(null); // إضافة حالة خطأ خاصة بسنة الرسوب
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isFullLoading, setIsFullLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // حالة تسجيل الدخول
-
-
-    // دالة لإضافة نموذج طفل جديد (بحد أقصى 3)
-    const addChildForm = () => {
-        if (children.length >= 3) {
-            setError("لا يمكنك إضافة أكثر من 3 تلاميذ.");
-            setSuccessMessage(null);
-            return;
-        }
-        setError(null);
-        setSuccessMessage(null);
-        setChildren(prev => [...prev, createEmptyChild()]);
-    };
-
-    // دالة لتحديث بيانات طفل معين في المصفوفة
-    const updateChildData = (index: number, field: keyof Omit<ChildData, 'id'>, value: string) => {
-        setChildren(prev => {
-            const updatedChildren = [...prev];
-            if (updatedChildren[index]) {
-                updatedChildren[index] = { ...updatedChildren[index], [field]: value };
-                if (field === 'hasFailedPreviously' && value === 'no') {
-                    updatedChildren[index].failedYear = '';
-                }
-            }
-            return updatedChildren;
-        });
-    };
-
-    // معالج تغيير اختيار الرسوب
-    const handleFailChange = (index: number, value: 'yes' | 'no') => {
-        updateChildData(index, 'hasFailedPreviously', value);
-    };
-
 
     // دالة إرسال النموذج (ترسل بيانات كل الأطفال)
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
         setError(null);
+        setFailedYearError(null); // إعادة تعيين رسالة خطأ سنة الرسوب
         setSuccessMessage(null);
-        let formIsValid = true;
 
-        // التحقق من صحة بيانات كل طفل
-        children.forEach((child, index) => {
-            if (!child.firstName || !child.lastName || !child.gender || !child.dateOfBirth || !child.schoolLevel || !child.hasFailedPreviously) {
-                setError(`يرجى ملء جميع الحقول المطلوبة للطفل ${getOrdinalWord(index)}.`);
-                formIsValid = false;
-                return;
-            }
+        // التحقق من صحة البيانات المدخلة
+        if (!childData.firstName || !childData.lastName || !childData.gender || !childData.dateOfBirth || !childData.schoolLevel || !childData.hasFailedPreviously) {
+            setError('يرجى ملء جميع الحقول المطلوبة.');
+            setIsLoading(false);
+            return;
+        }
 
-            if (child.hasFailedPreviously === 'yes' && !child.failedYear) {
-                setError(`يرجى تحديد السنة الدراسية التي رسب فيها الطفل ${getOrdinalWord(index)}.`);
-                formIsValid = false;
-                return;
-            }
-        });
-
-        if (!formIsValid) return;
-
-        const childrenDataToSend = children.map(({ id, ...child }) => ({
-            name: child.firstName,
-            surname: child.lastName,
-            gender: child.gender,
-            date_of_birth: child.dateOfBirth,
-            current_level: child.schoolLevel,
-            has_failed_before: child.hasFailedPreviously === 'yes',
-            failed_years: child.failedYear ? child.failedYear.split(',') : [], // array of years if failed
-        }));
+        // التحقق من اختيار سنة الرسوب إذا كانت الإجابة "نعم"
+        if (childData.hasFailedPreviously === 'yes' && (!childData.failedYear || childData.failedYear === '')) {
+            setFailedYearError('يرجى اختيار السنة التي رسب فيها التلميذ.');
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const token = Cookies.get('token'); // Assuming you stored the parent token during signup
@@ -132,17 +73,17 @@ export default function AddChildPage() {
                     'Content-Type': 'application/json',
                     Authorization: `Token ${token}`,
                 },
-                body: JSON.stringify({ students: childrenDataToSend }),
+                body: JSON.stringify({ students: [childData] }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                setSuccessMessage('تمت إضافة التلاميذ بنجاح.');
+                setSuccessMessage('تمت إضافة التلميذ بنجاح.');
                 setTimeout(() => {
                     window.location.reload();
                 }, 2000);
             } else {
-                setError(data.message || 'حدث خطأ أثناء إضافة التلاميذ.');
+                setError(data.message || 'حدث خطأ أثناء إضافة التلميذ.');
             }
         } catch (error) {
             console.error(error);
@@ -151,7 +92,6 @@ export default function AddChildPage() {
             setIsLoading(false);
         }
     };
-
 
     useEffect(() => {
         const checkUserAuth = async () => {
@@ -185,143 +125,127 @@ export default function AddChildPage() {
                     <div className={styles.formContainer}>
 
                         <form onSubmit={handleSubmit}>
-                            {/* المرور على مصفوفة الأطفال وعرض نموذج لكل منهم */}
-                            {children.map((child, index) => (
-                                <React.Fragment key={child.id}>
-                                    {/* إضافة خط فاصل قبل الطفل الثاني والثالث */}
-                                    {index > 0 && <hr className="border-gray-200 my-6" />}
+                            {/* باقي حقول النموذج للطفل */}
+                            <div className="child-section mb-6 last:mb-0">
+                                {/* حقل الاسم الأول */}
+                                <div className={styles.formGroup}>
+                                    <label htmlFor={`firstName`} className={styles.formLabel}>اسم التلميذ:</label>
+                                    <input type="text" id={`firstName`} className={styles.formInput} value={childData.firstName} onChange={(e) => setChildData({ ...childData, firstName: e.target.value })} required disabled={isLoading} />
+                                </div>
 
-                                    {/* إظهار العنوان فقط إذا كان هناك أكثر من طفل وتغيير النص */}
-                                    {children.length > 1 && (
-                                        <h3 className="text-lg font-semibold mb-4 text-[#DD2946] text-center">
-                                            بيانات التلميذ {getOrdinalWord(index)}
-                                        </h3>
-                                    )}
+                                {/* حقل اللقب */}
+                                <div className={styles.formGroup}>
+                                    <label htmlFor={`lastName`} className={styles.formLabel}>لقب التلميذ:</label>
+                                    <input type="text" id={`lastName`} className={styles.formInput} value={childData.lastName} onChange={(e) => setChildData({ ...childData, lastName: e.target.value })} required disabled={isLoading} />
+                                </div>
 
-                                    {/* باقي حقول النموذج للطفل */}
-                                    <div className="child-section mb-6 last:mb-0">
-                                        {/* حقل الاسم الأول */}
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor={`firstName-${index}`} className={styles.formLabel}>اسم التلميذ:</label>
-                                            <input type="text" id={`firstName-${index}`} className={styles.formInput} value={child.firstName} onChange={(e) => updateChildData(index, 'firstName', e.target.value)} required disabled={isLoading} />
-                                        </div>
-
-                                        {/* حقل اللقب */}
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor={`lastName-${index}`} className={styles.formLabel}>لقب التلميذ:</label>
-                                            <input type="text" id={`lastName-${index}`} className={styles.formInput} value={child.lastName} onChange={(e) => updateChildData(index, 'lastName', e.target.value)} required disabled={isLoading} />
-                                        </div>
-
-                                        {/* حقل الجنس */}
-                                        <div className={styles.formGroup}>
-                                            <label className={styles.formLabel}>جنس التلميذ:</label>
-                                            <div className={styles.radioGroup}>
-                                                <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`childGender-${index}`} value="male" checked={child.gender === 'male'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading} /> ذكر
-                                                </label>
-                                                <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`childGender-${index}`} value="female" checked={child.gender === 'female'} onChange={(e) => updateChildData(index, 'gender', e.target.value)} className={styles.radioInput} required disabled={isLoading} /> أنثى
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {/* حقل تاريخ الميلاد */}
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor={`dateOfBirth-${index}`} className={styles.formLabel}>تاريخ الميلاد:</label>
-                                            <input type="date" id={`dateOfBirth-${index}`} className={styles.formInput} value={child.dateOfBirth} onChange={(e) => updateChildData(index, 'dateOfBirth', e.target.value)} required disabled={isLoading} max={new Date().toISOString().split("T")[0]} />
-                                        </div>
-
-                                        {/* حقل المستوى الدراسي الحالي */}
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor={`schoolLevel-${index}`} className={styles.formLabel}>المستوى الدراسي الحالي:</label>
-                                            <select id={`schoolLevel-${index}`} className={styles.formSelect} value={child.schoolLevel} onChange={(e) => updateChildData(index, 'schoolLevel', e.target.value)} required disabled={isLoading}>
-                                                <option value="" disabled>-- اختر المستوى --</option>
-                                                <option value="السنة الأولى">السنة الأولى</option>
-                                                <option value="السنة الثانية">السنة الثانية</option>
-                                                <option value="السنة الثالثة">السنة الثالثة</option>
-                                                <option value="السنة الرابعة">السنة الرابعة</option>
-                                                <option value="السنة الخامسة">السنة الخامسة</option>
-                                                <option value="السنة السادسة">السنة السادسة</option>
-                                            </select>
-                                        </div>
-
-                                        {/* حقل سؤال الرسوب */}
-                                        <div className={styles.formGroup}>
-                                            <label className={styles.formLabel}>هل رسب التلميذ سابقًا؟</label>
-                                            <div className={styles.radioGroup}>
-                                                <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`hasFailed-${index}`} value="yes" checked={child.hasFailedPreviously === 'yes'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading} /> نعم
-                                                </label>
-                                                <label className={styles.radioLabel}>
-                                                    <input type="radio" name={`hasFailed-${index}`} value="no" checked={child.hasFailedPreviously === 'no'} onChange={(e) => handleFailChange(index, e.target.value as 'yes' | 'no')} className={styles.radioInput} required disabled={isLoading} /> لا
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {/* حقل سنة الرسوب (يظهر شرطيًا بسلاسة) - مع دعم الاختيار المتعدد */}
-                                        <div className={`${styles.formGroup} ${styles.conditionalFieldContainer} ${child.hasFailedPreviously === 'yes' ? styles.visible : ''}`}>
-                                            <label className={styles.formLabel}>ماهي السنة الدراسية التي سبق له الرسوب فيها؟</label>
-                                            <div className={styles.checkboxGroup}>
-                                                {['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة', 'السنة الخامسة', 'السنة السادسة'].map((year) => (
-                                                    <label key={year} className={styles.checkboxLabel}>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={(child.failedYear || '').includes(year)}
-                                                            onChange={(e) => {
-                                                                // حفظ الاختيارات المتعددة في مصفوفة نصية
-                                                                const currentYears = child.failedYear || '';
-                                                                let newYears;
-                                                                if (e.target.checked) {
-                                                                    // إضافة السنة للاختيارات
-                                                                    newYears = currentYears ? `${currentYears},${year}` : year;
-                                                                } else {
-                                                                    // إزالة السنة من الاختيارات
-                                                                    newYears = currentYears
-                                                                        .split(',')
-                                                                        .filter(y => y !== year)
-                                                                        .join(',');
-                                                                }
-                                                                updateChildData(index, 'failedYear', newYears);
-                                                            }}
-                                                            disabled={isLoading || child.hasFailedPreviously !== 'yes'}
-                                                            className={styles.checkboxInput}
-                                                        />
-                                                        {year}
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        </div>
+                                {/* حقل الجنس */}
+                                <div className={styles.formGroup}>
+                                    <label className={styles.formLabel}>جنس التلميذ:</label>
+                                    <div className={styles.radioGroup}>
+                                        <label className={styles.radioLabel}>
+                                            <input type="radio" name={`childGender`} value="male" checked={childData.gender === 'male'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> ذكر
+                                        </label>
+                                        <label className={styles.radioLabel}>
+                                            <input type="radio" name={`childGender`} value="female" checked={childData.gender === 'female'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> أنثى
+                                        </label>
                                     </div>
-                                </React.Fragment>
-                            ))}
+                                </div>
+
+                                {/* حقل تاريخ الميلاد */}
+                                <div className={styles.formGroup}>
+                                    <label htmlFor={`dateOfBirth`} className={styles.formLabel}>تاريخ الميلاد:</label>
+                                    <input type="date" id={`dateOfBirth`} className={styles.formInput} value={childData.dateOfBirth} onChange={(e) => setChildData({ ...childData, dateOfBirth: e.target.value })} required disabled={isLoading} max={new Date().toISOString().split("T")[0]} />
+                                </div>
+
+                                {/* حقل المستوى الدراسي الحالي */}
+                                <div className={styles.formGroup}>
+                                    <label htmlFor={`schoolLevel`} className={styles.formLabel}>المستوى الدراسي الحالي:</label>
+                                    <select id={`schoolLevel`} className={styles.formSelect} value={childData.schoolLevel} onChange={(e) => setChildData({ ...childData, schoolLevel: e.target.value })} required disabled={isLoading}>
+                                        <option value="" disabled>-- اختر المستوى --</option>
+                                        <option value="السنة الأولى">السنة الأولى</option>
+                                        <option value="السنة الثانية">السنة الثانية</option>
+                                        <option value="السنة الثالثة">السنة الثالثة</option>
+                                        <option value="السنة الرابعة">السنة الرابعة</option>
+                                        <option value="السنة الخامسة">السنة الخامسة</option>
+                                        <option value="السنة السادسة">السنة السادسة</option>
+                                    </select>
+                                </div>
+
+                                {/* حقل سؤال الرسوب */}
+                                <div className={styles.formGroup}>
+                                    <label className={styles.formLabel}>هل رسب التلميذ سابقًا؟</label>
+                                    <div className={styles.radioGroup}>
+                                        <label className={styles.radioLabel}>
+                                            <input type="radio" name={`hasFailed`} value="yes" checked={childData.hasFailedPreviously === 'yes'} onChange={(e) => setChildData({ ...childData, hasFailedPreviously: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> نعم
+                                        </label>
+                                        <label className={styles.radioLabel}>
+                                            <input type="radio" name={`hasFailed`} value="no" checked={childData.hasFailedPreviously === 'no'} onChange={(e) => setChildData({ ...childData, hasFailedPreviously: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> لا
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* حقل سنة الرسوب (يظهر شرطيًا بسلاسة) - مع دعم الاختيار المتعدد */}
+                                <div className={`${styles.formGroup} ${styles.conditionalFieldContainer} ${childData.hasFailedPreviously === 'yes' ? styles.visible : ''}`}>
+                                    <label className={styles.formLabel}>ماهي السنة الدراسية التي سبق له الرسوب فيها؟</label>
+                                    <div className={styles.checkboxGroup}>
+                                        {['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة', 'السنة الخامسة', 'السنة السادسة']
+                                            // فلترة السنوات بحيث لا تتجاوز المستوى الحالي للطالب
+                                            .filter(year => {
+                                                // ترتيب السنوات الدراسية
+                                                const yearOrder = {
+                                                    'السنة الأولى': 1,
+                                                    'السنة الثانية': 2,
+                                                    'السنة الثالثة': 3,
+                                                    'السنة الرابعة': 4,
+                                                    'السنة الخامسة': 5, 
+                                                    'السنة السادسة': 6
+                                                };
+                                                
+                                                // السماح فقط بالسنوات التي تسبق أو تساوي المستوى الحالي للطالب
+                                                return yearOrder[year as keyof typeof yearOrder] <= yearOrder[childData.schoolLevel as keyof typeof yearOrder];
+                                            })
+                                            .map((year) => (
+                                                <label key={year} className={styles.checkboxLabel}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={(childData.failedYear || '').includes(year)}
+                                                        onChange={(e) => {
+                                                            // حفظ الاختيارات المتعددة في مصفوفة نصية
+                                                            const currentYears = childData.failedYear || '';
+                                                            let newYears;
+                                                            if (e.target.checked) {
+                                                                // إضافة السنة للاختيارات
+                                                                newYears = currentYears ? `${currentYears},${year}` : year;
+                                                            } else {
+                                                                // إزالة السنة من الاختيارات
+                                                                newYears = currentYears
+                                                                    .split(',')
+                                                                    .filter(y => y !== year)
+                                                                    .join(',');
+                                                            }
+                                                            setChildData({ ...childData, failedYear: newYears });
+                                                        }}
+                                                        disabled={isLoading || childData.hasFailedPreviously !== 'yes'}
+                                                        className={styles.checkboxInput}
+                                                    />
+                                                    {year}
+                                                </label>
+                                            ))}
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* عرض رسائل الخطأ أو النجاح */}
                             {error && <p className={styles.errorMessage}>{error}</p>}
+                            {failedYearError && <p className={styles.errorMessage}>{failedYearError}</p>} {/* عرض رسالة خطأ سنة الرسوب */}
                             {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
 
                             {/* زر الإرسال يأتي أولاً */}
                             <SubmitButton
-                                buttonText={children.length > 1 ? "إضافة التلاميذ" : "إضافة التلميذ"}
+                                buttonText="إضافة التلميذ"
                                 isLoading={isLoading}
                             />
-
-                            {/* زر الإضافة أو رسالة الحد الأقصى تأتي ثانياً */}
-                            {children.length < 3 ? (
-                                <button
-                                    type="button"
-                                    onClick={addChildForm}
-                                    className={styles.addButton}
-                                    disabled={isLoading}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    إضافة تلميذ آخر
-                                </button>
-                            ) : (
-                                <p className={styles.limitMessage}>لقد بلغت الحد الأقصى لإضافة التلاميذ.</p>
-                            )}
-
                         </form>
                     </div>
                 </div>

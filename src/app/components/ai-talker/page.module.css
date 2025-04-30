@@ -1,39 +1,272 @@
-/* الملف: components/ai-talker/AiTalker.module.css */
+/* الملف: components/ai-talker/page.module.css */
 
-/* ... (تنسيقات .robotContainer, .robotWrapper, .dialogContainer, .dialogContentWrapper كما هي) ... */
-.robotContainer { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 10px; position: absolute; right: 20px; top: 30%; z-index: 100; }
-.robotWrapper { cursor: pointer; display: flex; justify-content: center; align-items: center; width: 60px; height: 60px; position: relative; z-index: 2; transition: transform 0.2s ease; }
-.robotAnimation { width: 100%; height: 100%; }
-.robotWrapper:hover { transform: scale(1.05); }
-.robotWrapper:active { transform: scale(0.95); }
-.dialogContainer { position: relative; width: 220px; min-height: 60px; height: auto; display: flex; background-color: white; padding: 0; margin-right: 10px; box-sizing: border-box; border: 2px dashed #DD2946; border-radius: 15px 0px 15px 15px; overflow: hidden; }
-.dialogContentWrapper { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
-
-
-/* ===> تعديل تنسيق منطقة النص هنا <=== */
-.dialogTextContent {
-  flex-grow: 1;              /* السماح للمنطقة بالتمدد عموديًا داخل الحاوية الأم */
-  /* display: flex;         <-- تمت إزالة هذه */
-  /* align-items: center;   <-- تمت إزالة هذه */
-  text-align: right;         /* تحديد محاذاة النص لليمين */
-  white-space: pre-line;     /* الحفاظ على فواصل الأسطر */
-  padding: 15px 20px;        /* الحشوة الداخلية (متساوية عمودياً) */
-  box-sizing: border-box;
-  width: 100%;
-  direction: rtl;            /* اتجاه النص */
-  font-family: 'Noto Sans Arabic', sans-serif;
-  color: #444;
-  font-size: 16px;
-  font-weight: 500;
-  min-height: 30px;
+/* تنسيقات أيقونة الروبوت المثبتة */
+.robotWrapper {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  transition: transform 0.2s ease;
 }
 
-/* ... (باقي التنسيقات لـ .dialogActions, .actionButton, المؤشر, والشاشات الصغيرة كما هي) ... */
-.dialogActions { display: flex; justify-content: center; gap: 15px; padding: 5px 20px 12px 20px; width: 100%; box-sizing: border-box; flex-shrink: 0; }
-.actionButton { padding: 5px 15px; font-size: 14px; font-weight: bold; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; border-radius: 5px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; }
-.actionButton:hover { background-color: #eee; border-color: #bbb; }
-.yesButton:hover { border-color: #4CAF50; background-color: #e8f5e9; }
-.noButton:hover { border-color: #f44336; background-color: #ffebee; }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-.typingCursor { display: inline-block; width: 2px; height: 1em; background-color: #DD2946; margin-right: 2px; animation: blink 1s infinite; vertical-align: middle; }
-@media (max-width: 768px) { /* ... التنسيقات الاستجابية ... */ .dialogTextContent { padding: 12px 15px; /* ... */ } .dialogActions { padding: 5px 15px 10px 15px; /* ... */ } /* ... */ }
+.robotWrapper:hover {
+  transform: scale(1.1);
+}
+
+.robotWrapper:active {
+  transform: scale(0.95);
+}
+
+.robotAnimation {
+  width: 100%;
+  height: 100%;
+}
+
+/* تنسيق نافذة الدردشة */
+.dialogContainer {
+  position: fixed;
+  right: 20px;
+  bottom: 20px; /* أو 65px */
+  width: 350px; /* أو 320px */
+  height: 600px; /* أو 700px */
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden; /* مهم لقص الهيدر والأبناء */
+  z-index: 110;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid var(--main-color); 
+}
+
+/* تنسيقات هيدر النافذة */
+.dialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #DD2946; /* اللون الرئيسي */
+  flex-shrink: 0;
+  direction: rtl;
+  color: #fff;
+  /* === تم إزالة border-radius المحدد هنا للسماح للحاوية بقص الحواف === */
+  /* border-top-left-radius: 10px; */
+  /* border-top-right-radius: 0px; */
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.headerName {
+  font-weight: bold;
+  color: #FFFFFF;
+  font-size: 15px;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.headerSubtitle {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.2;
+  margin-top: -1px;
+}
+
+.headerAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.headerCloseButton {
+  background: none;
+  border: none;
+  padding: 5px;
+  margin: -5px;
+  cursor: pointer;
+  color: #FFFFFF;
+  line-height: 1;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.headerCloseButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* حاوية المحتوى الداخلي القابلة للتمرير */
+.dialogContentWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: #fff;
+  padding: 15px 8px 15px;
+  direction: rtl;
+}
+
+/* نمط عام لحاوية سطر الرسالة */
+.messageContainer {
+  display: flex;
+  margin-bottom: 15px;
+  width: 100%;
+  position: relative;
+  align-items: flex-start;
+}
+
+/* محاذاة رسائل الروبوت (لليمين في RTL) */
+.botMessage {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+/* محاذاة رسائل المستخدم (لليسار في RTL) */
+.userMessage {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+/* إضافة إطار لصورة الروبوت مشابه لإطار صورة المستخدم */
+.botMessage .messageSenderAvatar {
+  border: 1px solid #e0e0e0; /* لون رمادي فاتح للإطار */
+  box-sizing: border-box; /* لضمان عدم تأثير الإطار على الحجم الكلي */
+}
+
+/* نمط صورة المرسل (Avatar) العام */
+.messageSenderAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 8px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 0px;
+  object-fit: cover; /* لضمان ملء الصورة للدائرة */
+}
+
+/* ===> إضافة إطار لصورة المستخدم فقط <=== */
+.userMessage .messageSenderAvatar {
+  border: 1px solid #e0e0e0; /* لون رمادي فاتح للإطار */
+  box-sizing: border-box; /* لضمان عدم تأثير الإطار على الحجم الكلي */
+}
+
+/* تكبير حجم الخط داخل فقاعات الدردشة */
+.messageBubble {
+  border-radius: 18px;
+  padding: 10px 15px;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 15px; /* تكبير الخط من 14px إلى 15px */
+  line-height: 1.5; /* تعديل ارتفاع السطر ليناسب حجم الخط الجديد */
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* فقاعة الروبوت (التي تظهر على اليمين) */
+.botBubble {
+  /* ===> تغيير لون الخلفية لرمادي أغمق قليلاً <=== */
+  background-color: #e5e7eb; /* مثال: Tailwind gray-200 */
+  color: #1f2937; /* تعديل لون الخط ليناسب الخلفية الجديدة (اختياري) */
+  margin-left: auto;
+  margin-right: 0;
+  /* الزاوية الحادة تشير للصورة (التي على اليمين) */
+  border-top-right-radius: 5px;
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+/* فقاعة المستخدم (التي تظهر على اليسار) */
+.userBubble {
+  background-color: #DD2946;
+  color: white;
+  margin-right: auto;
+  margin-left: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+/* إذا كنت ترغب في تكبير حجم الخط للوقت أيضاً */
+.messageTime {
+  font-size: 11px; /* تكبير الخط من 10px إلى 11px */
+  color: #6b7280;
+  margin-top: 4px;
+  text-align: left;
+  opacity: 0.8;
+  direction: ltr;
+}
+
+.userBubble .messageTime {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* مُغلف جديد للأزرار لفصلها عن بنية الرسائل */
+.actionButtonsWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+/* تعديل تنسيق حاوية الأزرار */
+.messageBubbleActions {
+  display: flex;
+  gap: 10px;
+  justify-content: center; /* توسيط الأزرار أفقياً */
+  padding: 0;
+}
+
+/* تنسيق أزرار التفاعل */
+.bubbleButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 20px;
+  background-color: #fff;
+  border: 1px solid #DD2946; /* لون الحدود - اللون الرئيسي */
+  color: #DD2946; /* لون الخط - اللون الرئيسي */
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.bubbleButton:hover {
+  background-color: #fff5f7; /* لون خلفية خفيف عند التحويم */
+}
+
+/* نمط زر نعم (الأساسي) */
+.bubbleButton.primary {
+  background-color: #DD2946; /* خلفية الزر الأساسي - اللون الرئيسي */
+  border-color: #DD2946;
+  color: white; /* لون الخط للأبيض */
+}
+
+.bubbleButton.primary:hover {
+  background-color: #c8253e; /* لون أغمق قليلاً عند التحويم */
+}

@@ -3,13 +3,15 @@
 // استيراد المكتبات والمكونات اللازمة
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/navigation'; // إضافة استيراد Router للتنقل عند الإغلاق
+import { useRouter } from 'next/navigation';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './page.module.css';
 import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 import ExerciseHeader from '@/app/components/exercise-header/page';
-// حذف استيرادات Header و Footer
+import CloseButton from '@/app/components/close-button/page'; // استيراد مكون زر الإغلاق الجديد
 import AiTalker from '@/app/components/ai-talker/page';
+import ProgressStepper from '@/app/components/progress-stepper/page'; // استيراد شريط التقدم
+import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 
 // تعريف واجهات البيانات
 interface Connection {
@@ -24,12 +26,14 @@ interface Position {
 
 // تعريف المكون الرئيسي للصفحة
 export default function Exercise1Page() {
-    const router = useRouter(); // إضافة Router للتنقل
+    const router = useRouter();
     // تعريف متغيرات الحالة
     const [connections, setConnections] = useState<Connection[]>([]);
     const [startPoint, setStartPoint] = useState<string | null>(null);
     const [mousePos, setMousePos] = useState<Position | null>(null);
     const [isFullLoading, setIsFullLoading] = useState(false);
+    const [totalQuestions] = useState(5); // عدد الأسئلة في التمرين
+    const [currentQuestion, setCurrentQuestion] = useState(1); // السؤال الحالي
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +51,7 @@ export default function Exercise1Page() {
         // توجيه المستخدم إلى لوحة التحكم مع تحديد قسم "قوائم التمارين"
         router.push('/dashboard-user?section=home');
     };
-
+    
     // بيانات التمرين (النصوص والصور)
     const items = [
         { id: 'text1', text: 'تِلْمِيذٌ' },
@@ -172,6 +176,13 @@ export default function Exercise1Page() {
         return 'صورة توضيحية';
     };
 
+    // دالة لمعالجة تغيير السؤال
+    const handleQuestionChange = (questionNumber: number) => {
+        // هنا يمكنك إضافة منطق التنقل بين الأسئلة
+        setCurrentQuestion(questionNumber);
+        console.log(`الانتقال إلى السؤال ${questionNumber}`);
+    };
+
     // --- بنية الـ JSX للمكون ---
     return (
         <div className={styles.pageContainer} style={{ paddingTop: 0, marginTop: 0 }}>
@@ -181,20 +192,11 @@ export default function Exercise1Page() {
                 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
             </Head>
 
-            {/* تمت إزالة الهيدر */}
-
-            {/* أيقونة الإغلاق - رمادية أفتح مع X أبيض وأبعد عن الزاوية */}
-            <div 
-                className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-600 transition-colors"
-                onClick={handleClose}
-                title="إغلاق التمرين"
-                style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </div>
+            <CloseButton 
+                onClose={handleClose} 
+                position="top-right" 
+                size="md" 
+            />
 
             <main className={styles.exerciseContainer} style={{ paddingTop: '1rem' }}>
                 <div className={styles.exerciseContent}>
@@ -328,13 +330,37 @@ export default function Exercise1Page() {
                 </div>
             </main>
 
-            {/* إضافة المكون الجديد AI Talker */}
+            {/* استخدام المكون الجديد بدلاً من كود الزر السابق */}
+            <SubmitAndNextButton 
+                onClick={() => {
+                    // التحقق من صحة الإجابات هنا إذا لزم الأمر
+                    
+                    // الانتقال للسؤال التالي إذا لم يكن السؤال الأخير
+                    if (currentQuestion < totalQuestions) {
+                        handleQuestionChange(currentQuestion + 1);
+                    } else {
+                        // إذا كان هذا السؤال الأخير، يمكن تنفيذ إجراء آخر
+                        console.log("انتهاء التمرين");
+                        // مثلاً إظهار رسالة تهنئة أو الانتقال لصفحة أخرى
+                    }
+                }}
+                isLastQuestion={currentQuestion === totalQuestions}
+            />
+
+            {/* مكون AiTalker */}
             <AiTalker 
                 exerciseType="قراءة"
                 onHelpRequest={() => console.log("طلب مساعدة")}
                 onExplainRequest={() => console.log("طلب شرح")}
             />
-            {/* تمت إزالة الفوتر */}
+
+            {/* إضافة مؤشر التقدم (شريط التنقل بين الأسئلة) */}
+            <ProgressStepper 
+                totalSteps={totalQuestions}
+                currentStep={currentQuestion}
+                onStepChange={handleQuestionChange}
+                allowNavigation={true}
+            />
         </div>
     );
 }

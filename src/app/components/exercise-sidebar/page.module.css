@@ -152,28 +152,6 @@
   color: var(--main-color);
 }
 
-.nextExerciseSection {
-  margin-top: 10px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
-
-.nextExerciseIcon {
-  width: 34px;
-  height: 34px;
-  color: #171717;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.nextExerciseSection:hover .nextExerciseIcon {
-  transform: scale(1.1);
-  color: var(--main-color);
-}
-
 /* تعديل تنسيقات الخانة الجانبية ExerciseSidebar ليتم وضعها في منتصف الصفحة عموديًا */
 
 .exerciseSidebar {

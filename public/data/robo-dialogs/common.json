@@ -1,0 +1,20 @@
+{
+    "welcome": "مرحبا! أنا روبو كيف يمكنني مساعدتك؟",
+    "buttons": {
+      "welcome": [
+        {
+          "text": "اشرح التمرين",
+          "action": "explain_exercise",
+          "primary": true
+        },
+        {
+          "text": "لا أريد المساعدة شكرا!",
+          "action": "farewell",
+          "primary": false
+        }
+      ]
+    },
+    "responses": {
+      "farewell": "حسنا! حظا موفقا.."
+    }
+}

@@ -174,7 +174,7 @@ export default function DashboardUserPage() {
               {/* قسم معلومات المستخدم */}
               <div className={styles.userSection}>
                 <div className={styles.avatarContainer}>
-                  <img src="/male-avatar.png" alt="صورة المستخدم" className={styles.avatar} />
+                  <img src="/boy-avatar.png" alt="صورة التلميذ" className={styles.avatar} />
                 </div>
                 <select
                   value={selectedChildId}
