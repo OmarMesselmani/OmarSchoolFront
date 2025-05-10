@@ -11,29 +11,13 @@ import SubmitButton from '@/app/components/SubmitButton/SubmitButton';
 import checkAuth from '@/app/services/check-auth';
 import Cookies from 'js-cookie';
 import LoadingPage from '@/app/components/loading-page/LoadingPage';
+import { Student } from '@/app/data-structures/Student';
 
 // واجهة لبيانات الطفل
-interface ChildData {
-    firstName: string;
-    lastName: string;
-    gender: string;
-    dateOfBirth: string;
-    schoolLevel: string;
-    hasFailedPreviously: string; // 'yes' or 'no' or ''
-    failedYear?: string;
-}
 
 export default function AddChildPage() {
     // استخدام كائن واحد لتخزين بيانات التلميذ
-    const [childData, setChildData] = useState<ChildData>({
-        firstName: '',
-        lastName: '',
-        gender: '',
-        dateOfBirth: '',
-        schoolLevel: '',
-        hasFailedPreviously: '',
-        failedYear: '',
-    });
+    const [childData, setChildData] = useState<Student>();
 
     // حالة التحميل والخطأ
     const [isLoading, setIsLoading] = useState(false);
@@ -52,35 +36,35 @@ export default function AddChildPage() {
         setSuccessMessage(null);
 
         // التحقق من صحة البيانات المدخلة
-        if (!childData.firstName || !childData.lastName || !childData.gender || !childData.dateOfBirth || !childData.schoolLevel || !childData.hasFailedPreviously) {
+        if (!childData.name || !childData.surname || !childData.gender || !childData.date_of_birth || !childData.current_level || !childData.has_failed_before) {
             setError('يرجى ملء جميع الحقول المطلوبة.');
             setIsLoading(false);
             return;
         }
 
         // التحقق من اختيار سنة الرسوب إذا كانت الإجابة "نعم"
-        if (childData.hasFailedPreviously === 'yes' && (!childData.failedYear || childData.failedYear === '')) {
+        if (childData.has_failed_before === true && (!childData.failed_year || childData.failed_year === '')) {
             setFailedYearError('يرجى اختيار السنة التي رسب فيها التلميذ.');
             setIsLoading(false);
             return;
         }
 
         try {
-            const token = Cookies.get('token'); // Assuming you stored the parent token during signup
+            const token = Cookies.get('token');
             const response = await fetch('http://127.0.0.1:8000/student/add-student', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Token ${token}`,
                 },
-                body: JSON.stringify({ students: [childData] }),
+                body: JSON.stringify({ students: childData }),
             });
 
             const data = await response.json();
             if (response.ok) {
                 setSuccessMessage('تمت إضافة التلميذ بنجاح.');
                 setTimeout(() => {
-                    window.location.reload();
+                    window.location.href = '/dashboard-user';
                 }, 2000);
             } else {
                 setError(data.message || 'حدث خطأ أثناء إضافة التلميذ.');
@@ -129,14 +113,14 @@ export default function AddChildPage() {
                             <div className="child-section mb-6 last:mb-0">
                                 {/* حقل الاسم الأول */}
                                 <div className={styles.formGroup}>
-                                    <label htmlFor={`firstName`} className={styles.formLabel}>اسم التلميذ:</label>
-                                    <input type="text" id={`firstName`} className={styles.formInput} value={childData.firstName} onChange={(e) => setChildData({ ...childData, firstName: e.target.value })} required disabled={isLoading} />
+                                    <label htmlFor={`name`} className={styles.formLabel}>اسم التلميذ:</label>
+                                    <input type="text" id={`name`} className={styles.formInput} value={childData?.name} onChange={(e) => setChildData({ ...childData, name: e.target.value })} required disabled={isLoading} />
                                 </div>
 
                                 {/* حقل اللقب */}
                                 <div className={styles.formGroup}>
-                                    <label htmlFor={`lastName`} className={styles.formLabel}>لقب التلميذ:</label>
-                                    <input type="text" id={`lastName`} className={styles.formInput} value={childData.lastName} onChange={(e) => setChildData({ ...childData, lastName: e.target.value })} required disabled={isLoading} />
+                                    <label htmlFor={`surname`} className={styles.formLabel}>لقب التلميذ:</label>
+                                    <input type="text" id={`surname`} className={styles.formInput} value={childData?.surname} onChange={(e) => setChildData({ ...childData, surname: e.target.value })} required disabled={isLoading} />
                                 </div>
 
                                 {/* حقل الجنس */}
@@ -144,24 +128,24 @@ export default function AddChildPage() {
                                     <label className={styles.formLabel}>جنس التلميذ:</label>
                                     <div className={styles.radioGroup}>
                                         <label className={styles.radioLabel}>
-                                            <input type="radio" name={`childGender`} value="male" checked={childData.gender === 'male'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> ذكر
+                                            <input type="radio" name={`childGender`} value="male" checked={childData?.gender === 'male'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> ذكر
                                         </label>
                                         <label className={styles.radioLabel}>
-                                            <input type="radio" name={`childGender`} value="female" checked={childData.gender === 'female'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> أنثى
+                                            <input type="radio" name={`childGender`} value="female" checked={childData?.gender === 'female'} onChange={(e) => setChildData({ ...childData, gender: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> أنثى
                                         </label>
                                     </div>
                                 </div>
 
                                 {/* حقل تاريخ الميلاد */}
                                 <div className={styles.formGroup}>
-                                    <label htmlFor={`dateOfBirth`} className={styles.formLabel}>تاريخ الميلاد:</label>
-                                    <input type="date" id={`dateOfBirth`} className={styles.formInput} value={childData.dateOfBirth} onChange={(e) => setChildData({ ...childData, dateOfBirth: e.target.value })} required disabled={isLoading} max={new Date().toISOString().split("T")[0]} />
+                                    <label htmlFor={`date_of_birth`} className={styles.formLabel}>تاريخ الميلاد:</label>
+                                    <input type="date" id={`date_of_birth`} className={styles.formInput} value={childData?.date_of_birth} onChange={(e) => setChildData({ ...childData, date_of_birth: e.target.value })} required disabled={isLoading} max={new Date().toISOString().split("T")[0]} />
                                 </div>
 
                                 {/* حقل المستوى الدراسي الحالي */}
                                 <div className={styles.formGroup}>
-                                    <label htmlFor={`schoolLevel`} className={styles.formLabel}>المستوى الدراسي الحالي:</label>
-                                    <select id={`schoolLevel`} className={styles.formSelect} value={childData.schoolLevel} onChange={(e) => setChildData({ ...childData, schoolLevel: e.target.value })} required disabled={isLoading}>
+                                    <label htmlFor={`current_level`} className={styles.formLabel}>المستوى الدراسي الحالي:</label>
+                                    <select id={`current_level`} className={styles.formSelect} value={childData?.current_level} onChange={(e) => setChildData({ ...childData, current_level: e.target.value })} required disabled={isLoading}>
                                         <option value="" disabled>-- اختر المستوى --</option>
                                         <option value="السنة الأولى">السنة الأولى</option>
                                         <option value="السنة الثانية">السنة الثانية</option>
@@ -177,16 +161,16 @@ export default function AddChildPage() {
                                     <label className={styles.formLabel}>هل رسب التلميذ سابقًا؟</label>
                                     <div className={styles.radioGroup}>
                                         <label className={styles.radioLabel}>
-                                            <input type="radio" name={`hasFailed`} value="yes" checked={childData.hasFailedPreviously === 'yes'} onChange={(e) => setChildData({ ...childData, hasFailedPreviously: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> نعم
+                                            <input type="radio" name={`hasFailed`} value={"true"} checked={childData?.has_failed_before === true} onChange={(e) => setChildData({ ...childData, has_failed_before: true })} className={styles.radioInput} required disabled={isLoading} /> نعم
                                         </label>
                                         <label className={styles.radioLabel}>
-                                            <input type="radio" name={`hasFailed`} value="no" checked={childData.hasFailedPreviously === 'no'} onChange={(e) => setChildData({ ...childData, hasFailedPreviously: e.target.value })} className={styles.radioInput} required disabled={isLoading} /> لا
+                                            <input type="radio" name={`hasFailed`} value={"false"} checked={childData?.has_failed_before === false} onChange={(e) => setChildData({ ...childData, has_failed_before: false })} className={styles.radioInput} required disabled={isLoading} /> لا
                                         </label>
                                     </div>
                                 </div>
 
                                 {/* حقل سنة الرسوب (يظهر شرطيًا بسلاسة) - مع دعم الاختيار المتعدد */}
-                                <div className={`${styles.formGroup} ${styles.conditionalFieldContainer} ${childData.hasFailedPreviously === 'yes' ? styles.visible : ''}`}>
+                                <div className={`${styles.formGroup} ${styles.conditionalFieldContainer} ${childData?.has_failed_before === true ? styles.visible : ''}`}>
                                     <label className={styles.formLabel}>ماهي السنة الدراسية التي سبق له الرسوب فيها؟</label>
                                     <div className={styles.checkboxGroup}>
                                         {['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة', 'السنة الخامسة', 'السنة السادسة']
@@ -198,21 +182,21 @@ export default function AddChildPage() {
                                                     'السنة الثانية': 2,
                                                     'السنة الثالثة': 3,
                                                     'السنة الرابعة': 4,
-                                                    'السنة الخامسة': 5, 
+                                                    'السنة الخامسة': 5,
                                                     'السنة السادسة': 6
                                                 };
-                                                
+
                                                 // السماح فقط بالسنوات التي تسبق أو تساوي المستوى الحالي للطالب
-                                                return yearOrder[year as keyof typeof yearOrder] <= yearOrder[childData.schoolLevel as keyof typeof yearOrder];
+                                                return yearOrder[year as keyof typeof yearOrder] <= yearOrder[childData?.current_level as keyof typeof yearOrder];
                                             })
                                             .map((year) => (
                                                 <label key={year} className={styles.checkboxLabel}>
                                                     <input
                                                         type="checkbox"
-                                                        checked={(childData.failedYear || '').includes(year)}
+                                                        checked={(childData.failed_year || '').includes(year)}
                                                         onChange={(e) => {
                                                             // حفظ الاختيارات المتعددة في مصفوفة نصية
-                                                            const currentYears = childData.failedYear || '';
+                                                            const currentYears = childData.failed_year || '';
                                                             let newYears;
                                                             if (e.target.checked) {
                                                                 // إضافة السنة للاختيارات
@@ -224,9 +208,9 @@ export default function AddChildPage() {
                                                                     .filter(y => y !== year)
                                                                     .join(',');
                                                             }
-                                                            setChildData({ ...childData, failedYear: newYears });
+                                                            setChildData({ ...childData, failed_year: newYears });
                                                         }}
-                                                        disabled={isLoading || childData.hasFailedPreviously !== 'yes'}
+                                                        disabled={isLoading || childData.has_failed_before !== true}
                                                         className={styles.checkboxInput}
                                                     />
                                                     {year}

@@ -12,6 +12,7 @@ import { RxDashboard } from 'react-icons/rx';
 import { LiaClipboardListSolid } from "react-icons/lia"; // استيراد أيقونة الامتحانات
 // استيراد Hook السياق الخاص بالهيدر
 import { useHeaderVisibility } from '../contexts/header-context'; // تأكد من المسار الصحيح
+import Cookies from 'js-cookie';
 
 // --- استيراد مكونات الصفحات الفرعية ---
 import DashboardOverview from './pages/dashboard-overview/page'; // تأكد من المسار kebab-case
@@ -20,10 +21,11 @@ import LoadingPage from '../components/loading-page/LoadingPage';
 import checkAuth from '../services/check-auth';
 import ExamsPage from './pages/exams/page';
 import { useSearchParams } from 'next/navigation';
+import { Student } from '../data-structures/Student';
 // --- تعريف المكونات المؤقتة الأخرى أو استيرادها ---
 interface StudentData { name: string; level: string; age: number; uniqueId: string; }
 interface StudentDetailsMap { [key: string]: StudentData; }
-interface PageProps { selectedChildId: string; studentDetailsMap: StudentDetailsMap; }
+interface PageProps { selectedChildId: number; studentDetailsMap: StudentDetailsMap; }
 const StudentResults: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة النتائج والاحصائيات للطالب: {selectedChildId || 'N/A'}</div>);
 const ProfilePage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">الملف الشخصي للطالب: {selectedChildId || 'N/A'}</div>);
 const OffersPage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة العروض</div>);
@@ -34,7 +36,7 @@ interface Child { id: string; name: string; }
 
 // واجهة Props للمكونات الفرعية
 interface SubPageProps {
-  selectedChildId: string;
+  selectedChildId: number;
   studentDetailsMap: StudentDetailsMap;
 }
 
@@ -58,11 +60,44 @@ export default function DashboardUserPage() {
   const sidebarRef = useRef<HTMLDivElement>(null); // المرجع للشريط الجانبي
 
   const [childrenList, setChildrenList] = useState<Child[]>(mockChildren);
-  const [selectedChildId, setSelectedChildId] = useState<string>(mockChildren[0]?.id || '');
+  const [selectedChildId, setSelectedChildId] = useState<number>();
+
+  function handleChangeelectStudent(event: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedId = event.target.value;
+    setSelectedChildId(parseInt(selectedId)); // تعيين معرف الطفل المحدد
+    selectStudent(parseInt(selectedId)); // استدعاء الدالة لاختيار الطالب
+  }
+
+  async function selectStudent(studentId: number) {
+    try {
+      setIsFullLoading(true);
+      const token = Cookies.get('token');
+
+      const response = await fetch(`http://127.0.0.1:8000/parent/select-student`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({ student_id: studentId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch students.");
+      }
+    } catch (error: any) {
+      console.error("Error fetching students:", error.message);
+      throw error;
+    } finally {
+      setIsFullLoading(false);
+    }
+  }
 
   // حالات مؤقتة لـ Header
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
   const [isFullLoading, setIsFullLoading] = useState(true);
+  const [students, setStudents] = useState<Student[]>([]);
 
 
   // استخدام Hook السياق للحصول على حالة الهيدر
@@ -100,6 +135,62 @@ export default function DashboardUserPage() {
     }
   };
 
+
+  async function getStudentsByParent() {
+    try {
+      const token = Cookies.get('token');
+
+      const response = await fetch(`http://127.0.0.1:8000/student/get-students-by-parent`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch students.");
+      }
+
+      const data = await response.json();
+      setStudents(data.students); // تعيين البيانات المسترجعة
+    } catch (error: any) {
+      console.error("Error fetching students:", error.message);
+      throw error;
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////////
+  async function getStudentsById() {
+    try {
+      const token = Cookies.get('token');
+
+      const response = await fetch(`http://127.0.0.1:8000/parent/get-selected-student`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch students.");
+      }
+
+      const data = await response.json();
+      setSelectedChildId(data.student.id) // تعيين البيانات المسترجعة
+    } catch (error: any) {
+      console.error("Error fetching students:", error.message);
+      throw error;
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////////
+  useEffect(() => {
+    getStudentsByParent()
+    getStudentsById()
+  }, [])
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
@@ -112,13 +203,6 @@ export default function DashboardUserPage() {
     };
   }, [isOpen]); // الاعتمادية الصحيحة هي [isOpen]
 
-  useEffect(() => {
-    if (childrenList.length > 0 && !childrenList.find(s => s.id === selectedChildId)) {
-      setSelectedChildId(childrenList[0].id);
-    } else if (childrenList.length === 0 && selectedChildId !== '') {
-      setSelectedChildId('');
-    }
-  }, [childrenList, selectedChildId]);
 
   useEffect(() => {
     const checkUserAuth = async () => {
@@ -140,11 +224,11 @@ export default function DashboardUserPage() {
   useEffect(() => {
     // قراءة معلمة القسم من عنوان URL
     const section = searchParams.get('section');
-    
+
     // إذا كانت المعلمة هي "home"، اعرض قسم قوائم التمارين
     if (section === 'home' || section === 'exercises') {
-        // تعيين الصفحة الحالية إلى قوائم التمارين
-        setCurrentPage('home'); // استخدام اسم الصفحة الفعلي في تطبيقك
+      // تعيين الصفحة الحالية إلى قوائم التمارين
+      setCurrentPage('home'); // استخدام اسم الصفحة الفعلي في تطبيقك
     }
   }, [searchParams]);
 
@@ -178,14 +262,14 @@ export default function DashboardUserPage() {
                 </div>
                 <select
                   value={selectedChildId}
-                  onChange={(e) => setSelectedChildId(e.target.value)}
+                  onChange={(e) => handleChangeelectStudent(e)}
                   className={`${styles.userName} ${styles.menuText} ${!isOpen ? styles.hideText : ''}`} // استخدام hideText هنا للإخفاء
                   aria-label="اختر التلميذ"
                   disabled={childrenList.length === 0}
                   onClick={(e) => e.stopPropagation()} // منع إغلاق الشريط
                 >
-                  {childrenList.length === 0 && <option value="">لا يوجد تلاميذ</option>}
-                  {childrenList.map(child => (<option key={child.id} value={child.id}> {child.name} </option>))}
+                  {students.length === 0 && <option value="">لا يوجد تلاميذ</option>}
+                  {students.map(child => (<option key={child?.id} value={child?.id}> {child?.name} {child?.surname} </option>))}
                 </select>
               </div>
               <div className={styles.divider}></div>

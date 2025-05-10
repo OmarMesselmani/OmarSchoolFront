@@ -21,7 +21,7 @@ interface StudentDetailsMap {
 }
 // واجهة Props لهذه الصفحة
 interface ExamsPageProps {
-  selectedChildId: string;
+  selectedChildId: number;
   studentDetailsMap: StudentDetailsMap;
 }
 // واجهة بيانات الامتحان

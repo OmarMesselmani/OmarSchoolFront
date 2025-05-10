@@ -15,7 +15,7 @@ import TypingEffectText from '@/app/components/typing-effect-text/page'; // تأ
 
 // --- واجهة Props (تستقبل selectedChildId فقط) ---
 interface DashboardOverviewProps {
-  selectedChildId: string;
+  selectedChildId: number;
 }
 
 // --- Interfaces and Mock Data (معرفة داخل المكون كما قدمتها) ---
@@ -23,7 +23,7 @@ interface DashboardOverviewProps {
 interface StudentData { name: string; level: string; age: number; uniqueId: string; }
 interface StudentDetailsMap { [key: string]: StudentData; }
 
-const mockProgressData = [ { subject: 'الرياضيات', unit: 'أتعرف مجموعات حسب التقابل', progress: 65, id: 'math' }, { subject: 'الإيقاظ العلمي', unit: 'تعيين موقع جسم بالنسبة إلى جسم آخر أو معلم في المكان', progress: 30, id: 'science' }, { subject: 'القراءة', unit: 'يحدد أحداث النص وشخصياته، والأزمنة والأمكنة الواردة فيه', progress: 85, id: 'reading' }, { subject: 'الانتاج الكتابي', unit: 'تنظيم عناصر جملة', progress: 45, id: 'writing' }, ];
+const mockProgressData = [{ subject: 'الرياضيات', unit: 'أتعرف مجموعات حسب التقابل', progress: 65, id: 'math' }, { subject: 'الإيقاظ العلمي', unit: 'تعيين موقع جسم بالنسبة إلى جسم آخر أو معلم في المكان', progress: 30, id: 'science' }, { subject: 'القراءة', unit: 'يحدد أحداث النص وشخصياته، والأزمنة والأمكنة الواردة فيه', progress: 85, id: 'reading' }, { subject: 'الانتاج الكتابي', unit: 'تنظيم عناصر جملة', progress: 45, id: 'writing' },];
 const mockStudentDetails: StudentDetailsMap = { 'child1': { name: 'التلميذ الأول', level: 'السنة الأولى', age: 6, uniqueId: '123456789123' }, 'child2': { name: 'التلميذ الثاني', level: 'السنة الثالثة', age: 8, uniqueId: '987654321987' }, 'child3': { name: 'التلميذ الثالث', level: 'السنة الخامسة', age: 10, uniqueId: '112233445566' }, '': { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' } };
 const subjectCardBgColors: { [key: string]: string } = { math: '#D1FAE5', science: '#EDE9FE', reading: '#DBEAFE', writing: '#FFEDD5', };
 const subjectTitleBgColors: { [key: string]: string } = { math: '#059669', science: '#6D28D9', reading: '#2563EB', writing: '#F97316', };
@@ -53,15 +53,16 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
     <div className={overviewStyles.overviewContainer}>
       {/* === قسم معلومات التلميذ === */}
       <div className={overviewStyles.fullWidthSpan}>
-         {/* التأكد من وجود بيانات قبل العرض */}
-         {selectedStudentData && (
-             <StudentInfoHeader
-                 studentName={selectedStudentData.name}
-                 schoolLevel={selectedStudentData.level}
-                 age={selectedStudentData.age}
-                 uniqueId={selectedStudentData.uniqueId}
-             />
-         )}
+        {/* التأكد من وجود بيانات قبل العرض */}
+        {selectedStudentData && (
+          <StudentInfoHeader
+            childID={selectedChildId}
+            studentName={selectedStudentData.name}
+            schoolLevel={selectedStudentData.level}
+            age={selectedStudentData.age}
+            uniqueId={selectedStudentData.uniqueId}
+          />
+        )}
       </div>
 
       {/* === قسم بطاقات التقدم === */}
@@ -74,7 +75,7 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
             <DashboardCard
               key={data.id}
               title={data.subject}
-              style={{'--card-bg-color': cardBgColor, '--title-bg-color': titleBgColor} as React.CSSProperties}
+              style={{ '--card-bg-color': cardBgColor, '--title-bg-color': titleBgColor } as React.CSSProperties}
               hashtag={hashtag}
             >
               <SubjectProgressCardContent
@@ -92,7 +93,7 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
       <div className={overviewStyles.examsSection}>
         <DashboardCard
           title="الامتحانات والتقاييم"
-          style={{'--card-bg-color': '#ffffff', '--title-bg-color': '#151313'} as React.CSSProperties}
+          style={{ '--card-bg-color': '#ffffff', '--title-bg-color': '#151313' } as React.CSSProperties}
         >
           <div className={overviewStyles.examsList}>
             {(() => {
@@ -110,7 +111,7 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
                 }
                 const hashtag = data.id === 'reading' ? '#الثلاثي_الثاني' : '#الثلاثي_الأول';
                 return (
-                  <div key={data.id} className={overviewStyles.examItem} style={{backgroundColor: subjectCardBgColors[data.id] || '#ffffff'}}>
+                  <div key={data.id} className={overviewStyles.examItem} style={{ backgroundColor: subjectCardBgColors[data.id] || '#ffffff' }}>
                     <div className={overviewStyles.examHeader}>
                       <h3 className={overviewStyles.examSubject} style={{ backgroundColor: subjectTitleBgColors[data.id] }}>{data.subject}</h3>
                       <div className={overviewStyles.examHashtagContainer}><span className={overviewStyles.hashtag}>{hashtag}</span></div>
@@ -128,34 +129,34 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
       <div className={overviewStyles.newCardsSection}>
         {/* === بطاقة الإحصائيات === */}
         <DashboardCard
-            className={overviewStyles.statsCard}
-            style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
+          className={overviewStyles.statsCard}
+          style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
         >
-            <div className={overviewStyles.statsGridContainer}>
-                {orderedSubjectsData.map((data) => (
-                    <div key={data.id} className={overviewStyles.statsSubjectBlock} style={{ backgroundColor: subjectCardBgColors[data.id] || '#f3f4f6' }}>
-                        <div className={overviewStyles.statsContentArea}>
-                            <SubjectStatsChart subjectColor={subjectTitleBgColors[data.id] || '#4B5563'} chartData={mockSubjectChartData[data.id] || []} />
-                        </div>
-                        <span className={overviewStyles.statsSubjectName} style={{ color: subjectTitleBgColors[data.id] || '#1f2937' }}>
-                            {data.subject}
-                        </span>
-                    </div>
-                ))}
-            </div>
+          <div className={overviewStyles.statsGridContainer}>
+            {orderedSubjectsData.map((data) => (
+              <div key={data.id} className={overviewStyles.statsSubjectBlock} style={{ backgroundColor: subjectCardBgColors[data.id] || '#f3f4f6' }}>
+                <div className={overviewStyles.statsContentArea}>
+                  <SubjectStatsChart subjectColor={subjectTitleBgColors[data.id] || '#4B5563'} chartData={mockSubjectChartData[data.id] || []} />
+                </div>
+                <span className={overviewStyles.statsSubjectName} style={{ color: subjectTitleBgColors[data.id] || '#1f2937' }}>
+                  {data.subject}
+                </span>
+              </div>
+            ))}
+          </div>
         </DashboardCard>
 
         {/* === حاوية البطاقتين السفليتين === */}
         <div className={overviewStyles.bottomCardsContainer}>
 
           {/* === البطاقة اليسرى (النص التفاعلي) === */}
-           <DashboardCard
-                style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
-           >
-                <div className={overviewStyles.welcomeCardContent}>
-                  <TypingEffectText paragraphs={welcomeParagraphs} />
-                </div>
-           </DashboardCard>
+          <DashboardCard
+            style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
+          >
+            <div className={overviewStyles.welcomeCardContent}>
+              <TypingEffectText paragraphs={welcomeParagraphs} />
+            </div>
+          </DashboardCard>
           {/* === نهاية البطاقة اليسرى === */}
 
 
@@ -164,7 +165,7 @@ export default function DashboardOverview({ selectedChildId }: DashboardOverview
             className={overviewStyles.calendarCard}
             style={{ '--card-bg-color': defaultCardBgColor } as React.CSSProperties}
           >
-             <MiniCalendar />
+            <MiniCalendar />
           </DashboardCard>
           {/* === نهاية البطاقة اليمنى === */}
 
