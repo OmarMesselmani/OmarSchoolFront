@@ -150,7 +150,9 @@ export default function DashboardUserPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch students.");
+        if (errorData.students.length === 0) {
+          window.location.href = "/auth/add-child"; // إعادة توجيه المستخدم إلى صفحة إضافة طفل
+        }
       }
 
       const data = await response.json();
@@ -191,10 +193,6 @@ export default function DashboardUserPage() {
     }
   }
   ///////////////////////////////////////////////////////////////////////////
-  useEffect(() => {
-    getStudentsByParent()
-    getStudentsById()
-  }, [])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -236,6 +234,8 @@ export default function DashboardUserPage() {
         console.error('Error checking token:', error);
       }
     }
+    getStudentsByParent()
+    getStudentsById()
     checkUserAuth();
   }, []);
 

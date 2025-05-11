@@ -29,6 +29,7 @@ export default function AddChildPage() {
     // حالة التحميل والخطأ
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
     const [failedYearError, setFailedYearError] = useState<string | null>(null); // إضافة حالة خطأ خاصة بسنة الرسوب
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isFullLoading, setIsFullLoading] = useState(true);
@@ -43,7 +44,7 @@ export default function AddChildPage() {
         setSuccessMessage(null);
 
         // التحقق من صحة البيانات المدخلة
-        if (!name || !surname || !gender || !dateOfBirth || !currentLevel || !hasFailedBefore) {
+        if (!name || !surname || !gender || !dateOfBirth || !currentLevel || hasFailedBefore === null) {
             setError('يرجى ملء جميع الحقول المطلوبة.');
             setIsLoading(false);
             return;
@@ -94,6 +95,31 @@ export default function AddChildPage() {
         }
     };
 
+
+
+    async function getStudentsByParent() {
+        try {
+            const token = Cookies.get('token');
+
+            const response = await fetch(`http://127.0.0.1:8000/student/get-students-by-parent`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setMessage(errorData.message);
+            }
+
+        } catch (error: any) {
+            console.error("Error fetching students:", error.message);
+            throw error;
+        }
+    }
+
     useEffect(() => {
         const checkUserAuth = async () => {
             try {
@@ -107,6 +133,7 @@ export default function AddChildPage() {
                 console.error('Error checking token:', error);
             }
         }
+        getStudentsByParent()
         checkUserAuth();
     }, []);
 
@@ -128,6 +155,13 @@ export default function AddChildPage() {
                         <form onSubmit={handleSubmit}>
                             {/* باقي حقول النموذج للطفل */}
                             <div className="child-section mb-6 last:mb-0">
+                                {
+                                    message !== null && (
+                                        <div className="alert alert-danger mb-4 text-center" style={{ fontWeight: 'bold', color: 'red' }}>
+                                            {message}
+                                        </div>
+                                    )
+                                }
                                 {/* حقل الاسم الأول */}
                                 <div className={styles.formGroup}>
                                     <label htmlFor={`name`} className={styles.formLabel}>اسم التلميذ:</label>
