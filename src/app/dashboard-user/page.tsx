@@ -158,8 +158,6 @@ export default function DashboardUserPage() {
         window.location.href = "/auth/add-child"; // إعادة توجيه المستخدم إلى صفحة إضافة طفل
       } else {
         setStudents(data.students); // تعيين البيانات المسترجعة
-        // setSelectedChildId(parseInt(data.students[0].id)); // تعيين معرف الطفل المحدد
-        // selectStudent(parseInt(data.students[0].id));
       }
 
     } catch (error: any) {
