@@ -154,7 +154,14 @@ export default function DashboardUserPage() {
       }
 
       const data = await response.json();
-      setStudents(data.students); // تعيين البيانات المسترجعة
+      if (data.students.length === 0) {
+        window.location.href = "/auth/add-child"; // إعادة توجيه المستخدم إلى صفحة إضافة طفل
+      } else {
+        setStudents(data.students); // تعيين البيانات المسترجعة
+        // setSelectedChildId(parseInt(data.students[0].id)); // تعيين معرف الطفل المحدد
+        // selectStudent(parseInt(data.students[0].id));
+      }
+
     } catch (error: any) {
       console.error("Error fetching students:", error.message);
       throw error;
