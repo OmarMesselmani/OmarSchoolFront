@@ -201,7 +201,20 @@ export default function DashboardUserPage() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]); // الاعتمادية الصحيحة هي [isOpen]
+  }, [isOpen]);
+
+
+  const handleLogout = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      setIsFullLoading(true);
+      const token = Cookies.get('token');
+      const response = await fetch('http://127.0.0.1:8000/parent/sign-out', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` } });
+      const data = await response.json();
+      if (response.ok) { Cookies.remove('token'); window.location.href = "/auth/login"; }
+      else { /* Handle error */ }
+    } catch (error) { console.error('Error during logout:', error); } finally { setIsFullLoading(false); }
+  };
 
 
   useEffect(() => {
@@ -288,7 +301,7 @@ export default function DashboardUserPage() {
               <div className={styles.logoutWrapper}>
                 <div className={styles.divider}></div>
                 <div className={`${styles.settingsItem} ${currentPage === 'settings' ? styles.active : ''}`} onClick={handleItemClick('settings')} title="إعدادات الحساب" > <IoSettingsOutline className={styles.icon} /> <span className={styles.menuText}>إعدادات الحساب</span> </div>
-                <div className={styles.settingsItem} onClick={() => alert('تسجيل الخروج!')} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div>
+                <div className={styles.settingsItem} onClick={(e) => handleLogout(e)} title="تسجيل الخروج" > <LuLogOut className={styles.icon} /> <span className={styles.menuText}>تسجيل الخروج</span> </div>
               </div>
             </div>
           </div>
