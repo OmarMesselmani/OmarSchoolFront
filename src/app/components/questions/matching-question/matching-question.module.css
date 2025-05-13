@@ -1,0 +1,27 @@
+/* ./app/components/questions/matching-question/page.module.css */
+/* (أو matching-question.module.css) */
+
+/* حاوية المحتوى الداخلي للسؤال - يمكن إعادة تسمية الكلاس إذا أردت */
+/* هذا الكلاس كان اسمه .exerciseBody في الأصل */
+.questionContentWrapper {
+  display: flex;
+  gap: 60px; /* زيادة المسافة قليلًا كمثال */
+  width: 100%; /* اجعله يأخذ عرض الحاوية الأب (mainExerciseArea) */
+  max-width: 800px; /* يمكنك الإبقاء على حد أقصى للعرض */
+  margin: 0 auto; /* توسيطه إذا كان له max-width */
+  /* margin-bottom: 80px;  <- أزل هذه، الهامش السفلي يجب أن يتحكم به القالب */
+  justify-content: space-between; /* أو space-around حسب التصميم */
+}
+
+/* الكلاس المستخدم كـ ref لـ Xwrapper، ضروري لـ position: relative */
+/* هذا الكلاس كان اسمه .mainContent في الأصل */
+.xarrowContainer {
+  flex: 1; /* قد لا تحتاج لهذا إذا كان .questionContentWrapper يستخدم flex */
+  padding: 20px;
+  color: #171717;
+  position: relative; /* ضروري جدًا لتحديد موضع SVG بشكل صحيح لـ Xarrows */
+  min-height: 400px; /* ارتفاع أدنى لضمان وجود مساحة كافية للرسم */
+}
+
+/* يمكنك إضافة أي أنماط أخرى خاصة بعناصر الربط هنا إذا لم تستخدم Tailwind */
+/* مثلاً: تنسيق نقاط الاتصال، حجم الخط الخاص بالنصوص داخل السؤال، إلخ. */

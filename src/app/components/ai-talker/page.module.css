@@ -243,30 +243,30 @@
   padding: 0;
 }
 
-/* تنسيق أزرار التفاعل */
+/* تنسيق أزرار التفاعل - النمط الموحد الجديد */
 .bubbleButton {
   padding: 8px 16px;
   font-size: 14px;
   border-radius: 20px;
-  background-color: #fff;
-  border: 1px solid #DD2946; /* لون الحدود - اللون الرئيسي */
-  color: #DD2946; /* لون الخط - اللون الرئيسي */
+  background-color: #f3f4f6; /* خلفية رمادية فاتحة - مثل Tailwind gray-100 */
+  border: 1px solid #e5e7eb; /* حدود رمادية فاتحة - مثل Tailwind gray-200 */
+  color: #1f2937; /* لون النص العادي - أسود/رمادي داكن مثل Tailwind gray-800 */
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500;
 }
 
 .bubbleButton:hover {
-  background-color: #fff5f7; /* لون خلفية خفيف عند التحويم */
+  background-color: #e5e7eb; /* خلفية أغمق قليلاً عند التحويم - مثل Tailwind gray-200 */
 }
 
-/* نمط زر نعم (الأساسي) */
+/* إلغاء النمط الخاص بالزر الأساسي (primary) وجعله مماثلاً للنمط العادي */
 .bubbleButton.primary {
-  background-color: #DD2946; /* خلفية الزر الأساسي - اللون الرئيسي */
-  border-color: #DD2946;
-  color: white; /* لون الخط للأبيض */
+  background-color: #f3f4f6; /* نفس الخلفية */
+  border-color: #e5e7eb; /* نفس لون الحدود */
+  color: #1f2937; /* نفس لون النص */
 }
 
 .bubbleButton.primary:hover {
-  background-color: #c8253e; /* لون أغمق قليلاً عند التحويم */
+  background-color: #e5e7eb; /* نفس سلوك التحويم */
 }
