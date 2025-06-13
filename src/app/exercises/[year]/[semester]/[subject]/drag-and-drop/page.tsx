@@ -55,6 +55,10 @@ export default function DragAndDrop() {
     const [allItems, setAllItems] = useState<ColorInfo[]>([]);
     const [status, setStatus] = useState<ExerciseStatus | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [droppedItems, setDroppedItems] = useState<{ [dropzoneId: string]: ColorInfo | null }>({});
+    const [history, setHistory] = useState<MoveHistoryItem[]>([]);
+    const [isFullLoading, setIsFullLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -101,18 +105,19 @@ export default function DragAndDrop() {
             });
     }, [exerciseId]);
 
+    const displayDropZones = Array.isArray(dropZones)
+        ? dropZones
+            .map(zone => {
+                const color = allItems.find(item => item.id === zone.correct_item_id);
+                return { ...zone, color };
+            })
+            .filter(zone => zone.color)
+        : [];
 
-    const displayDropZones = dropZones.map(zone => {
-        const color = allItems.find(item => item.id === zone.correct_item_id);
-        return { ...zone, color };
-    }).filter(zone => zone.color); // in case data is incomplete
 
 
     // --- حالة التمرين ---
-    const [droppedItems, setDroppedItems] = useState<{ [dropzoneId: string]: ColorInfo | null }>({});
-    const [history, setHistory] = useState<MoveHistoryItem[]>([]);
-    const [isFullLoading, setIsFullLoading] = useState(true);
-    const [loading, setLoading] = useState(false);
+
 
 
     // إعداد حساسات الإدخال
@@ -293,7 +298,18 @@ export default function DragAndDrop() {
 
     if (isFullLoading) {
         return <LoadingPage />;
-    } else {
+    } else if ((dropZones?.length ?? 0) === 0 || (draggableItems?.length ?? 0) === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <Header />
+                <main className="flex-grow flex items-center justify-center text-2xl text-gray-600">
+                    لا توجد بيانات هنا
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+    else {
         return (
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
                 <div className={styles.pageContainer}>
@@ -317,8 +333,14 @@ export default function DragAndDrop() {
                                     <div className="exercise-area flex flex-col items-center gap-12">
                                         {/* 1. حاوية أسماء الألوان القابلة للسحب */}
                                         <div className="color-names-container flex flex-wrap justify-center gap-4 p-4 min-h-[80px]">
-                                            {draggableItems.map((color) => (<DraggableColor key={color.id} color={color} />))}
-                                            {draggableItems.length === 0 && (<p className="text-gray-500">تم سحب كل الألوان!</p>)}
+                                            {(draggableItems || []).map((color) => (
+                                                <DraggableColor key={color.id} color={color} />
+                                            ))}
+
+                                            {draggableItems?.length === 0 && (
+                                                <p className="text-gray-500">تم سحب كل الألوان!</p>
+                                            )}
+
                                         </div>
                                         {/* 2. حاوية الدوائر الملونة ومناطق الإسقاط */}
                                         <div className="color-targets-container w-full max-w-2xl grid grid-cols-3 gap-x-8 gap-y-10">
