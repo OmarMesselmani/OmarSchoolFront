@@ -206,3 +206,15 @@
     transform: rotate(360deg);
   }
 }
+
+.exercise-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.exercise-body-wrapper {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}

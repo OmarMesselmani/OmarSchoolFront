@@ -298,7 +298,7 @@ export default function DragAndDrop() {
 
     if (isFullLoading) {
         return <LoadingPage />;
-    } else if ((dropZones?.length ?? 0) === 0 || (draggableItems?.length ?? 0) === 0) {
+    } else if ((dropZones?.length ?? 0) === 0 && (allItems?.length ?? 0) === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <Header />

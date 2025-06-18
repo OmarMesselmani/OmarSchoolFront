@@ -1,0 +1,616 @@
+.settingsContainer {
+  width: 100%;
+  padding: 5px;
+  max-width: 100%;
+}
+
+.pageTitle {
+font-size: 1.75rem;
+font-weight: 600;
+margin-bottom: 1.5rem;
+color: #333;
+}
+
+.cardsGrid {
+column-count: 4;
+column-gap: 16px;
+width: 100%;
+}
+
+.settingsCardWrapper {
+display: flex;
+flex-direction: column;
+height: auto;
+border-radius: 10px;
+overflow: hidden;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+margin-bottom: 16px;
+break-inside: avoid;
+page-break-inside: avoid;
+width: 100%;
+}
+
+.customHeader {
+background: #DD2946;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 12px 16px;
+direction: rtl;
+}
+
+.headerIcon {
+color: #fff;
+font-size: 20px;
+display: flex;
+align-items: center;
+}
+
+.headerTitle {
+color: #fff;
+font-weight: 600;
+font-size: 1.1rem;
+}
+
+.settingsCard {
+margin-bottom: 0 !important;
+height: auto !important;
+display: flex;
+flex-direction: column;
+flex-grow: 1;
+border-radius: 8px;
+overflow: hidden;
+border: 1px solid #e5e7eb;
+border-top: none !important;
+border-top-left-radius: 0 !important;
+border-top-right-radius: 0 !important;
+box-shadow: none !important;
+}
+
+.cardBody {
+background-color: white !important;
+padding: 5px !important;
+flex-grow: 1 !important;
+display: flex !important;
+flex-direction: column !important;
+}
+
+.settingsForm {
+display: flex;
+flex-direction: column;
+gap: 20px;
+width: 100%;
+height: 100%;
+}
+
+.flexGrow {
+flex-grow: 1;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.formGroup {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.formLabel {
+font-weight: 500;
+color: #4b5563;
+font-size: 0.9rem;
+}
+
+.formInput {
+padding: 10px 16px;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+font-size: 1rem;
+transition: border-color 0.2s;
+direction: rtl;
+width: 100%;
+}
+
+.formInput:focus {
+outline: none;
+border-color: #DD2946;
+box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.1);
+}
+
+.formActions {
+margin-top: auto;
+padding-top: 20px;
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+}
+
+.primaryButton {
+padding: 10px 20px;
+background-color: #DD2946;
+color: white;
+border: none;
+border-radius: 8px;
+font-weight: 500;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+
+.primaryButton:hover {
+background-color: #c01d37;
+}
+
+.secondaryButton {
+padding: 8px 16px;
+background-color: #f3f4f6;
+color: #4b5563;
+border: 1px solid #d1d5db;
+border-radius: 6px;
+font-weight: 500;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+transition: background-color 0.2s, border-color 0.2s;
+}
+
+.secondaryButton:hover {
+background-color: #e5e7eb;
+border-color: #9ca3af;
+}
+
+.buttonIcon {
+margin-left: 6px;
+}
+
+.divider {
+border: none;
+border-top: 1px solid #e5e7eb;
+margin: 16px 0;
+}
+
+/* 1. دمج القواعد المتعلقة ببطاقات الخطر */
+.dangerCard .customHeader {
+  background-color: #dc2626;
+  border-radius: 10px 10px 0 0;
+}
+
+.dangerCard .settingsCard {
+  border: none !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.dangerCard .cardBody {
+  padding: 0 !important;
+  background-color: #fee2e2 !important;
+  border-radius: 0 0 10px 10px;
+}
+
+.dangerCardBody {
+  background-color: #fee2e2 !important;
+  padding: 0 !important;
+  border-radius: 0 0 10px 10px;
+}
+
+.dangerHeader {
+  background-color: #dc2626;
+  border-radius: 10px 10px 0 0;
+}
+
+/* 2. توحيد قواعد المقاطع الخطرة */
+.dangerSection,
+.specialDangerSection {
+  background-color: #fee2e2;
+  padding: 16px;
+  border-radius: 0 0 10px 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dangerText {
+  color: #333;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.dangerButton {
+  padding: 10px 20px;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dangerButton:hover {
+  background-color: #b91c1c;
+}
+
+.switchGroup {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 16px;
+}
+
+.switchInfo {
+flex: 1;
+}
+
+.switchTitle {
+font-weight: 500;
+margin: 0;
+font-size: 1rem;
+}
+
+.switchDesc {
+color: #6b7280;
+margin: 4px 0 0 0;
+font-size: 0.875rem;
+}
+
+.switchLabel {
+position: relative;
+display: inline-block;
+width: 52px;
+height: 28px;
+}
+
+.switchLabel input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.switchToggle {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e5e7eb;
+transition: .4s;
+border-radius: 34px;
+}
+
+.switchToggle:before {
+position: absolute;
+content: "";
+height: 20px;
+width: 20px;
+left: 4px;
+bottom: 4px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+
+input:checked + .switchToggle {
+background-color: #DD2946;
+}
+
+input:checked + .switchToggle:before {
+transform: translateX(24px);
+}
+
+.sectionTitle {
+font-size: 1.25rem;
+font-weight: 600;
+margin-bottom: 16px;
+color: #333;
+}
+
+.rangeGroup {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 16px;
+}
+
+.rangeInfo {
+flex: 1;
+}
+
+.rangeTitle {
+font-weight: 500;
+margin: 0;
+font-size: 1rem;
+}
+
+.rangeDesc {
+color: #6b7280;
+margin: 4px 0 0 0;
+font-size: 0.875rem;
+}
+
+.rangeControl {
+width: 150px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.rangeInput {
+width: 100%;
+direction: ltr;
+}
+
+.rangeValue {
+min-width: 42px;
+text-align: right;
+font-weight: 500;
+}
+
+.studentListContainerOuter {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 100%;
+}
+
+.studentListScrollableContainer {
+flex-grow: 1;
+overflow-y: auto;
+max-height: 300px;
+padding-right: 4px;
+margin-bottom: 16px;
+}
+
+.studentListUnstyled {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+.studentListUnstyled:not(:empty) {
+margin-bottom: 16px;
+}
+
+.studentEditableItem {
+padding: 16px 0px;
+border-bottom: 1px solid #e9ecef;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+.studentEditableItem:last-child {
+border-bottom: none;
+}
+
+.studentItemHeader {
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 100%;
+}
+
+.studentNameContainer {
+display: flex;
+align-items: baseline;
+gap: 6px;
+flex-grow: 1;
+}
+
+.studentNameLabel {
+font-weight: normal;
+color: #495057;
+font-size: 1rem;
+margin-left: 0;
+}
+
+.studentNameValue {
+font-weight: 600;
+color: #212529;
+font-size: 1rem;
+text-align: right;
+}
+
+.deleteStudentButton {
+background: none;
+border: none;
+color: #DD2946;
+cursor: pointer;
+padding: 5px;
+margin-left: 0;
+margin-right: auto;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: color 0.2s ease;
+}
+
+.deleteStudentButton:hover {
+color: #c01d37;
+}
+
+.studentYearModificationBlock {
+display: flex;
+flex-direction: column;
+gap: 8px;
+width: 100%;
+padding-top: 8px;
+}
+
+.yearLabelTitle {
+font-size: 0.95rem;
+color: #343a40;
+font-weight: 500;
+display: block;
+margin-bottom: 4px;
+}
+
+.yearSelectDropdown {
+padding: 8px 12px;
+border: 1px solid #ced4da;
+border-radius: 5px;
+font-size: 1rem;
+width: 100%;
+background-color: #fff;
+cursor: pointer;
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.yearSelectDropdown:focus {
+outline: none;
+border-color: #DD2946;
+box-shadow: 0 0 0 0.2rem rgba(221, 41, 70, 0.25);
+}
+
+.noStudentsText {
+text-align: center;
+color: #6c757d;
+padding: 25px 15px;
+font-style: italic;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 100px;
+margin-bottom: 16px;
+}
+
+.addStudentButton {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+padding: 12px 15px;
+font-size: 1.05rem;
+font-weight: 500;
+color: #DD2946;
+background-color: transparent;
+border: 2px dashed #DD2946;
+border-radius: 6px;
+cursor: pointer;
+transition: background-color 0.2s ease, color 0.2s ease;
+margin-top: 10px;
+}
+
+.addStudentButton:hover {
+background-color: rgba(221, 41, 70, 0.05);
+}
+
+.addStudentButtonIcon {
+margin-left: 8px;
+}
+
+.genericCardContent {
+padding: 16px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+color: #555;
+font-size: 0.9rem;
+}
+
+.reasonSelectionContainer {
+background-color: #f9fafb;
+padding: 16px;
+border-radius: 8px;
+margin-top: 10px;
+border: 1px solid #e5e7eb;
+}
+
+.reasonTitle {
+font-size: 16px;
+font-weight: 500;
+color: #111827;
+margin-top: 0;
+margin-bottom: 12px;
+}
+
+.radioGroup {
+margin-bottom: 8px;
+}
+
+.radioLabel {
+display: flex;
+align-items: center;
+cursor: pointer;
+}
+
+.radioText {
+margin-right: 10px;
+font-size: 14px;
+color: #374151;
+}
+
+.reasonActions {
+display: flex;
+justify-content: flex-end;
+margin-top: 16px;
+gap: 10px;
+}
+
+.otherReasonContainer {
+margin-top: 10px;
+width: 100%;
+box-sizing: border-box;
+}
+
+.otherReasonInput {
+width: 100%;
+padding: 12px;
+border: 1px solid #d1d5db;
+border-radius: 6px;
+font-size: 14px;
+font-family: inherit;
+color: #374151;
+resize: none;
+overflow: hidden;
+transition: border-color 0.2s, box-shadow 0.2s;
+min-height: 44px;
+box-sizing: border-box;
+direction: rtl;
+}
+
+.otherReasonInput:focus {
+outline: none;
+border-color: #DD2946;
+box-shadow: 0 0 0 2px rgba(221, 41, 70, 0.2);
+}
+
+.otherReasonInput::placeholder {
+color: #9ca3af;
+}
+
+@media (max-width: 1280px) {
+.cardsGrid {
+column-count: 3;
+}
+}
+
+@media (max-width: 768px) {
+.cardsGrid {
+column-count: 2;
+}
+
+.switchGroup, .rangeGroup {
+flex-direction: column;
+align-items: flex-start;
+gap: 10px;
+}
+
+.switchLabel, .rangeControl {
+align-self: flex-start;
+margin-top: 8px;
+}
+}
+
+@media (max-width: 480px) {
+.cardsGrid {
+column-count: 1;
+}
+}

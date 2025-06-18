@@ -1,27 +1,194 @@
-/* ./app/components/questions/matching-question/page.module.css */
-/* (أو matching-question.module.css) */
+/* ./app/components/questions/matching-question/matching-question.module.css */
 
-/* حاوية المحتوى الداخلي للسؤال - يمكن إعادة تسمية الكلاس إذا أردت */
-/* هذا الكلاس كان اسمه .exerciseBody في الأصل */
-.questionContentWrapper {
+/* الحاوية الرئيسية للسؤال - تحافظ على العرض المحدود من التصميم الأصلي */
+.questionContainer {
   display: flex;
-  gap: 60px; /* زيادة المسافة قليلًا كمثال */
-  width: 100%; /* اجعله يأخذ عرض الحاوية الأب (mainExerciseArea) */
-  max-width: 800px; /* يمكنك الإبقاء على حد أقصى للعرض */
-  margin: 0 auto; /* توسيطه إذا كان له max-width */
-  /* margin-bottom: 80px;  <- أزل هذه، الهامش السفلي يجب أن يتحكم به القالب */
-  justify-content: space-between; /* أو space-around حسب التصميم */
-}
-
-/* الكلاس المستخدم كـ ref لـ Xwrapper، ضروري لـ position: relative */
-/* هذا الكلاس كان اسمه .mainContent في الأصل */
-.xarrowContainer {
-  flex: 1; /* قد لا تحتاج لهذا إذا كان .questionContentWrapper يستخدم flex */
-  padding: 20px;
-  color: #171717;
-  position: relative; /* ضروري جدًا لتحديد موضع SVG بشكل صحيح لـ Xarrows */
+  gap: 20px;
+  width: 800px; /* العرض الثابت من التصميم الأصلي */
+  margin: 0 auto 80px; /* توسيط الحاوية مع هامش سفلي */
+  position: relative; /* ضروري لـ Xarrows */
   min-height: 400px; /* ارتفاع أدنى لضمان وجود مساحة كافية للرسم */
 }
 
-/* يمكنك إضافة أي أنماط أخرى خاصة بعناصر الربط هنا إذا لم تستخدم Tailwind */
-/* مثلاً: تنسيق نقاط الاتصال، حجم الخط الخاص بالنصوص داخل السؤال، إلخ. */
+/* منطقة المحتوى الرئيسي للتمرين */
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  color: #171717;
+  position: relative; /* ضروري جداً لتحديد موضع SVG بشكل صحيح لـ Xarrows */
+  min-height: 400px;
+}
+
+/* منطقة التمرين الداخلية */
+.exerciseArea {
+  direction: rtl;
+  position: relative;
+  height: 100%;
+  padding: 20px;
+}
+
+/* عنوان السؤال */
+.questionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.questionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #DD2946;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.questionText {
+  font-size: 24px;
+  color: #DD2946;
+  font-family: 'Scheherazade New', serif;
+}
+
+/* منطقة التوصيل */
+.matchingArea {
+  display: flex;
+  height: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* قائمة النصوص */
+.textsList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  min-height: 300px;
+  gap: 24px;
+}
+
+/* عنصر النص الواحد */
+.textItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.textItem.clickable {
+  cursor: pointer;
+}
+
+.textContent {
+  font-size: 24px;
+  font-family: 'Scheherazade New', serif;
+}
+
+/* قائمة الصور */
+.imagesList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  min-height: 300px;
+  gap: 24px;
+}
+
+/* عنصر الصورة الواحد */
+.imageItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.imageItem.clickable {
+  cursor: pointer;
+}
+
+/* إطار الصورة */
+.imageFrame {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+}
+
+.imageFrame img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* نقاط التوصيل */
+.connectionPoint {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.connectionPoint.default {
+  background-color: #DD2946;
+}
+
+.connectionPoint.selected {
+  background-color: #3B82F6;
+  box-shadow: 0 0 0 2px #3B82F6, 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.connectionPoint.connected {
+  background-color: #9CA3AF;
+}
+
+/* نقطة تتبع الفأرة المؤقتة */
+.tempMouseTarget {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 900px) {
+  .questionContainer {
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto 60px;
+  }
+  
+  .mainContent {
+    padding: 15px;
+  }
+  
+  .exerciseArea {
+    padding: 15px;
+  }
+  
+  .questionText {
+    font-size: 20px;
+  }
+  
+  .textContent {
+    font-size: 20px;
+  }
+  
+  .imageFrame {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .textsList,
+  .imagesList {
+    gap: 20px;
+    min-height: 250px;
+  }
+}

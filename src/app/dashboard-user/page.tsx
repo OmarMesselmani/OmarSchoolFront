@@ -7,7 +7,6 @@ import Footer from '../components/Footer'; // تأكد من المسار الص�
 import { RiFileListLine } from 'react-icons/ri';
 import { IoSettingsOutline, IoPersonOutline } from 'react-icons/io5';
 import { LuChartLine, LuLogOut } from 'react-icons/lu';
-import { MdOutlineLocalOffer } from 'react-icons/md';
 import { RxDashboard } from 'react-icons/rx';
 import { LiaClipboardListSolid } from "react-icons/lia"; // استيراد أيقونة الامتحانات
 // استيراد Hook السياق الخاص بالهيدر
@@ -20,6 +19,7 @@ import ExercisesListPage from './pages/exercises-list/page';
 import LoadingPage from '../components/loading-page/LoadingPage';
 import checkAuth from '../services/check-auth';
 import ExamsPage from './pages/exams/page';
+import SettingsPage from './pages/settings/page';
 import { useSearchParams } from 'next/navigation';
 import { Student } from '../data-structures/Student';
 // --- تعريف المكونات المؤقتة الأخرى أو استيرادها ---
@@ -28,8 +28,6 @@ interface StudentDetailsMap { [key: string]: StudentData; }
 interface PageProps { selectedChildId: number; studentDetailsMap: StudentDetailsMap; }
 const StudentResults: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة النتائج والاحصائيات للطالب: {selectedChildId || 'N/A'}</div>);
 const ProfilePage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">الملف الشخصي للطالب: {selectedChildId || 'N/A'}</div>);
-const OffersPage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة العروض</div>);
-const SettingsPage: React.FC<PageProps> = ({ selectedChildId, studentDetailsMap }) => (<div className="p-4">صفحة إعدادات الحساب</div>);
 // --- نهاية المكونات ---
 
 interface Child { id: string; name: string; }
@@ -129,7 +127,6 @@ export default function DashboardUserPage() {
       case 'exams': return <ExamsPage {...propsToPass} />;
       case 'results': return <StudentResults {...propsToPass} />;
       case 'profile': return <ProfilePage {...propsToPass} />;
-      case 'offers': return <OffersPage {...propsToPass} />;
       case 'settings': return <SettingsPage {...propsToPass} />;
       default: return <DashboardOverview {...propsToPass} />; // الافتراضي
     }
@@ -299,7 +296,6 @@ export default function DashboardUserPage() {
                 <div className={`${styles.settingsItem} ${currentPage === 'exams' ? styles.active : ''}`} onClick={handleItemClick('exams')} title="الامتحانات" > <LiaClipboardListSolid className={styles.icon} /> <span className={styles.menuText}>الامتحانات</span> </div>
                 <div className={`${styles.settingsItem} ${currentPage === 'results' ? styles.active : ''}`} onClick={handleItemClick('results')} title="النتائج والاحصائيات" > <LuChartLine className={styles.icon} /> <span className={styles.menuText}>النتائج والاحصائيات</span> </div>
                 <div className={`${styles.settingsItem} ${currentPage === 'profile' ? styles.active : ''}`} onClick={handleItemClick('profile')} title="الملف الشخصي" > <IoPersonOutline className={styles.icon} /> <span className={styles.menuText}>الملف الشخصي</span> </div>
-                <div className={`${styles.settingsItem} ${currentPage === 'offers' ? styles.active : ''}`} onClick={handleItemClick('offers')} title="عروضنا" > <MdOutlineLocalOffer className={styles.icon} /> <span className={styles.menuText}>عروضنا</span> </div>
               </div>
 
               {/* قسم تسجيل الخروج والإعدادات */}

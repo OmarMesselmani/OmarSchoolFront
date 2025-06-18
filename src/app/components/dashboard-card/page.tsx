@@ -28,7 +28,7 @@ export default function DashboardCard({ title, children, style, hashtag, classNa
 
   return (
     <div className={combinedClassName} style={containerStyle}>
-      {/* <<< التعديل: عرض قسم الرأس فقط إذا تم تمرير عنوان */}
+      {/* عرض قسم الرأس فقط إذا تم تمرير عنوان */}
       {title && (
         <div className={cardStyles.cardHeader}>
           <h2
@@ -37,7 +37,7 @@ export default function DashboardCard({ title, children, style, hashtag, classNa
           >
             {title}
           </h2>
-          {/* عرض الهاشتاق إذا كان موجودًا (فقط إذا كان الرأس معروضًا) */}
+          {/* عرض الهاشتاق إذا كان موجودًا */}
           {hashtag && (
             <div className={cardStyles.hashtagContainer}>
               <span className={overviewStyles.hashtag}>{hashtag}</span>

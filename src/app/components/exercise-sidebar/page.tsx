@@ -10,20 +10,30 @@ import styles from './page.module.css';
 
 // Extend the props to include the two new Booleans:
 interface ExerciseSidebarProps {
-  onUndoClick: () => void;
+  onUndoClick?: () => void;
+  onResetClick?: () => void;
   onNextClick: () => void;
-  onResetClick: () => void;
   exerciseAlreadyDone: boolean;
   loading: boolean;
 }
 
 export default function ExerciseSidebar({
   onUndoClick,
-  onNextClick,
   onResetClick,
+  onNextClick,
   exerciseAlreadyDone,
   loading,
 }: ExerciseSidebarProps) {
+  const handleUndoClick = () => {
+    console.log('تم النقر على زر التراجع');
+    onUndoClick?.(); // استدعاء الدالة المُمررة
+  };
+
+  const handleResetClick = () => {
+    console.log('تم النقر على زر الإعادة');
+    onResetClick?.(); // استدعاء الدالة المُمررة
+  };
+
   return (
     <div className={styles.sidebarContainer}>
       <div className={styles.sidebarContent}>
@@ -31,7 +41,7 @@ export default function ExerciseSidebar({
         <div
           className={styles.arrowSection}
           title="تراجع"
-          onClick={onUndoClick}
+          onClick={handleUndoClick}
           style={{ cursor: 'pointer' }}
         >
           <TbArrowForwardUp className={styles.arrowIcon} />
@@ -41,7 +51,7 @@ export default function ExerciseSidebar({
         <div
           className={styles.redoSection}
           title="إعادة"
-          onClick={onResetClick}
+          onClick={handleResetClick}
           style={{ cursor: 'pointer' }}
         >
           <FaArrowsRotate className={styles.redoIcon} />

@@ -1,10 +1,8 @@
-// ./app/components/questions/matching-question/MatchingQuestion.tsx
 'use client';
 
-// استيراد المكتبات والمكونات اللازمة
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Xarrow, { Xwrapper } from 'react-xarrows';
-import styles from './matching-question.module.css'; 
+import styles from './matching-question.module.css';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {
@@ -19,23 +17,20 @@ interface Position {
 
 // تعريف واجهة الخصائص (Props) التي سيستقبلها المكون
 interface ItemData {
-    id: string;
-    text: string;
+  id: string;
+  text: string;
 }
 
 interface ImageData {
-    id: string;
-    url: string;
+  id: string;
+  url: string;
 }
 
 interface MatchingQuestionProps {
   items: ItemData[];
   images: ImageData[];
-  // يمكنك إضافة props أخرى هنا إذا احتجت، مثل دالة لإرسال الإجابة النهائية
-  // أو دوال للتحكم في Undo/Reset من الخارج إذا أردت
 }
 
-// تعريف مكون السؤال من نوع الربط
 export default function MatchingQuestion({ items, images }: MatchingQuestionProps) {
   // --- الحالة الداخلية للمكون ---
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -43,41 +38,16 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
   const [mousePos, setMousePos] = useState<Position | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // --- الدوال المساعدة ومعالجات الأحداث (تم نقلها من الصفحة الأصلية) ---
+  // --- الدوال المساعدة ومعالجات الأحداث ---
   const getTextPointId = (itemId: string) => `point-text-${itemId}`;
   const getImagePointId = (imageId: string) => `point-image-${imageId}`;
 
-  // دالة إلغاء عملية التوصيل الحالية
   const cancelConnection = useCallback(() => {
     setStartPoint(null);
     setMousePos(null);
     console.log("تم إلغاء التوصيل.");
   }, []);
 
-  // --- الدوال الخاصة بـ Undo/Reset ---
-  // ملاحظة: هذه الدوال حاليًا تعمل محليًا. إذا أردت التحكم بها
-  // من الأزرار الموجودة في ExerciseLayout، ستحتاج لتمرير دوال تحكم كـ props
-  // أو استخدام ref للوصول لهذه الدوال من المكون الأب.
-  const handleUndo = useCallback(() => {
-    setConnections(prevConnections => {
-      if (prevConnections.length > 0) {
-        return prevConnections.slice(0, -1);
-      }
-      return prevConnections;
-    });
-    if (startPoint) {
-      cancelConnection();
-    }
-  }, [startPoint, cancelConnection]);
-
-  const handleReset = useCallback(() => {
-    setConnections([]);
-    if (startPoint) {
-      cancelConnection();
-    }
-  }, [startPoint, cancelConnection]);
-
-  // --- معالجات أحداث الفأرة للتوصيل ---
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!startPoint || !containerRef.current) {
       if (mousePos !== null) setMousePos(null);
@@ -95,7 +65,6 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
 
   const handlePointClick = (e: React.MouseEvent, pointId: string) => {
     e.stopPropagation();
-
     if (!startPoint) {
       if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
         console.log("النقطة متصلة بالفعل.");
@@ -107,39 +76,26 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
         cancelConnection();
         return;
       }
-
       const isStartText = startPoint.startsWith('point-text-');
       const isCurrentText = pointId.startsWith('point-text-');
       const isStartImage = startPoint.startsWith('point-image-');
       const isCurrentImage = pointId.startsWith('point-image-');
-
       if ((isStartText && isCurrentText) || (isStartImage && isCurrentImage)) {
         console.log("لا يمكن توصيل نقاط من نفس النوع.");
         cancelConnection();
         return;
       }
-
       if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
         console.log("النقطة الهدف متصلة بالفعل.");
         cancelConnection();
         return;
       }
-
-      let textPointId = '';
-      let imagePointId = '';
-      if (isStartText && isCurrentImage) {
-        textPointId = startPoint;
-        imagePointId = pointId;
-      } else if (isStartImage && isCurrentText) {
-        textPointId = pointId;
-        imagePointId = startPoint;
-      } else {
-        console.error("خطأ في تحديد نوع نقاط التوصيل");
-        cancelConnection();
-        return;
-      }
-
-      setConnections(prevConnections => [...prevConnections, { start: textPointId, end: imagePointId }]);
+      
+      // تحديد النقطة الصحيحة للبداية والنهاية
+      const finalStart = isStartText ? startPoint : pointId;
+      const finalEnd = isCurrentImage ? pointId : startPoint;
+      
+      setConnections(prevConnections => [...prevConnections, { start: finalStart, end: finalEnd }]);
       setStartPoint(null);
       setMousePos(null);
     }
@@ -151,7 +107,7 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
     }
   };
 
-  // --- التأثيرات الجانبية (Side Effects) ---
+  // --- التأثيرات الجانبية ---
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && startPoint) {
@@ -164,107 +120,150 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
     };
   }, [startPoint, cancelConnection]);
 
-  // --- دوال مساعدة أخرى ---
+  // تنظيف عند إلغاء تحميل المكون
+  useEffect(() => {
+    return () => {
+      setConnections([]);
+      setStartPoint(null);
+      setMousePos(null);
+    };
+  }, []);
+
   const getImageAltText = (imageId: string): string => {
-      const matchedImage = images.find(img => img.id === imageId);
-      if (matchedImage) return `صورة توضيحية مرتبطة بـ ${matchedImage.id}`; // يمكنك تحسين النص البديل
-      return 'صورة توضيحية';
+    if (imageId === 'img1') return 'صورة تلميذ';
+    if (imageId === 'img2') return 'صورة تلميذة';
+    if (imageId === 'img3') return 'صورة تلاميذ';
+    return 'صورة توضيحية';
   };
 
   // --- بنية الـ JSX للعرض ---
   return (
     <Xwrapper>
-      {/* === هذا هو الـ div الذي تم تعديل الـ className فيه === */}
-      <div
-        ref={containerRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleContainerClick}
-        className={`${styles.xarrowContainer} relative`} // <-- تم التعديل هنا
-      >
-        {/* حاوية التنسيق الداخلي للنصوص والصور */}
-        {/* يمكنك استخدام كلاسات Tailwind هنا أو استخدام styles.questionContentWrapper من ملف CSS */}
-        <div className="flex h-full items-start justify-between">
-          {/* عرض النصوص */}
-          <div className="space-y-6 flex flex-col justify-around h-full min-h-[300px]">
-            {items.map((item) => {
-              const pointId = getTextPointId(item.id);
-              const isSelected = startPoint === pointId;
-              const isConnected = connections.some(conn => conn.start === pointId);
-              return (
-                <div
-                  key={item.id}
-                  className={`flex items-center gap-4 ${!isConnected ? 'cursor-pointer' : 'cursor-not-allowed'}`}
-                  onClick={(e) => !isConnected && handlePointClick(e, pointId)}
-                >
-                  <span
-                    className="text-2xl" // يمكنك تخصيص هذه الكلاسات
-                    style={{ fontFamily: "'Scheherazade New', serif" }}
-                  >
-                    {item.text}
-                  </span>
-                  <div
-                    id={pointId}
-                    className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' : isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' : 'bg-[#DD2946]'}`}
-                    title={isConnected ? `"${item.text}" متصلة بالفعل` : `اربط من: ${item.text}`}
-                  ></div>
-                </div>
-              );
-            })}
+      <div className={styles.questionContainer}>
+        <div
+          ref={containerRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleContainerClick}
+          className={styles.mainContent}
+        >
+          <div className={styles.exerciseArea}>
+            <div className={styles.questionTitle}>
+              <span className={styles.questionNumber}>
+                1
+              </span>
+              <span className={styles.questionText}>
+                أَرْبُطُ كُلَّ جُمْلَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ
+              </span>
+            </div>
+
+            <div className={styles.matchingArea}>
+              {/* عرض النصوص */}
+              <div className={styles.textsList}>
+                {items.map((item) => {
+                  const pointId = getTextPointId(item.id);
+                  const isSelected = startPoint === pointId;
+                  const isConnected = connections.some(conn => conn.start === pointId || conn.end === pointId);
+                  return (
+                    <div
+                      key={item.id}
+                      className={`${styles.textItem} ${!isConnected ? styles.clickable : ''}`}
+                      onClick={(e) => !isConnected && handlePointClick(e, pointId)}
+                    >
+                      <span className={styles.textContent}>
+                        {item.text}
+                      </span>
+                      <div
+                        id={pointId}
+                        className={`${styles.connectionPoint} ${
+                          isConnected 
+                            ? styles.connected
+                            : isSelected 
+                              ? styles.selected
+                              : styles.default
+                        }`}
+                        title={isConnected ? `"${item.text}" متصلة بالفعل` : `اربط من: ${item.text}`}
+                      ></div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* عرض الصور */}
+              <div className={styles.imagesList}>
+                {images.map((image) => {
+                  const pointId = getImagePointId(image.id);
+                  const isSelected = startPoint === pointId;
+                  const isConnected = connections.some(conn => conn.start === pointId || conn.end === pointId);
+                  return (
+                    <div
+                      key={image.id}
+                      className={`${styles.imageItem} ${!isConnected ? styles.clickable : ''}`}
+                      onClick={(e) => !isConnected && handlePointClick(e, pointId)}
+                    >
+                      <div
+                        id={pointId}
+                        className={`${styles.connectionPoint} ${
+                          isConnected 
+                            ? styles.connected
+                            : isSelected 
+                              ? styles.selected
+                              : styles.default
+                        }`}
+                        title={isConnected ? `الصورة متصلة بالفعل` : `اربط إلى الصورة`}
+                      ></div>
+                      <div className={styles.imageFrame}>
+                        <img
+                          src={image.url}
+                          alt={getImageAltText(image.id)}
+                          onError={(e) => { 
+                            // استخدام صور بديلة مناسبة عند فشل تحميل الصور الأصلية
+                            if (image.id === 'img1') {
+                              e.currentTarget.src = 'https://placehold.co/120x120/E3F2FD/1565C0?text=تلميذ';
+                            } else if (image.id === 'img2') {
+                              e.currentTarget.src = 'https://placehold.co/120x120/FCE4EC/C2185B?text=تلميذة';
+                            } else if (image.id === 'img3') {
+                              e.currentTarget.src = 'https://placehold.co/120x120/E8F5E8/388E3C?text=تلاميذ';
+                            } else {
+                              e.currentTarget.src = 'https://placehold.co/120x120/EEE/31343C?text=Error';
+                            }
+                          }}
+                          width={120}
+                          height={120}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          {/* عرض الصور */}
-          <div className="space-y-6 flex flex-col justify-around h-full min-h-[300px]">
-            {images.map((image) => {
-              const pointId = getImagePointId(image.id);
-              const isSelected = startPoint === pointId;
-              const isConnected = connections.some(conn => conn.end === pointId);
-              return (
-                <div
-                  key={image.id}
-                  className={`flex items-center gap-4 ${!isConnected ? 'cursor-pointer' : 'cursor-not-allowed'}`}
-                  onClick={(e) => !isConnected && handlePointClick(e, pointId)}
-                >
-                  <div
-                    id={pointId}
-                    className={`w-3 h-3 rounded-full transition-colors ${isConnected ? 'bg-gray-400' : isSelected ? 'bg-blue-500 ring-2 ring-offset-2 ring-blue-500' : 'bg-[#DD2946]'}`}
-                    title={isConnected ? `الصورة متصلة بالفعل` : `اربط إلى الصورة`}
-                  ></div>
-                  <div
-                    className="rounded-lg flex items-center justify-center w-[120px] h-[120px] overflow-hidden"
-                  >
-                    <img
-                      src={image.url}
-                      alt={getImageAltText(image.id)}
-                      className="object-cover w-full h-full"
-                      onError={(e) => { e.currentTarget.src = 'https://placehold.co/120x120/EEE/31343C?text=Error'; }}
-                      width={120}
-                      height={120}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {/* عنصر وهمي لتتبع الفأرة ورسم الخط المؤقت */}
+          {mousePos && startPoint && (
+            <div
+              id="temp-mouse-target"
+              className={styles.tempMouseTarget}
+              style={{ 
+                top: `${mousePos.y}px`, 
+                left: `${mousePos.x}px`
+              }}
+            />
+          )}
         </div>
       </div>
-
-      {/* عنصر وهمي لتتبع الفأرة ورسم الخط المؤقت */}
-      {mousePos && startPoint && (
-        <div
-          id="temp-mouse-target"
-          style={{ position: 'absolute', top: `${mousePos.y}px`, left: `${mousePos.x}px`, width: '1px', height: '1px', pointerEvents: 'none' }}
-        />
-      )}
 
       {/* رسم خطوط التوصيل النهائية */}
       {connections.map((conn, index) => (
         <Xarrow
           key={`conn-${conn.start}-${conn.end}-${index}`}
-          start={conn.start} end={conn.end}
-          color="#171717" strokeWidth={2} headSize={6}
-          path="straight" showHead={true}
-          SVGcanvasProps={{ style: { zIndex: 1 } }} // مثال لمحاولة رفع السهم فوق العناصر الأخرى
+          start={conn.start} 
+          end={conn.end}
+          color="#171717" 
+          strokeWidth={2} 
+          headSize={6}
+          path="straight" 
+          showHead={true}
         />
       ))}
 
@@ -272,11 +271,15 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
       {startPoint && mousePos && (
         <Xarrow
           key="temp-arrow"
-          start={startPoint} end="temp-mouse-target"
-          color="#171717" strokeWidth={2} headSize={0}
-          path="straight" showHead={false} dashness={true}
+          start={startPoint} 
+          end="temp-mouse-target"
+          color="#171717" 
+          strokeWidth={2} 
+          headSize={0}
+          path="straight" 
+          showHead={false} 
+          dashness={true}
           passProps={{ pointerEvents: "none" }}
-          SVGcanvasProps={{ style: { zIndex: 1 } }} // مثال لمحاولة رفع السهم فوق العناصر الأخرى
         />
       )}
     </Xwrapper>

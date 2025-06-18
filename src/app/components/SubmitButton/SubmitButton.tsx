@@ -4,36 +4,46 @@ import React from 'react';
 import styles from './SubmitButton.module.css';
 
 interface SubmitButtonProps {
-  buttonText: string;
-  isLoading?: boolean;
-  className?: string;
+  text: string;
+  type?: 'submit' | 'button' | 'reset';
+  variant?: 'primary' | 'secondary' | 'danger';
+  disabled?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+  iconBefore?: React.ReactNode;
+  iconAfter?: React.ReactNode;
+  iconOnly?: React.ReactNode;
+  customClass?: string;
+  customStyles?: React.CSSProperties;
+  title?: string;
 }
 
 export default function SubmitButton({
-  buttonText,
-  isLoading = false,
-  className = ''
+  text,
+  type = 'submit',
+  variant = 'primary',
+  disabled = false,
+  onClick,
+  iconBefore,
+  iconAfter,
+  iconOnly,
+  customClass = '',
+  customStyles,
+  title
 }: SubmitButtonProps) {
   return (
     <div className={styles.buttonContainer}>
       <button
-        type="submit"
-        className={`${styles.submitButton} ${className} flex items-center justify-center gap-2`}
-        disabled={isLoading}
+        type={type}
+        className={`${styles.submitButton} ${customClass} flex items-center justify-center gap-2`}
+        disabled={disabled}
+        onClick={onClick}
+        style={customStyles}
+        title={title}
       >
-        {isLoading ? (
-          <>
-            <div
-              className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
-              role="status">
-              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                Loading...
-              </span>
-            </div>
-          </>
-        ) : (
-          buttonText
-        )}
+        {iconBefore && !iconOnly && <span className="icon">{iconBefore}</span>}
+        {text}
+        {iconAfter && !iconOnly && <span className="icon">{iconAfter}</span>}
+        {iconOnly}
       </button>
     </div>
   );
