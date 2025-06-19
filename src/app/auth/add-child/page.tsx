@@ -125,7 +125,7 @@ export default function AddChildPage() {
             try {
                 const authStatus = await checkAuth();
                 if (!authStatus.status) {
-                    window.location.href = '/login';
+                    window.location.href = '/auth/login';
                 } else {
                     setIsFullLoading(false);
                 }

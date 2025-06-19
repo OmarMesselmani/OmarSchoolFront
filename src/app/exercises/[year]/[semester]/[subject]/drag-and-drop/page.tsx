@@ -59,6 +59,7 @@ export default function DragAndDrop() {
     const [history, setHistory] = useState<MoveHistoryItem[]>([]);
     const [isFullLoading, setIsFullLoading] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [dropZones, setDropZones] = useState([]);
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -88,21 +89,35 @@ export default function DragAndDrop() {
 
 
 
-    const [dropZones, setDropZones] = useState([]);
-
     useEffect(() => {
         setIsFullLoading(true);
-        fetch(`http://127.0.0.1:8000/student/get-drag-and-drop-data/${exerciseId}`, {})
-            .then((res) => res.json())
-            .then((data) => {
+
+        fetch(`http://127.0.0.1:8000/student/get-drag-and-drop-data/${exerciseId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${Cookies.get("token")}`,
+            }
+        })
+            .then(res => {
+                if (res.status === 401) {
+                    // Redirect to login
+                    window.location.href = "/auth/login";
+                    return null; // short‐circuit the chain
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;      // aborted by 401
                 setExercise(data.exercise);
                 setDraggableItems(data.draggable_items);
                 setAllItems(data.draggable_items);
                 setDropZones(data.drop_zones);
                 setExerciseTitle(data.exercise);
                 setExerciseQuestion(data.question);
-                setIsFullLoading(false);
-            });
+            })
+            .catch(err => console.error(err))
+            .finally(() => setIsFullLoading(false));
     }, [exerciseId]);
 
     const displayDropZones = Array.isArray(dropZones)
@@ -116,11 +131,6 @@ export default function DragAndDrop() {
 
 
 
-    // --- حالة التمرين ---
-
-
-
-    // إعداد حساسات الإدخال
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor)
@@ -138,6 +148,12 @@ export default function DragAndDrop() {
             );
             const itemAlreadyInDropzone = droppedItems[dropzoneId] || null;
 
+            // ✅ Prevent dropping if already filled
+            if (itemAlreadyInDropzone) {
+                console.warn(`Dropzone ${dropzoneId} already has an item`);
+                return; // 🚫 Skip if already filled
+            }
+
             // Only record this move if the dragged item is different than any existing one for this dropzone
             if (
                 draggedColorInfo &&
@@ -153,7 +169,6 @@ export default function DragAndDrop() {
                         previousItemInDropzone: itemAlreadyInDropzone,
                     },
                 ]);
-                console.log("Move recorded:", history);
 
                 // Update the local state for drop zones (so the dropped item "sticks")
                 setDroppedItems((prev) => ({
@@ -210,11 +225,9 @@ export default function DragAndDrop() {
 
     const handleUndo = useCallback(() => {
         if (history.length === 0) {
-            console.log("No moves to undo.");
             return;
         }
         const lastMove = history[history.length - 1];
-        console.log("Undoing move:", lastMove);
         setDroppedItems(prev => ({
             ...prev,
             [lastMove.dropzoneId]: lastMove.previousItemInDropzone,
@@ -298,7 +311,7 @@ export default function DragAndDrop() {
 
     if (isFullLoading) {
         return <LoadingPage />;
-    } else if ((dropZones?.length ?? 0) === 0 && (allItems?.length ?? 0) === 0) {
+    } else if ((allItems?.length ?? 0) === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <Header />
