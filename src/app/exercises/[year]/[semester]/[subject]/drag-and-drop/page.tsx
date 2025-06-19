@@ -244,7 +244,7 @@ export default function DragAndDrop() {
 
     const handleReset = useCallback(() => {
         console.log("Reset action for Drag and Drop");
-        setDraggableItems(draggableItems);
+        setDraggableItems(allItems);
         setDroppedItems({});
         setHistory([]);
     }, [draggableItems]);
