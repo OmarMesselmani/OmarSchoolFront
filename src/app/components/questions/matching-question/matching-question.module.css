@@ -5,7 +5,7 @@
   display: flex;
   gap: 20px;
   width: 800px; /* العرض الثابت من التصميم الأصلي */
-  margin: 0 auto 80px; /* توسيط الحاوية مع هامش سفلي */
+  margin: 0 auto 20px; /* تم تقليل الهامش السفلي من 40px إلى 20px */
   position: relative; /* ضروري لـ Xarrows */
   min-height: 400px; /* ارتفاع أدنى لضمان وجود مساحة كافية للرسم */
 }
@@ -13,7 +13,7 @@
 /* منطقة المحتوى الرئيسي للتمرين */
 .mainContent {
   flex: 1;
-  padding: 20px;
+  padding: 15px; /* تم تقليل من 20px إلى 15px */
   color: #171717;
   position: relative; /* ضروري جداً لتحديد موضع SVG بشكل صحيح لـ Xarrows */
   min-height: 400px;
@@ -24,7 +24,7 @@
   direction: rtl;
   position: relative;
   height: 100%;
-  padding: 20px;
+  padding: 15px; /* تم تقليل من 20px إلى 15px */
 }
 
 /* عنوان السؤال */
@@ -34,19 +34,19 @@
   justify-content: flex-start;
   gap: 12px;
   font-weight: bold;
-  margin-bottom: 32px;
+  margin-bottom: 32px; /* تم تقليل من 48px إلى 32px */
 }
 
 .questionNumber {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px; /* تم تكبير من 32px إلى 36px */
+  height: 36px; /* تم تكبير من 32px إلى 36px */
   border-radius: 50%;
   background-color: #DD2946;
   color: white;
-  font-size: 16px;
+  font-size: 18px; /* تم تكبير من 16px إلى 18px */
   font-weight: bold;
 }
 
@@ -70,15 +70,16 @@
   flex-direction: column;
   justify-content: space-around;
   height: 100%;
-  min-height: 300px;
-  gap: 24px;
+  min-height: 250px; /* تم تقليل من 300px إلى 250px */
+  gap: 16px; /* تم تقليل من 24px إلى 16px */
 }
 
 /* عنصر النص الواحد */
 .textItem {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px; /* تم تقليل من 16px إلى 12px */
+  margin: 8px 0; /* إضافة هامش عمودي صغير */
 }
 
 .textItem.clickable {
@@ -96,15 +97,16 @@
   flex-direction: column;
   justify-content: space-around;
   height: 100%;
-  min-height: 300px;
-  gap: 24px;
+  min-height: 250px; /* تم تقليل من 300px إلى 250px */
+  gap: 16px; /* تم تقليل من 24px إلى 16px */
 }
 
 /* عنصر الصورة الواحد */
 .imageItem {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px; /* تم تقليل من 16px إلى 12px */
+  margin: 8px 0; /* إضافة هامش عمودي صغير */
 }
 
 .imageItem.clickable {
@@ -162,15 +164,15 @@
   .questionContainer {
     width: 95%;
     max-width: 800px;
-    margin: 0 auto 60px;
+    margin: 0 auto 15px; /* تم تقليل الهامش السفلي من 30px إلى 15px */
   }
   
   .mainContent {
-    padding: 15px;
+    padding: 10px; /* تم تقليل من 15px إلى 10px */
   }
   
   .exerciseArea {
-    padding: 15px;
+    padding: 10px; /* تم تقليل من 15px إلى 10px */
   }
   
   .questionText {
@@ -188,7 +190,22 @@
   
   .textsList,
   .imagesList {
-    gap: 20px;
-    min-height: 250px;
+    gap: 12px; /* تم تقليل من 20px إلى 12px */
+    min-height: 200px; /* تم تقليل من 250px إلى 200px */
+  }
+  
+  .questionTitle {
+    margin-bottom: 24px; /* تم تقليل المساحة من 40px إلى 24px للشاشات الصغيرة */
+  }
+  
+  .textItem,
+  .imageItem {
+    margin: 6px 0; /* تقليل الهوامش العمودية للشاشات الصغيرة */
+  }
+  
+  .questionNumber {
+    width: 34px; /* حجم أصغر قليلاً للشاشات الصغيرة */
+    height: 34px;
+    font-size: 17px;
   }
 }

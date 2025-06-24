@@ -165,7 +165,7 @@ const AiTalker: React.FC<AiTalkerProps> = ({
     } else {
       switch (action) {
         case 'explain_exercise':
-          addBotMessage("هذا التمرين يهدف إلى مساعدتك على فهم المفاهيم الأساسية.", false);
+          addBotMessage("في هذا التمرين يجب عليك الربط بين الكلمات في الخانة الأولى مع الصور المناسبة لها في الخانة الثانية.", false);
           if (onExplainRequest) onExplainRequest();
           break;
           

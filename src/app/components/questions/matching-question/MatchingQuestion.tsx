@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './matching-question.module.css';
+import { CONNECTION_EVENTS } from '@/app/exercises/[year]/[semester]/[subject]/[exerciceId]/[questionId]/page';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {
@@ -29,9 +30,14 @@ interface ImageData {
 interface MatchingQuestionProps {
   items: ItemData[];
   images: ImageData[];
+  questionNumber?: string; // إضافة خاصية رقم السؤال
 }
 
-export default function MatchingQuestion({ items, images }: MatchingQuestionProps) {
+export default function MatchingQuestion({ 
+  items, 
+  images, 
+  questionNumber = "1" // استخدام "1" كقيمة افتراضية
+}: MatchingQuestionProps) {
   // --- الحالة الداخلية للمكون ---
   const [connections, setConnections] = useState<Connection[]>([]);
   const [startPoint, setStartPoint] = useState<string | null>(null);
@@ -120,6 +126,43 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
     };
   }, [startPoint, cancelConnection]);
 
+  // إضافة useEffect للاستماع للأحداث
+  useEffect(() => {
+    const handleUndoEvent = () => {
+      setConnections(prevConnections => {
+        if (prevConnections.length > 0) {
+          console.log("تراجع عن آخر اتصال");
+          return prevConnections.slice(0, -1);
+        }
+        return prevConnections;
+      });
+      
+      if (startPoint) {
+        setStartPoint(null);
+        setMousePos(null);
+      }
+    };
+    
+    const handleResetEvent = () => {
+      console.log("إعادة تعيين جميع الاتصالات");
+      setConnections([]);
+      if (startPoint) {
+        setStartPoint(null);
+        setMousePos(null);
+      }
+    };
+    
+    // تسجيل مستمعي الأحداث
+    document.addEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
+    document.addEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
+    
+    // تنظيف عند إلغاء تحميل المكون
+    return () => {
+      document.removeEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
+      document.removeEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
+    };
+  }, [startPoint]);
+
   // تنظيف عند إلغاء تحميل المكون
   useEffect(() => {
     return () => {
@@ -150,7 +193,7 @@ export default function MatchingQuestion({ items, images }: MatchingQuestionProp
           <div className={styles.exerciseArea}>
             <div className={styles.questionTitle}>
               <span className={styles.questionNumber}>
-                1
+                {questionNumber} {/* استخدام رقم السؤال المُمرر من الخارج */}
               </span>
               <span className={styles.questionText}>
                 أَرْبُطُ كُلَّ جُمْلَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ

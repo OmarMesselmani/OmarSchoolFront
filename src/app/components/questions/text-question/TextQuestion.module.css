@@ -1,0 +1,151 @@
+/* الحاوية الرئيسية للسؤال - مقتبسة من matching-question */
+.questionContainer {
+  display: flex;
+  gap: 20px;
+  width: 800px;
+  margin: 0 auto 20px; /* تم تقليل الهامش السفلي من 80px إلى 40px */
+  position: relative;
+  min-height: 200px;
+}
+
+/* منطقة المحتوى الرئيسي للتمرين */
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  color: #171717;
+  position: relative;
+}
+
+/* منطقة التمرين الداخلية */
+.exerciseArea {
+  direction: rtl;
+  position: relative;
+  height: 100%;
+  padding: 20px;
+}
+
+/* عنوان السؤال - مقتبس من matching-question */
+.questionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: bold;
+  margin-bottom: 48px; /* تم زيادة المساحة من 32px إلى 48px */
+}
+
+.questionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; /* تم تكبير من 32px إلى 36px */
+  height: 36px; /* تم تكبير من 32px إلى 36px */
+  border-radius: 50%;
+  background-color: #DD2946;
+  color: white;
+  font-size: 18px; /* تم تكبير من 16px إلى 18px */
+  font-weight: bold;
+}
+
+.questionText {
+  font-size: 24px;
+  color: #DD2946;
+  font-family: 'Scheherazade New', serif;
+}
+
+/* صندوق النص */
+.textBox {
+  position: relative;
+  border: 2px dashed #DD2946;
+  border-radius: 8px;
+  padding: 24px;
+  background-color: #fafafa;
+}
+
+/* تسمية النص - تم تكبير الحجم */
+.textLabel {
+  position: absolute;
+  top: -26px; /* تم رفعها من -15px إلى -20px */
+  right: 16px;
+  background-color: #fafafa;
+  color: #DD2946;
+  padding: 4px 12px; /* تم زيادة padding العمودي من 2px إلى 4px */
+  font-size: 24px; /* تم تكبير الحجم من 20px إلى 24px */
+  font-weight: bold; /* تأكيد أنها bold */
+  font-family: 'Scheherazade New', serif;
+}
+
+/* محتوى النص - تم تكبير الحجم */
+.textContent {
+  font-size: 26px; /* تم تكبير الحجم من 20px إلى 26px */
+  line-height: 1.8;
+  color: #171717;
+  font-family: 'Scheherazade New', serif;
+  text-align: center;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; /* ارتفاع أدنى لضمان مساحة كافية للصورة */
+}
+
+/* أنماط لصورة النص */
+.textImage {
+  max-width: 75%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 900px) {
+  .questionContainer {
+    width: 95%;
+    
+    max-width: 800px;
+    margin: 0 auto 30px; /* تم تقليل الهامش السفلي من 60px إلى 30px */
+  }
+  
+  .mainContent {
+    padding: 15px;
+  }
+  
+  .exerciseArea {
+    padding: 15px;
+  }
+  
+  .questionText {
+    font-size: 20px;
+  }
+  
+  .textContent {
+    font-size: 22px;
+    line-height: 1.6;
+    min-height: 80px;
+  }
+  
+  .textBox {
+    padding: 20px;
+  }
+  
+  .textLabel {
+    font-size: 20px; /* تم تكبير حجم التسمية للشاشات الصغيرة من 18px إلى 20px */
+    top: -18px; /* تم رفعها من -14px إلى -18px للشاشات الصغيرة */
+    padding: 3px 10px; /* تم زيادة padding العمودي */
+  }
+  
+  .textImage {
+    max-width: 80%; /* تم تقليل من 100% إلى 80% للشاشات الصغيرة */
+  }
+  
+  .questionTitle {
+    margin-bottom: 40px; /* تم زيادة المساحة للشاشات الصغيرة */
+  }
+  
+  .questionNumber {
+    width: 34px; /* حجم أصغر قليلاً للشاشات الصغيرة */
+    height: 34px;
+    font-size: 17px;
+  }
+}
