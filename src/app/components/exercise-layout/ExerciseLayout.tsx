@@ -11,35 +11,44 @@ import ProgressStepper from '@/app/components/progress-stepper/page';
 import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 import CloseButton from '@/app/components/close-button/page';
 
+// ✅ تعريف واجهة HeaderData
+interface HeaderData { 
+  trimester: string;
+  unit: string;
+  title?: string;
+  grade: string;
+  studentName?: string;
+  exerciseId?: string; // إضافة معرف التمرين
+}
+
 // تعريف واجهة للخصائص
 interface ExerciseLayoutProps {
-  headerData: any; // استبدل any بنوع بيانات الهيدر الفعلي
+  children: React.ReactNode;
+  headerData: HeaderData;
   totalSteps: number;
   currentStep: number;
   onStepChange: (step: number) => void;
   onNavigateNext: () => void;
   isLastQuestion: boolean;
-  onUndo: () => void; // سيتم التعامل مع كيفية ربطها لاحقًا
-  onReset: () => void; // سيتم التعامل مع كيفية ربطها لاحقًا
   onClose: () => void;
-  children: React.ReactNode; // محتوى السؤال
-  exerciseType?: string; // خاصية اختيارية لنوع التمرين (مثل "قراءة")
+  onUndo: () => void;
+  onReset: () => void;
+  onNavigateToNextExercise?: () => void;
 }
 
-export default function ExerciseLayout({
+const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
+  children,
   headerData,
   totalSteps,
   currentStep,
   onStepChange,
   onNavigateNext,
   isLastQuestion,
+  onClose,
   onUndo,
   onReset,
-  onClose,
-  children,
-  exerciseType = "غير محدد" // قيمة افتراضية إذا لم يتم تمرير النوع
-}: ExerciseLayoutProps) {
-
+  onNavigateToNextExercise,
+}) => {
   return (
     // استخدام الكلاسات من ملف CSS المستورد
     <div className={styles.pageContainer} style={{ paddingTop: 0, marginTop: 0 }}>
@@ -47,7 +56,16 @@ export default function ExerciseLayout({
 
       <main className={styles.exerciseContainer} style={{ paddingTop: '1rem' }}>
         <div className={styles.exerciseContent}>
-          <ExerciseHeader {...headerData} />
+          <ExerciseHeader 
+            trimester={headerData.trimester}
+            unit={headerData.unit}
+            grade={headerData.grade}
+            studentName={headerData.studentName}
+            exerciseId={headerData.exerciseId} // ✅ تمرير exerciseId
+            onClose={onClose}
+            onUndo={onUndo}
+            onReset={onReset}
+          />
 
           <div className={styles.exerciseBodyWrapper}>
             <div className={styles.mainExerciseArea}>
@@ -66,7 +84,7 @@ export default function ExerciseLayout({
         isLastQuestion={isLastQuestion}
       />
       <AiTalker
-        exerciseType={exerciseType} // تمرير نوع التمرين
+        exerciseType={"غير محدد"} // تمرير نوع التمرين
         onHelpRequest={() => console.log("AI: طلب مساعدة")} // تنفيذ مؤقت
         onExplainRequest={() => console.log("AI: طلب شرح")}  // تنفيذ مؤقت
       />
@@ -74,8 +92,14 @@ export default function ExerciseLayout({
         totalSteps={totalSteps}
         currentStep={currentStep}
         onStepChange={onStepChange}
-        allowNavigation={true} // أو اجعلها prop للتحكم بها
+        allowNavigation={true}
+        showNavigationButtons={true}
+        onNextExercise={onNavigateToNextExercise} // تمرير الدالة هنا
+        showExerciseNavigation={true}
+        isLastQuestion={isLastQuestion} // تمرير حالة آخر سؤال
       />
     </div>
   );
-}
+};
+
+export default ExerciseLayout;

@@ -3,40 +3,50 @@
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
 import ExerciseLayout from '@/app/components/exercise-layout/ExerciseLayout';
-import MatchingQuestion from '@/app/components/questions/matching-question/MatchingQuestion';
-import TextDisplay from '@/app/components/questions/text-question/TextQuestion';
+import { EXERCISES_CONFIG, ExerciseConfig, QuestionConfig } from '@/app/config/exerciseConfig';
+import QuestionRenderer from '@/app/components/questions/QuestionRenderer';
 import Cookies from 'js-cookie';
 import { Student } from '@/app/data-structures/Student';
-
-// واجهة بيانات السؤال
-interface QuestionData {
-  items: { id: string; text: string }[];
-  images: { id: string; url: string }[];
-}
 
 // واجهة بيانات الهيدر
 interface HeaderData { 
   trimester: string;
   unit: string;
-  title: string;
+  title?: string;
   grade: string;
-  studentName: string;
+  studentName?: string;
+  exerciseId: string;
 }
 
-// --- دالة مساعدة لاستخلاص الرقم من السلسلة النصية ---
-const extractNumberFromSlug = (slug: string | undefined | null, prefix: string): number => {
-  if (slug && slug.startsWith(prefix)) {
-    return parseInt(slug.substring(prefix.length), 10);
-  }
-  return NaN;
-};
-
-// إنشاء ثوابت للأحداث المخصصة
+// ✅ تصدير الثوابت
 export const CONNECTION_EVENTS = {
   UNDO: 'connection-undo',
   RESET: 'connection-reset'
 };
 
+// --- دالة مساعدة لاستخلاص الرقم من السلسلة النصية ---
+const extractNumberFromSlug = (slug: string | undefined | null, prefix: string): number => {
+  if (slug && slug.startsWith(prefix)) {
+    const num = parseInt(slug.substring(prefix.length), 10);
+    return isNaN(num) ? 1 : num;
+  }
+  return 1;
+};
+
+// ✅ دالة محدثة للتعامل مع تنسيق "qs" فقط
+const extractQuestionNumber = (slug: string | undefined | null): number => {
+  // التحقق من تنسيق "qs" فقط
+  if (slug && slug.startsWith('qs')) {
+    const num = parseInt(slug.substring(2), 10); // إزالة "qs" والحصول على الرقم
+    return isNaN(num) ? 1 : num;
+  }
+  
+  // إذا كان التنسيق غير صحيح، إرجاع قيمة افتراضية
+  console.warn(`Invalid question format: ${slug}. Expected format: qs[number]`);
+  return 1;
+};
+
+// ✅ إضافة التحقق من تنسيق السؤال والتوجيه التلقائي
 export default function QuestionPage() {
   const router = useRouter();
   const params = useParams();
@@ -44,105 +54,60 @@ export default function QuestionPage() {
 
   // --- الحالة (State) ---
   const [headerData, setHeaderData] = useState<HeaderData | null>(null);
-  const [questionData, setQuestionData] = useState<QuestionData | null>(null);
-  const [totalQuestions, setTotalQuestions] = useState<number>(5);
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [student, setStudent] = useState<Student | null>(null); // إضافة حالة للطالب
-  
-  // حالات خاصة بالأسئلة التفاعلية
-  const [connections, setConnections] = useState<{start: string; end: string}[]>([]);
-  const [startPoint, setStartPoint] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState<{x: number; y: number} | null>(null);
+  const [student, setStudent] = useState<Student | null>(null);
 
-  // --- استخراج ومعالجة params مع قيم افتراضية ---
-  const exerciseSlug = (params?.exerciseId as string) || "exercise1";
-  const questionSlug = (params?.questionId as string) || "question1";
-  const yearParam = (params?.year as string) || "year1";
-  const subjectParam = (params?.subject as string) || "reading";
-  const unitParam = (params?.unit as string) || "unit1";
+  // --- استخراج ومعالجة params بدون قيم افتراضية ---
+  const exerciseSlug = params?.exerciceId as string;
+  const questionSlug = params?.questionId as string;
+  const yearParam = params?.year as string;
+  const subjectParam = params?.subject as string;
+  const unitParam = params?.unit as string;
 
-  const currentExerciseNumber = extractNumberFromSlug(exerciseSlug, "exercise") || 1;
-  const currentQuestionNumber = extractNumberFromSlug(questionSlug, "question") || 1;
+  console.log('URL Parameters:', { exerciseSlug, questionSlug, yearParam, subjectParam, unitParam });
 
-  // --- دالة لتحديث بيانات السؤال ---
-  const updateQuestionData = (questionNum: number, exerciseNum: number) => {
-    let newQuestionData: QuestionData;
+  // التحقق من وجود المعاملات المطلوبة
+  if (!exerciseSlug || !questionSlug || !yearParam || !subjectParam) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-600">
+        خطأ: معاملات الرابط غير صحيحة
+      </div>
+    );
+  }
 
-    // تحديد بيانات السؤال بناءً على رقم السؤال
-    switch (questionNum) {
-      case 1:
-        // السؤال الأول - المطابقة الثانية (تم تبديله مع السؤال الأول)
-        newQuestionData = {
-          items: [
-            { id: 'text1', text: 'مَدْرَسَةٌ' },
-            { id: 'text2', text: 'كِتَابٌ' },
-            { id: 'text3', text: 'قَلَمٌ' },
-          ],
-          images: [
-            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice1/school.png' },
-            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice1/book.png' },
-            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice1/pen.png' },
-          ]
-        };
-        break;
+  // ✅ إضافة: التحقق من تنسيق السؤال وإعادة التوجيه إذا لزم الأمر
+  if (!questionSlug.startsWith('qs')) {
+    // تحويل التنسيق القديم إلى الجديد
+    const correctQuestionSlug = questionSlug.startsWith('question') 
+      ? `qs${questionSlug.substring(8)}` // تحويل question1 إلى qs1
+      : 'qs1'; // قيمة افتراضية
 
-      case 2:
-        // السؤال الثاني - المطابقة الأولى (تم تبديله مع السؤال الثاني)
-        newQuestionData = {
-          items: [
-            { id: 'text1', text: 'تِلْمِيذٌ' },
-            { id: 'text2', text: 'تِلْمِيذَةٌ' },
-            { id: 'text3', text: 'تَلَامِيذٌ' },
-          ],
-          images: [
-            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice1/studentGirl.png' },
-            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice1/students.png' },
-            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice1/studentBoy.png' },
-          ]
-        };
-        break;
-
-      default:
-        // في حالة وجود خطأ في رقم السؤال، استخدم السؤال الأول كقيمة افتراضية
-        newQuestionData = {
-          items: [
-            { id: 'text1', text: 'مَدْرَسَةٌ' },
-            { id: 'text2', text: 'كِتَابٌ' },
-            { id: 'text3', text: 'قَلَمٌ' },
-          ],
-          images: [
-            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice1/school.png' },
-            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice1/book.png' },
-            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice1/pen.png' },
-          ]
-        };
-    }
-
-    setQuestionData(newQuestionData);
+    const correctPath = pathname.replace(`/${questionSlug}`, `/${correctQuestionSlug}`);
+    console.log(`Redirecting from ${questionSlug} to ${correctQuestionSlug}`);
     
-    // إعادة تعيين حالات التوصيل عند تحديث السؤال
-    setConnections([]);
-    setStartPoint(null);
-    setMousePos(null);
-  };
+    // إعادة توجيه فورية
+    router.replace(correctPath);
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">جاري إعادة التوجيه إلى التنسيق الصحيح...</div>
+      </div>
+    );
+  }
+
+  // تعديل استخلاص رقم السؤال
+  const currentExerciseNumber = extractNumberFromSlug(exerciseSlug, "exercise");
+  const currentQuestionNumber = extractQuestionNumber(questionSlug);
+
+  console.log('Extracted Numbers:', { currentExerciseNumber, currentQuestionNumber });
 
   // --- دالة جلب بيانات الطالب ---
   const fetchStudentData = async () => {
     try {
       const token = Cookies.get('token');
       if (!token) {
-        console.log('No authentication token found, using default student data');
-        // استخدام بيانات طالب افتراضية
-        const defaultStudent = {
-          name: "زهرة",
-          surname: "القصيبي",
-          age: "7",
-          current_level_name: "السنة الثانية",
-          unique_id: "DEFAULT_ID"
-        } as Student;
-        
-        setStudent(defaultStudent);
+        console.log('No authentication token found');
         return;
       }
 
@@ -165,15 +130,29 @@ export default function QuestionPage() {
 
     } catch (error: any) {
       console.error("Error fetching student data:", error.message);
-      // استخدام بيانات طالب افتراضية في حالة الخطأ
-      setStudent({
-        name: "زهرة",
-        surname: "القصيبي",
-        age: "7",
-        current_level_name: "السنة الثانية",
-        unique_id: "DEFAULT_ID"
-      } as Student);
+      setStudent(null);
     }
+  };
+
+  // --- دالة لجلب تكوين التمرين ---
+  const getExerciseConfig = (): ExerciseConfig | null => {
+    const exerciseKey = `exercise${currentExerciseNumber}`;
+    console.log('Looking for exercise config:', exerciseKey);
+    const config = EXERCISES_CONFIG[exerciseKey] || null;
+    console.log('Found exercise config:', config);
+    return config;
+  };
+
+  // --- دالة لجلب تكوين السؤال الحالي ---
+  const getCurrentQuestionConfig = (): QuestionConfig | null => {
+    const exerciseConfig = getExerciseConfig();
+    if (!exerciseConfig) return null;
+    
+    const questionIndex = currentQuestionNumber - 1;
+    console.log('Looking for question at index:', questionIndex);
+    const questionConfig = exerciseConfig.questions[questionIndex] || null;
+    console.log('Found question config:', questionConfig);
+    return questionConfig;
   };
 
   // --- جلب بيانات الطالب ---
@@ -190,61 +169,59 @@ export default function QuestionPage() {
       try {
         console.log(`Loading data for exercise: ${currentExerciseNumber}, question: ${currentQuestionNumber}`);
         
-        // محاكاة تحميل البيانات
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // إعداد بيانات الهيدر مع الترجمة
+        // الحصول على تكوين التمرين
+        const exerciseConfig = getExerciseConfig();
+        if (!exerciseConfig) {
+          throw new Error(`التمرين رقم ${currentExerciseNumber} غير موجود`);
+        }
+
+        // إعداد بيانات الهيدر
         const gradeNames: { [key: string]: string } = {
           'year1': 'السنة الأولى',
           'year2': 'السنة الثانية',
           'year3': 'السنة الثالثة'
         };
-        
-        const subjectNames: { [key: string]: string } = {
-          'reading': 'القراءة',
-          'math': 'الرياضيات',
-          'science': 'العلوم',
-          'arabic': 'اللغة العربية'
-        };
-        
-        // تعديل كائن unitNames لإضافة الوحدة التمهيدية
+
         const unitNames: { [key: string]: string } = {
-          'unit1': 'الوحدة التمهيدية',
+          'unit1': 'الوحدة الأولى',
           'unit2': 'الوحدة الثانية',
           'unit3': 'الوحدة الثالثة',
-          'introductory': 'الوحدة التمهيدية' // إضافة خيار بديل في حالة استخدام معرف "introductory"
+          'introductory': 'الوحدة التمهيدية'
         };
 
-        // استخدام اسم الطالب من البيانات المسترجعة إذا كانت متاحة
         const studentFullName = student 
           ? `${student.name} ${student.surname}` 
-          : "التلميذ: زهرة القصيبي";
+          : "";
 
+        const exerciseKey = `exercise${currentExerciseNumber}`;
+        
         const fetchedHeaderData: HeaderData = {
           trimester: "الثلاثي الأول",
           unit: unitNames[unitParam] || unitParam,
-          title: `تمرين ${currentExerciseNumber}`,
           grade: gradeNames[yearParam] || yearParam,
-          studentName: studentFullName
+          studentName: studentFullName,
+          exerciseId: exerciseKey
         };
 
+        console.log('Final header data:', fetchedHeaderData);
+
         setHeaderData(fetchedHeaderData);
-        updateQuestionData(currentQuestionNumber, currentExerciseNumber);
-        setTotalQuestions(2); // تعديل من 5 إلى 2 (لدينا سؤالان فقط)
+        setTotalQuestions(exerciseConfig.questions.length);
 
       } catch (err) {
         console.error("Failed to fetch exercise data:", err);
         setError(err instanceof Error ? err.message : "حدث خطأ أثناء جلب البيانات.");
         setHeaderData(null);
-        setQuestionData(null);
         setTotalQuestions(0);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, [params, currentExerciseNumber, currentQuestionNumber, yearParam, subjectParam, unitParam, student]); // أضفنا student كاعتمادية
+    if (exerciseSlug && questionSlug && yearParam && subjectParam) {
+      fetchData();
+    }
+  }, [currentExerciseNumber, currentQuestionNumber, yearParam, subjectParam, unitParam, student]);
 
   // --- دوال التحكم ---
   const handleNavigateNext = () => {
@@ -252,11 +229,10 @@ export default function QuestionPage() {
     
     if (currentQuestionNumber < totalQuestions) {
       const nextQuestionNumber = currentQuestionNumber + 1;
-      const nextQuestionSlug = `question${nextQuestionNumber}`;
+      const nextQuestionSlug = `qs${nextQuestionNumber}`;
 
-      // بناء المسار للسؤال التالي
       const basePathParts = pathname.split('/');
-      basePathParts.pop(); // إزالة questionSlug الحالي
+      basePathParts.pop();
       const basePathWithoutQuestion = basePathParts.join('/');
 
       const nextPath = `${basePathWithoutQuestion}/${nextQuestionSlug}`;
@@ -270,9 +246,9 @@ export default function QuestionPage() {
 
   const handleStepChange = (step: number) => {
     if (step !== currentQuestionNumber) {
-      const stepSlug = `question${step}`;
+      const stepSlug = `qs${step}`;
       const basePathParts = pathname.split('/');
-      basePathParts.pop(); // إزالة السؤال الحالي
+      basePathParts.pop();
       const basePathWithoutQuestion = basePathParts.join('/');
 
       const nextPath = `${basePathWithoutQuestion}/${stepSlug}`;
@@ -285,19 +261,32 @@ export default function QuestionPage() {
     router.push('/dashboard-user?section=home');
   };
 
-  // دالة للتراجع عن آخر توصيل
+  // ✅ الآن CONNECTION_EVENTS مُعرّف ويمكن الوصول إليه
   const handleUndo = useCallback(() => {
-    // إرسال حدث مخصص للتراجع
     document.dispatchEvent(new CustomEvent(CONNECTION_EVENTS.UNDO));
     console.log("تم إرسال أمر التراجع");
   }, []);
 
-  // دالة لإعادة تعيين جميع التوصيلات
   const handleReset = useCallback(() => {
-    // إرسال حدث مخصص لإعادة الضبط
     document.dispatchEvent(new CustomEvent(CONNECTION_EVENTS.RESET));
     console.log("تم إرسال أمر إعادة الضبط");
   }, []);
+
+  const handleNavigateToNextExercise = () => {
+    if (currentQuestionNumber === totalQuestions) {
+      const nextExerciseNumber = currentExerciseNumber + 1;
+      const nextExercisePath = `/exercises/${yearParam}/${subjectParam}/${unitParam}/exercise${nextExerciseNumber}/qs1`;
+      
+      const nextExerciseKey = `exercise${nextExerciseNumber}`;
+      if (EXERCISES_CONFIG[nextExerciseKey]) {
+        console.log(`Navigating to next exercise: ${nextExercisePath}`);
+        router.push(nextExercisePath);
+      } else {
+        console.log("No next exercise available");
+        router.push('/dashboard-user?section=home');
+      }
+    }
+  };
 
   // --- العرض (Render) ---
   if (isLoading) {
@@ -316,10 +305,17 @@ export default function QuestionPage() {
     );
   }
 
-  if (!headerData || !questionData || totalQuestions === 0) {
+  const exerciseConfig = getExerciseConfig();
+  const currentQuestionConfig = getCurrentQuestionConfig();
+
+  if (!headerData || !exerciseConfig || !currentQuestionConfig) {
     return (
       <div className="flex justify-center items-center min-h-screen text-red-600">
         لا يمكن عرض بيانات التمرين. تأكد من صحة الرابط.
+        <br />
+        <small>
+          التمرين: {currentExerciseNumber}, السؤال: {currentQuestionNumber}
+        </small>
       </div>
     );
   }
@@ -335,22 +331,12 @@ export default function QuestionPage() {
       onClose={handleClose}
       onUndo={handleUndo}
       onReset={handleReset}
+      onNavigateToNextExercise={handleNavigateToNextExercise}
     >
-      {/* عرض النص في السؤال الأول */}
-      {currentQuestionNumber === 1 ? (
-        <TextDisplay
-          questionNumber={currentQuestionNumber.toString()}
-          questionTitle="أَقْرَأُ الجُمَلَ التَّالِيَةَ:"
-          textContent="" // نتركه فارغ لأننا سنستخدم صورة
-          imageUrl="/exercices/year1/reading/introductory/exercice1/text.png" // تم حذف "/public" من المسار
-        />
-      ) : (
-        <MatchingQuestion
-          items={questionData.items}
-          images={questionData.images}
-          questionNumber={currentQuestionNumber.toString()}
-        />
-      )}
+      <QuestionRenderer 
+        questionConfig={currentQuestionConfig}
+        exerciseAssets={exerciseConfig.assets}
+      />
     </ExerciseLayout>
   );
 }

@@ -5,8 +5,11 @@
 import React, { useState, useMemo } from 'react';
 import styles from './page.module.css';
 import StudentInfoHeader from '@/app/components/student-info-header/page';
-import subjectColorData from '@/app/data/subjectColors.json'; // استيراد الألوان
-import { HiChevronLeft } from "react-icons/hi"; // استيراد الأيقونة
+import subjectColorData from '@/app/data/subjectColors.json';
+import { HiChevronLeft } from "react-icons/hi";
+import Link from 'next/link';
+// إضافة استيراد ملف التكوين
+import { EXERCISES_CONFIG } from '@/app/config/exerciseConfig';
 
 // --- واجهات البيانات ---
 interface StudentData {
@@ -28,79 +31,136 @@ interface Exercise {
     title: string;
     status: string;
     periodNumber: number;
-    progress: number; // نسبة التقدم (0-100)
+    progress: number;
+    link: string;
 }
-interface SubjectFilter { // واجهة لفلتر المواد
+interface SubjectFilter {
     id: string;
     name: string;
 }
-// --- نهاية الواجهات ---
 
-// --- بيانات وهمية (يفضل استيرادها من ملف مشترك) ---
-const mockStudentDetails: StudentDetailsMap = {
-    'child1': { name: 'التلميذ الأول', level: 'السنة الأولى', age: 6, uniqueId: '123456789123' },
-    'child2': { name: 'التلميذ الثاني', level: 'السنة الثالثة', age: 8, uniqueId: '987654321987' },
-    'child3': { name: 'التلميذ الثالث', level: 'السنة الخامسة', age: 10, uniqueId: '112233445566' },
-    '': { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' }
+// --- دالة لجلب عنوان التمرين من ملف التكوين ---
+const getExerciseTitle = (exerciseNumber: number): string => {
+    const exerciseKey = `exercise${exerciseNumber}`;
+    const exerciseConfig = EXERCISES_CONFIG[exerciseKey];
+    return exerciseConfig?.title || `التمرين رقم ${exerciseNumber}`;
 };
 
-// دالة لتوليد بيانات وهمية مع progress ونص الحالة المعدل
-const generateMockExercises = (): Exercise[] => {
-    const subjects = [
-        { id: 'math', name: 'الرياضيات' },
-        { id: 'science', name: 'الإيقاظ العلمي' },
-        { id: 'islamic', name: 'التربية الإسلامية' }, // إضافة المادة الجديدة هنا أيضاً
-        { id: 'reading', name: 'القراءة' },
-        { id: 'writing', name: 'الانتاج الكتابي' },
-    ];
-    const exercises: Exercise[] = [];
-    let exerciseId = 1;
-    const statuses = ['لم يبدأ', 'مكتمل', 'قيد الإنجاز']; // استخدام النص الجديد
+// --- بيانات حقيقية للتمارين ---
+const realExercises: Exercise[] = [
+    // تمارين القراءة - السنة الأولى - الوحدة التمهيدية
+    {
+        id: 'reading-year1-intro-ex1',
+        subject: 'القراءة',
+        title: getExerciseTitle(1), // استخدام الدالة لجلب العنوان
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/reading/introductory/exercise1/qs1', // ✅ تغيير إلى qs1
+    },
+    {
+        id: 'reading-year1-intro-ex2',
+        subject: 'القراءة',
+        title: getExerciseTitle(2), // استخدام الدالة لجلب العنوان
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/reading/introductory/exercise2/qs1', // ✅ تغيير إلى qs1
+    },
+    {
+        id: 'reading-year1-intro-ex3',
+        subject: 'القراءة',
+        title: getExerciseTitle(3), // استخدام الدالة لجلب العنوان
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/reading/introductory/exercise3/qs1', // ✅ تغيير إلى qs1
+    },
+    
+    // يمكنك إضافة المزيد من التمارين وربطها بملف التكوين
+    {
+        id: 'math-year1-unit1-ex1',
+        subject: 'الرياضيات',
+        title: 'تمرين العد والأرقام', // يمكن تحديثه لاحقاً من ملف التكوين
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/math/unit1/exercise1/qs1', // ✅ تغيير إلى qs1
+    },
+    {
+        id: 'science-year1-unit1-ex1',
+        subject: 'الإيقاظ العلمي',
+        title: 'تمرين الحواس الخمس', // يمكن تحديثه لاحقاً من ملف التكوين
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/science/unit1/exercise1/qs1', // ✅ تغيير إلى qs1
+    },
+    {
+        id: 'science-year1-unit1-ex4',
+        subject: 'الإيقاظ العلمي',
+        title: getExerciseTitle(4), // سيجلب "تمرين الحواس الخمس"
+        status: 'لم يبدأ',
+        periodNumber: 1,
+        progress: 0,
+        link: '/exercises/year1/science/unit1/exercise4/qs1', // ✅ تغيير إلى qs1
+    }
+];
 
-    subjects.forEach(subject => {
-        for (let period = 1; period <= 5; period++) {
-            for (let exNum = 1; exNum <= 5; exNum++) {
-                const status = statuses[Math.floor(Math.random() * statuses.length)];
-                let progress = 0;
-                if (status === 'مكتمل') {
-                    progress = 100;
-                } else if (status === 'قيد الإنجاز') { // استخدام النص الجديد
-                    progress = Math.floor(Math.random() * 81) + 10; // 10-90
-                }
-                exercises.push({
-                    id: `ex-${subject.id}-${period}-${exNum}`,
-                    subject: subject.name,
-                    title: `التمرين عدد ${String(exNum).padStart(2, '0')}`,
-                    status: status,
-                    periodNumber: period,
-                    progress: progress
-                });
-            }
+// --- دالة محسنة لتوليد قائمة التمارين مع تحديد المادة الصحيحة ---
+const generateExercisesFromConfig = (): Exercise[] => {
+    const exercises: Exercise[] = [];
+    
+    // تعريف مطابقة التمارين مع المواد والمسارات
+    const exerciseMapping: { [key: string]: { subject: string; path: string } } = {
+        'exercise1': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise1/qs1' }, // ✅
+        'exercise2': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise2/qs1' }, // ✅
+        'exercise3': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise3/qs1' }, // ✅
+        'exercise4': { subject: 'الإيقاظ العلمي', path: '/exercises/year1/science/unit1/exercise4/qs1' }, // ✅
+    };
+    
+    // التكرار عبر جميع التمارين في ملف التكوين
+    Object.keys(EXERCISES_CONFIG).forEach((exerciseKey) => {
+        const exerciseConfig = EXERCISES_CONFIG[exerciseKey];
+        const mapping = exerciseMapping[exerciseKey];
+        
+        if (mapping) {
+            exercises.push({
+                id: `${mapping.subject === 'القراءة' ? 'reading' : 'science'}-year1-${exerciseKey}`,
+                subject: mapping.subject,
+                title: exerciseConfig.title, // جلب العنوان من ملف التكوين
+                status: 'لم يبدأ',
+                periodNumber: 1,
+                progress: 0,
+                link: mapping.path,
+            });
         }
     });
+    
     return exercises;
 };
-const mockExercises: Exercise[] = generateMockExercises();
+
+// --- استخدام الدالة المحسنة ---
+const realExercisesFromConfig: Exercise[] = generateExercisesFromConfig();
 
 // دالة مساعدة للحصول على اسم الفترة بالعربية
 const getPeriodName = (periodNumber: number): string => {
     const names = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة'];
     return `الفترة ${names[periodNumber - 1] || periodNumber}`;
 };
-// --- نهاية البيانات الوهمية ---
 
-// بيانات فلاتر التبويبات (غير مرتبة مبدئياً)
+// بيانات فلاتر التبويبات
 const initialSubjectFilters: SubjectFilter[] = [
     { id: 'all', name: 'جميع التمارين' },
-    { id: 'writing', name: 'الانتاج الكتابي' },
     { id: 'reading', name: 'القراءة' },
-    { id: 'islamic', name: 'التربية الإسلامية' }, // المادة الجديدة
-    { id: 'science', name: 'الإيقاظ العلمي' },
     { id: 'math', name: 'الرياضيات' },
+    { id: 'science', name: 'الإيقاظ العلمي' },
+    { id: 'islamic', name: 'التربية الإسلامية' },
+    { id: 'writing', name: 'الانتاج الكتابي' },
 ];
 
 // تحديد ترتيب أهمية المواد
-const subjectImportanceOrder = ['الرياضيات', 'الإيقاظ العلمي', 'التربية الإسلامية', 'القراءة', 'الانتاج الكتابي'];
+const subjectImportanceOrder = ['القراءة', 'الرياضيات', 'الإيقاظ العلمي', 'التربية الإسلامية', 'الانتاج الكتابي'];
 
 // واجهة لشكل البيانات المجمعة
 interface GroupedExercises {
@@ -109,14 +169,18 @@ interface GroupedExercises {
     exercises: Exercise[];
 }
 
-
 const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     selectedChildId,
     studentDetailsMap
 }) => {
 
-    // البحث عن بيانات الطالب مع قيمة افتراضية
-    const defaultStudentData: StudentData = mockStudentDetails[''] || { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' };
+    // البحث عن بيانات الطالب مع قيمة افتراضية في حالة عدم وجود بيانات
+    const defaultStudentData: StudentData = { 
+        name: 'طالب غير محدد', 
+        level: 'غير محدد', 
+        age: 0, 
+        uniqueId: 'N/A' 
+    };
     const selectedStudentData = studentDetailsMap[selectedChildId] || defaultStudentData;
 
     const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -135,25 +199,26 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             return indexA - indexB;
         });
 
-        // وضع "جميع التمارين" أولاً ليظهر أقصى اليسار في مجموعة الأزرار
         return allFilter ? [allFilter, ...subjectOnlyFilters] : subjectOnlyFilters;
-    }, []); // هذا التأثير يعمل مرة واحدة عند تحميل المكون
+    }, []);
 
     // حساب اسم الفلتر النشط
     const activeFilterName = useMemo(() => {
-        // البحث في المصفوفة الأصلية لضمان إيجاد الاسم الصحيح
         return initialSubjectFilters.find(f => f.id === activeFilter)?.name || 'جميع التمارين';
     }, [activeFilter]);
 
     // منطق التصفية والتجميع والفرز لعرض البطاقات
     const groupedAndFilteredExercises = useMemo((): GroupedExercises[] => {
-        let exercisesToShow = mockExercises;
+        // استخدام التمارين المولدة من ملف التكوين
+        let exercisesToShow = realExercisesFromConfig;
+        
         // 1. التصفية حسب التبويب النشط
         if (activeFilter !== 'all') {
-            const activeFilterData = initialSubjectFilters.find(f => f.id === activeFilter); // البحث في الأصلي
+            const activeFilterData = initialSubjectFilters.find(f => f.id === activeFilter);
             const targetSubjectName = activeFilterData ? activeFilterData.name : '';
-            exercisesToShow = mockExercises.filter(exercise => exercise.subject === targetSubjectName);
+            exercisesToShow = realExercisesFromConfig.filter(exercise => exercise.subject === targetSubjectName);
         }
+        
         // 2. التجميع حسب المادة والفترة
         const groups: { [key: string]: { subject: string; periodNumber: number; exercises: Exercise[] } } = {};
         exercisesToShow.forEach(exercise => {
@@ -163,6 +228,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             }
             groups[key].exercises.push(exercise);
         });
+        
         // 3. الفرز حسب الفترة ثم أهمية المادة
         return Object.values(groups).sort((a, b) => {
             if (a.periodNumber !== b.periodNumber) { return a.periodNumber - b.periodNumber; }
@@ -175,7 +241,6 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
         });
     }, [activeFilter]);
 
-
     // ألوان الحالة للخلفيات
     const statusBackgroundColors = {
         completed: '#dcfce7',
@@ -183,7 +248,6 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
         notStarted: '#e5e7eb'
     };
     const remainingColorInProgress = "#ffffff";
-
 
     return (
         <div className={styles.pageContainer}>
@@ -194,6 +258,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                     schoolLevel={selectedStudentData.level}
                     age={selectedStudentData.age}
                     uniqueId={selectedStudentData.uniqueId}
+                    childID={selectedChildId}
                 />
             </div>
 
@@ -201,7 +266,6 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             <div className={styles.tabsContainer}>
                 <h3 className={styles.activeTabTitle}>{activeFilterName}</h3>
                 <div className={styles.tabButtonsGroup}>
-                    {/* استخدام المصفوفة المفرزة sortedTabFilters لعرض الأزرار */}
                     {sortedTabFilters.map(filter => {
                         let inlineStyles: React.CSSProperties = {};
                         const isActive = activeFilter === filter.id;
@@ -246,10 +310,9 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             <div className={styles.groupedExerciseListContainer}>
                 {groupedAndFilteredExercises.length > 0 ? (
                     groupedAndFilteredExercises.map(group => {
-                        // البحث عن المعرف الإنجليزي للمادة لتطبيق اللون الصحيح
-                        const subjectId = initialSubjectFilters.find(f => f.name === group.subject)?.id || ''; // البحث في الأصلي
+                        const subjectId = initialSubjectFilters.find(f => f.name === group.subject)?.id || '';
                         const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
-                        const bodyBgColor = '#ffffff'; // خلفية بيضاء لقائمة التمارين
+                        const bodyBgColor = '#ffffff';
 
                         return (
                             <div key={`${group.subject}-${group.periodNumber}`} className={styles.subjectGroup}>
@@ -271,7 +334,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         } else if (exercise.status === 'لم يبدأ') {
                                             progressFillColor = statusBackgroundColors.notStarted;
                                             itemStyle = { backgroundColor: progressFillColor };
-                                        } else if (exercise.status === 'قيد الإنجاز') { // استخدام النص الجديد
+                                        } else if (exercise.status === 'قيد الإنجاز') {
                                             progressFillColor = statusBackgroundColors.inProgress;
                                             itemStyle = {
                                                 background: `linear-gradient(to left, ${progressFillColor} ${exercise.progress}%, ${remainingColorInProgress} ${exercise.progress}%)`
@@ -281,24 +344,31 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         }
 
                                         return (
-                                            // عنصر التمرين
-                                            <div
+                                            <Link 
                                                 key={exercise.id}
-                                                className={styles.groupedExerciseItem}
-                                                style={itemStyle}
+                                                href={exercise.link}
+                                                className={styles.exerciseLink}
+                                                style={{ textDecoration: 'none' }}
                                             >
-                                                {/* عنوان التمرين */}
-                                                <span className={styles.exerciseTitle}>{exercise.title}</span>
-                                                {/* حاوية الحالة والأيقونة */}
-                                                <div className={styles.statusIconGroup}>
-                                                    {/* نص الحالة + النسبة المئوية */}
-                                                    <span className={styles.exerciseStatusText}>
-                                                        {exercise.status} {exercise.progress}%
-                                                    </span>
-                                                    {/* أيقونة السهم */}
-                                                    <HiChevronLeft className={styles.exerciseActionIcon} />
+                                                <div
+                                                    className={styles.groupedExerciseItem}
+                                                    style={itemStyle}
+                                                >
+                                                    {/* عنوان التمرين */}
+                                                    <div className={styles.exerciseTitleContainer}>
+                                                        <span className={styles.exerciseTitle}>{exercise.title}</span>
+                                                    </div>
+                                                    {/* حاوية الحالة والأيقونة */}
+                                                    <div className={styles.statusIconGroup}>
+                                                        {/* نص الحالة + النسبة المئوية */}
+                                                        <span className={styles.exerciseStatusText}>
+                                                            {exercise.status} {exercise.progress > 0 ? `${exercise.progress}%` : ''}
+                                                        </span>
+                                                        {/* أيقونة السهم */}
+                                                        <HiChevronLeft className={styles.exerciseActionIcon} />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         );
                                     })}
                                 </div>
@@ -306,8 +376,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                         );
                     })
                 ) : (
-                    // رسالة في حال عدم وجود تمارين
-                    <p className={styles.noExercises}>لا توجد تمارين متاحة لهذا الفلتر.</p>
+                    <p className={styles.noExercises}>لا توجد تمارين متاحة لهذا القسم.</p>
                 )}
             </div>
         </div>

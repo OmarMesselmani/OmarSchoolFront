@@ -1,33 +1,29 @@
 /* ./app/components/exercise-layout/exercise-layout.module.css */
 
 .pageContainer {
-    min-height: 100vh;         /* لجعل الصفحة تملأ ارتفاع الشاشة على الأقل */
-    display: flex;             /* استخدام Flexbox لتنظيم المحتوى */
-    flex-direction: column;    /* ترتيب العناصر عمودياً (Header, Main, Footer-like components) */
-    background-color: #fafafa; /* لون الخلفية الأساسي */
-    padding-top: 0;            /* إزالة أي Padding علوي */
-    margin-top: 0;             /* إزالة أي Margin علوي */
-    overflow-x: hidden;        /* منع التمرير الأفقي غير المرغوب فيه */
-    position: relative;        /* قد يكون مفيدًا لتحديد موضع العناصر العائمة مثل زر الإغلاق */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fafafa;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    overflow-x: hidden;   
+    position: relative;
   }
   
   /* الحاوية الرئيسية لمحتوى التمرين (داخل pageContainer) */
   .exerciseContainer {
-    flex: 1;                   /* لجعل هذا الجزء يأخذ المساحة المتبقية عمودياً */
-    width: 100%;               /* يأخذ العرض الكامل */
-    display: flex;             /* استخدام Flexbox */
-    flex-direction: column;    /* ترتيب العناصر الداخلية عمودياً */
-    padding: 1rem;             /* إضافة Padding داخلي */
-    /* قد ترغب في إضافة حد أقصى للعرض وتوسيطه للشاشات الكبيرة */
-    /* max-width: 1400px; */
-    /* margin-left: auto; */
-    /* margin-right: auto; */
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
   }
   
   /* حاوية المحتوى الفعلية (تحتوي الهيدر وجسم التمرين) */
   .exerciseContent {
     flex: 1;
-    padding: 30px 20px 10px; /* تم تقليل padding-bottom من قيمة أكبر إلى 10px */
+    padding: 30px 20px 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -37,31 +33,23 @@
   
   /* حاوية تجمع بين منطقة عرض السؤال والشريط الجانبي */
   .exerciseBodyWrapper {
-    display: flex;             /* استخدام Flexbox لوضع منطقة السؤال والشريط الجانبي جنباً إلى جنب */
-    gap: 20px;                 /* المسافة بين منطقة السؤال والشريط الجانبي */
-    margin-top: 1rem;          /* إضافة مسافة فوق منطقة التمرين */
-    margin-bottom: 1rem;       /* إضافة مسافة أسفل منطقة التمرين (قبل أزرار التنقل) */
-    align-items: flex-start;   /* محاذاة العناصر للأعلى */
+    display: flex;          
+    gap: 20px;          
+    margin-top: 1rem;      
+    margin-bottom: 1rem;    
+    align-items: flex-start;  
   }
   
   /* المنطقة المخصصة لعرض محتوى السؤال الفعلي (children) */
   .mainExerciseArea {
-    flex: 1;                   /* جعل منطقة السؤال تأخذ المساحة الأكبر المتاحة */
-    /* لا تضع position: relative هنا إلا إذا كان ضروريًا للقالب نفسه */
-    /* الأنماط الخاصة بمحتوى السؤال (مثل position: relative لـ Xarrows) يجب أن تكون */
-    /* في ملف CSS الخاص بمكون السؤال نفسه (matching-question.module.css) */
-    min-height: 350px;         /* تحديد ارتفاع أدنى لمنطقة السؤال */
+    flex: 1; 
+    min-height: 350px;     
   }
-  
-  /* تنسيق عام يؤثر على مكون ExerciseHeader أينما تم استخدامه */
-  /* (يمكن تركه هنا أو نقله لملف CSS خاص بـ ExerciseHeader إذا وُجد) */
+
   :global(.headerContainer) {
     margin-top: 1rem; /* إضافة هامش علوي بسيط للهيدر */
   }
-  
-  /* يمكنك إضافة تنسيقات أخرى هنا إذا احتجت لتنسيق أماكن */
-  /* الأزرار العائمة أو شريط التقدم إذا لم يتم التعامل معها */
-  /* بواسطة Tailwind أو inline styles في المكونات نفسها */
+
 
   /* للشاشات الصغيرة */
 @media (max-width: 768px) {

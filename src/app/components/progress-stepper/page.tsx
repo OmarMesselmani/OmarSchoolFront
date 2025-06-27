@@ -9,9 +9,10 @@ interface ProgressStepperProps {
   onStepChange?: (step: number) => void;
   allowNavigation?: boolean;
   showNavigationButtons?: boolean;
-  onNextExercise?: () => void; // دالة للانتقال للتمرين التالي
-  onPrevExercise?: () => void; // دالة للانتقال للتمرين السابق
-  showExerciseNavigation?: boolean; // التحكم في ظهور أزرار التنقل بين التمارين
+  onNextExercise?: () => void;
+  onPrevExercise?: () => void;
+  showExerciseNavigation?: boolean;
+  isLastQuestion?: boolean;
 }
 
 const ProgressStepper: React.FC<ProgressStepperProps> = ({
@@ -22,9 +23,9 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
   showNavigationButtons = true,
   onNextExercise,
   onPrevExercise,
-  showExerciseNavigation = true, // ظهور أزرار التنقل بين التمارين افتراضيًا
+  showExerciseNavigation = true,
+  isLastQuestion = false,
 }) => {
-  // التأكد من أن القيم صحيحة
   const validTotalSteps = Math.max(1, totalSteps);
   const validCurrentStep = Math.min(Math.max(1, currentStep), validTotalSteps);
   
@@ -50,17 +51,16 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
   };
 
   return (
-    // تم إضافة mb-[50px] للهامش السفلي بمقدار 50px
     <div className="w-full py-4 flex justify-center items-center px-4 z-10 mt-4 mb-[30px]">
       <div className="flex w-full max-w-4xl mx-auto items-center gap-4 px-4">
         {/* أزرار التنقل بين الأسئلة والتمارين */}
         <div className="flex items-center gap-2">
-          {/* زر التمرين السابق - تم تصغير الزر وتغيير لون hover */}
+          {/* زر التمرين السابق */}
           {showExerciseNavigation && (
             <button 
               className={`flex items-center justify-center w-9 h-9 rounded-full 
                 ${onPrevExercise 
-                  ? 'bg-blue-600 text-white hover:bg-[#DD2946]' 
+                  ? 'bg-gray-400 text-white hover:bg-gray-500' 
                   : 'bg-gray-300 text-gray-500'} 
                 transition-colors`}
               onClick={onPrevExercise}
@@ -71,7 +71,7 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
             </button>
           )}
 
-          {/* زر السؤال السابق - تم استبدال الأيقونة بـ HiOutlineChevronRight */}
+          {/* زر السؤال السابق */}
           {showNavigationButtons && (
             <button 
               className={`flex items-center justify-center w-9 h-9 rounded-full ${
@@ -113,7 +113,7 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
         
         {/* أزرار التنقل التالية */}
         <div className="flex items-center gap-2">
-          {/* زر السؤال التالي - تم استبدال الأيقونة بـ HiOutlineChevronLeft */}
+          {/* زر السؤال التالي */}
           {showNavigationButtons && (
             <button 
               className={`flex items-center justify-center w-9 h-9 rounded-full ${
@@ -127,16 +127,18 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
             </button>
           )}
 
-          {/* زر التمرين التالي - تم تصغير الزر وتغيير لون hover */}
+          {/* زر التمرين التالي - تحديث المنطق */}
           {showExerciseNavigation && (
             <button 
               className={`flex items-center justify-center w-9 h-9 rounded-full 
-                ${onNextExercise 
-                  ? 'bg-blue-600 text-white hover:bg-[#DD2946]' 
-                  : 'bg-gray-300 text-gray-500'} 
+                ${(onNextExercise && isLastQuestion) 
+                  ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' // اللون الرئيسي عند آخر سؤال
+                  : onNextExercise 
+                    ? 'bg-gray-400 text-white hover:bg-gray-500' // رمادي بدلاً من الأزرق
+                    : 'bg-gray-300 text-gray-500'} 
                 transition-colors`}
               onClick={onNextExercise}
-              disabled={!onNextExercise}
+              disabled={!onNextExercise || !isLastQuestion} // تفعيل الزر فقط في آخر سؤال
               title="التمرين التالي"
             >
               <HiOutlineChevronDoubleRight size={18} className="rtl:rotate-180" />
