@@ -13,14 +13,15 @@ export interface ExerciseConfig {
 
 export interface QuestionConfig {
   questionId: string;
-  type: 'text-display' | 'matching' | 'drag-drop' | 'mcq' | 'fill-blank' | 'sequence' | 'coloring-boxes'; // ✅ تحديث
+  type: 'text-display' | 'matching' | 'drag-drop' | 'mcq' | 'fill-blank' | 'sequence' | 'coloring-boxes' | 'cross-out' | 'word-matching';
   questionNumber: string;
   questionTitle: string;
-  content: any; // محتوى ديناميكي حسب نوع السؤال
+  content: any;
   assets?: {
     images?: string[];
     audio?: string;
     video?: string;
+    textImage?: string; // إضافة textImage لدعم السند
   };
 }
 
@@ -44,7 +45,7 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
         questionId: 'question2',
         type: 'matching',
         questionNumber: '1',
-        questionTitle: 'أَرْبُطُ كُلَّ كَلِمَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ',
+        questionTitle: 'أَرْبُطُ كُلَّ كَلِمَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ:',
         content: {
           items: [
             { id: 'text1', text: 'تِلْمِيذٌ' },
@@ -68,7 +69,6 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
       textImage: '/exercices/year1/reading/introductory/exercice2/text.png'
     },
     questions: [
-      // السؤال الأول - عرض السند
       {
         questionId: 'question1',
         type: 'text-display',
@@ -76,67 +76,132 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
         questionTitle: 'أَقْرَأُ الجُمَلَ التَّالِيَةَ:',
         content: null
       },
-      // ✅ السؤال الثاني - تلوين المفردات
       {
         questionId: 'question2',
         type: 'coloring-boxes',
         questionNumber: '1',
         questionTitle: 'أُلَوِّنُ الْمُفْرَدَاتِ الْوَارِدَةَ فِي الْجُمْلَةِ التَّالِيَةِ:',
         content: {
-          targetSentence: 'أُحِبُّ مُعَلِّمِي وَ مُعَلِّمَتِي.',
-          wordBoxes: [
-            // المفردات المستهدفة
-            { id: 'word1', text: 'مُعَلِّمِي', isTarget: true, color: null },
-            { id: 'word2', text: 'أَحْتَرِمُ', isTarget: true, color: null },
-            { id: 'word3', text: 'الْقِسْمُ', isTarget: true, color: null },
-            { id: 'word4', text: 'مُعَلِّمَتِي', isTarget: true, color: null },
-            { id: 'word5', text: 'أُحِبُّ', isTarget: true, color: null },
-            { id: 'word6', text: 'وَ', isTarget: true, color: null },
-            { id: 'word7', text: 'مَدْرَسَتِي', isTarget: true, color: null }
+          vocabulary: [
+            {
+              id: "word1",
+              text: "مُعَلِّمِي"
+            },
+            {
+              id: "word2", 
+              text: "أَحْتَرِمُ"
+            },
+            {
+              id: "word3",
+              text: "الْقِسْمُ"
+            },
+            {
+              id: "word4",
+              text: "مُعَلِّمَتِي"
+            },
+            {
+              id: "word5",
+              text: "أُحِبُّ"
+            },
+            {
+              id: "word6",
+              text: "وَ"
+            },
+            {
+              id: "word7",
+              text: "مَدْرَسَتِي"
+            }
           ],
-          instructions: 'انقر على الكلمات الموجودة في الجملة لتلوينها باللون الأخضر'
+          targetSentence: "أُحِبُّ مُعَلِّمِي وَ مُعَلِّمَتِي."
         }
       },
-      // السؤال الثالث - سحب وإفلات (أصبح رقم 2)
       {
         questionId: 'question3',
-        type: 'drag-drop',
+        type: 'matching',
         questionNumber: '2',
-        questionTitle: 'أَسْحَبُ الكَلِمَاتِ إِلَى مَكَانِهَا الصَّحِيحِ',
+        questionTitle: 'أَصِلُ كُلَّ كَلِمَةٍ بِالْمَشْهَدِ الْمُنَاسِبِ لَهَا:',
         content: {
-          draggableItems: [
-            { id: 'word1', text: 'شَمْسٌ', category: 'sky' },
-            { id: 'word2', text: 'بَحْرٌ', category: 'water' },
-            { id: 'word3', text: 'جَبَلٌ', category: 'land' }
+          items: [
+            { id: 'text1', text: 'مُعَلِّمِي' },
+            { id: 'text2', text: 'مُعَلِّمَتِي' },
+            { id: 'text3', text: 'عَلَمٌ' }
           ],
-          dropZones: [
-            { id: 'sky', label: 'السَّمَاءُ', accepts: ['sky'] },
-            { id: 'water', label: 'الْمَاءُ', accepts: ['water'] },
-            { id: 'land', label: 'الْأَرْضُ', accepts: ['land'] }
+          images: [
+            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice2/femaleTeacher.png' },
+            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice2/flag.png' },
+            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice2/teacher.png' }
+          ],
+          correctMatches: [
+            { textId: 'text1', imageId: 'img3' },
+            { textId: 'text2', imageId: 'img1' }, 
+            { textId: 'text3', imageId: 'img2' }  
           ]
         }
       },
-      // السؤال الرابع - مطابقة (أصبح رقم 3)
       {
         questionId: 'question4',
-        type: 'matching',
+        type: 'cross-out',
         questionNumber: '3',
-        questionTitle: 'أَرْبُطُ كُلَّ كَلِمَةٍ بِالصُّورَةِ المُنَاسِبَةِ',
+        questionTitle: 'أَشْطُبُ الْخَطَأَ:',
         content: {
-          items: [
-            { id: 'text1', text: 'شَمْسٌ' },
-            { id: 'text2', text: 'بَحْرٌ' },
-            { id: 'text3', text: 'جَبَلٌ' },
+          statements: [
+            {
+              id: 'statement1',
+              text: 'سَاحَةُ الْمَدْرَسَةِ ضَيِّقَةٌ.',
+              isCorrect: false
+            },
+            {
+              id: 'statement2', 
+              text: 'سَاحَةُ الْمَدْرَسَةِ وَاسِعَةٌ.',
+              isCorrect: true
+            }
+          ]
+        },
+        assets: {
+          textImage: '/exercices/year1/reading/introductory/exercice2/text.png'
+        }
+      },
+      {
+        questionId: 'question5',
+        type: 'coloring-boxes',
+        questionNumber: '4',
+        questionTitle: 'أُلَوِّنُ الْجُمْلَةَ الْمَوْجُودَةَ فِي النَّصِّ:',
+        content: {
+          vocabulary: [
+            {
+              id: "phrase1",
+              text: "عَلَمُ بِلَادِي مَرْفُوعٌ"
+            },
+            {
+              id: "phrase2",
+              text: "عَلَمُ بِلَادِي يُرَفْرِفُ"
+            },
+            {
+              id: "phrase3",
+              text: "عَلَمُ بِلَادِي جَمِيلٌ"
+            }
+          ]
+        },
+        assets: {
+          textImage: '/exercices/year1/reading/introductory/exercice2/text.png'
+        }
+      },
+      {
+        questionId: 'question6',
+        type: 'word-matching',
+        questionNumber: '5',
+        questionTitle: 'أَرْبُطُ الْمُفْرَدَةَ بِمَعْنَاهَا:',
+        content: {
+          leftWords: [
+            { id: 'word1', text: 'وَاسِعَةٌ' }
           ],
-          images: [
-            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice2/sun.png' },
-            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice2/sea.png' },
-            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice2/mountain.png' },
+          rightWords: [
+            { id: 'meaning1', text: 'جَمِيلَةٌ' },
+            { id: 'meaning2', text: 'صَغِيرَةٌ' },
+            { id: 'meaning3', text: 'شَاسِعَةٌ' }
           ],
           correctMatches: [
-            { textId: 'text1', imageId: 'img1' },
-            { textId: 'text2', imageId: 'img2' },
-            { textId: 'text3', imageId: 'img3' }
+            { leftId: 'word1', rightId: 'meaning3' }
           ]
         }
       }
@@ -241,6 +306,103 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
             { id: 'smell', label: 'أَشْيَاءُ نَشُمُّهَا', accepts: ['smell'] },
             { id: 'taste', label: 'أَشْيَاءُ نَتَذَوَّقُهَا', accepts: ['taste'] },
             { id: 'touch', label: 'أَشْيَاءُ نَلْمِسُهَا', accepts: ['touch'] }
+          ]
+        }
+      }
+    ]
+  },
+
+  'exercise5': {
+    exerciseId: 'exercise5',
+    title: 'تمرين الأفعال',
+    assets: {
+      textImage: '/exercices/year1/grammar/unit1/exercise1/text.png'
+    },
+    questions: [
+      {
+        questionId: 'question1',
+        type: 'text-display',
+        questionNumber: '',
+        questionTitle: 'تَعَرَّفْ عَلَى الأَفْعَالِ فِي اللُّغَةِ الْعَرَبِيَّةِ',
+        content: {
+          text: 'الأَفْعَالُ هِيَ: كَلِمَاتٌ تُعَبِّرُ عَنْ حَدَثٍ مَا، وَتَتَغَيَّرُ نِهَايَتُهَا بِحَسَبِ الضَّمِيرِ وَالزَّمَانِ.'
+        }
+      },
+      {
+        questionId: 'question2',
+        type: 'matching',
+        questionNumber: '1',
+        questionTitle: 'أَرْبُطُ كُلَّ فِعْلٍ بِالضَّمِيرِ الْمُنَاسِبِ',
+        content: {
+          items: [
+            { id: 'verb1', text: 'أَكْتُبُ' },
+            { id: 'verb2', text: 'تَكْتُبِينَ' },
+            { id: 'verb3', text: 'يَكْتُبُ' }
+          ],
+          images: [
+            { id: 'pronoun1', url: '/exercices/year1/grammar/unit1/exercise1/I.png' },
+            { id: 'pronoun2', url: '/exercices/year1/grammar/unit1/exercise1/you_female.png' },
+            { id: 'pronoun3', url: '/exercices/year1/grammar/unit1/exercise1/he.png' }
+          ],
+          correctMatches: [
+            { verbId: 'verb1', pronounId: 'pronoun1' },
+            { verbId: 'verb2', pronounId: 'pronoun2' },
+            { verbId: 'verb3', pronounId: 'pronoun3' }
+          ]
+        }
+      },
+      {
+        questionId: 'question3',
+        type: 'fill-blank',
+        questionNumber: '2',
+        questionTitle: 'أَكْمِلِ الْجُمَلَ التَّالِيَةَ بِالْفِعْلِ الْمُنَاسِبِ',
+        content: {
+          sentences: [
+            {
+              id: 'sentence1',
+              text: 'أَنَا ___ (يَكْتُبُ) دَرْسِي الْيَوْمَ.'
+            },
+            {
+              id: 'sentence2',
+              text: 'هِيَ ___ (تَكْتُبِينَ) رِسَالَةً إِلَى صَدِيقَتِهَا.'
+            },
+            {
+              id: 'sentence3',
+              text: 'نَحْنُ ___ (أَكْتُبُ) مَعًا فِي الْمَكْتَبَةِ.'
+            }
+          ]
+        }
+      },
+      {
+        questionId: 'question4',
+        type: 'sequence',
+        questionNumber: '3',
+        questionTitle: 'رَتِّبْ الْأَفْعَالَ حَسَبَ التَّرْتِيبِ الصَّحِيحِ',
+        content: {
+          items: [
+            { id: 'verb1', text: 'أَكْتُبُ' },
+            { id: 'verb2', text: 'يَكْتُبُ' },
+            { id: 'verb3', text: 'تَكْتُبِينَ' }
+          ],
+          correctOrder: ['verb1', 'verb3', 'verb2']
+        }
+      },
+      {
+        questionId: 'question5',
+        type: 'word-matching', // نوع جديد أو استخدام matching مع تعديل
+        questionNumber: '5',
+        questionTitle: 'أَرْبُطُ الْمُفْرَدَةَ بِمَعْنَاهَا:',
+        content: {
+          leftWords: [
+            { id: 'word1', text: 'وَاسِعَةٌ' }
+          ],
+          rightWords: [
+            { id: 'meaning1', text: 'جَمِيلَةٌ' },
+            { id: 'meaning2', text: 'صَغِيرَةٌ' },
+            { id: 'meaning3', text: 'شَاسِعَةٌ' }
+          ],
+          correctMatches: [
+            { leftId: 'word1', rightId: 'meaning3' }
           ]
         }
       }

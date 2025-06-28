@@ -1,0 +1,262 @@
+/* ./app/components/questions/coloring-boxes/ColoringBoxes.module.css */
+
+/* الحاوية الرئيسية للسؤال - مطابقة لباقي المكونات */
+.questionContainer {
+  display: flex;
+  gap: 20px;
+  width: 800px;
+  margin: 0 auto 20px;
+  position: relative;
+  min-height: 400px;
+}
+
+/* منطقة المحتوى الرئيسي للتمرين */
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  color: #171717;
+  position: relative;
+}
+
+/* منطقة التمرين الداخلية */
+.exerciseArea {
+  direction: rtl;
+  position: relative;
+  height: 100%;
+  padding: 20px;
+}
+
+/* عنوان السؤال - مطابق للمكونات الأخرى */
+.questionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.questionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #DD2946;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.questionText {
+  font-size: 24px;
+  color: #DD2946;
+  font-family: 'Scheherazade New', serif;
+}
+
+/* الجملة المطلوبة */
+.targetSentence {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px; /* زيادة المسافة بين النقطة والنص */
+  margin-bottom: 32px;
+  padding: 12px 0;
+}
+
+.bulletPoint {
+  font-size: 40px;
+  color: #DD2946;
+  font-weight: bold;
+  line-height: 0.8; /* تعديل ارتفاع السطر للتوسيط */
+  margin-right: 4px; /* إضافة هامش للفصل */
+}
+
+.sentenceText {
+  font-size: 22px;
+  color: #171717;
+  font-family: 'Scheherazade New', serif;
+  font-weight: bold; /* تغيير من normal إلى bold */
+}
+
+/* منطقة الصناديق الملونة */
+.coloringArea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin: 32px 0;
+  padding: 20px;
+}
+
+/* مؤشر القلم الأخضر الكبير لمنطقة التمرين */
+.penCursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M28 4L36 12L14 34H6V26L28 4Z' fill='%2348C774' stroke='%2338A169' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M24 8L32 16' stroke='%2338A169' stroke-width='2'/%3E%3Cpath d='M10 30L14 34' stroke='%2338A169' stroke-width='2'/%3E%3C/svg%3E") 6 34, pointer;
+}
+
+/* صندوق الكلمة الواحد */
+.coloringBox {
+  border: 2px solid #DD2946;
+  border-radius: 12px;
+  padding: 12px 20px;
+  cursor: inherit; /* يرث المؤشر من العنصر الأب */
+  transition: all 0.3s ease;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+  text-align: center;
+  user-select: none;
+}
+
+/* حالة الصندوق غير الملون */
+.coloringBox.uncolored {
+  background-color: white;
+  color: #171717;
+}
+
+.coloringBox.uncolored:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* حالة الصندوق الملون */
+.coloringBox.colored {
+  background-color: #4CAF50; /* تغيير من #DD2946 إلى اللون الأخضر الغامق */
+  color: white;
+  border-color: #388E3C; /* لون الحدود أخضر أغمق */
+}
+
+.coloringBox.colored:hover {
+  background-color: #388E3C; /* لون أغمق قليلاً عند التحويم */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); /* ظل أخضر */
+}
+
+/* نص داخل الصندوق */
+.boxText {
+  font-size: 20px;
+  font-family: 'Scheherazade New', serif;
+  font-weight: bold;
+  display: block;
+}
+
+/* صندوق التعليمات الإضافية */
+.instructionBox {
+  margin-top: 32px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border: 1px dashed #DD2946;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.instructionText {
+  font-size: 18px;
+  font-family: 'Scheherazade New', serif;
+  color: #171717;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* تأثيرات الأنيميشن للنقر */
+.coloringBox:active {
+  transform: scale(0.95);
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 900px) {
+  .questionContainer {
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto 15px;
+  }
+  
+  .mainContent {
+    padding: 15px;
+  }
+  
+  .exerciseArea {
+    padding: 15px;
+  }
+  
+  .questionText {
+    font-size: 20px;
+  }
+  
+  .coloringArea {
+    gap: 12px;
+    margin: 24px 0;
+    padding: 15px;
+  }
+  
+  .coloringBox {
+    padding: 10px 16px;
+    min-width: 80px;
+  }
+  
+  .boxText {
+    font-size: 18px;
+  }
+  
+  .questionTitle {
+    margin-bottom: 24px;
+  }
+  
+  .targetSentence {
+    margin-bottom: 24px;
+  }
+  
+  .bulletPoint {
+    font-size: 22px;
+  }
+  
+  .sentenceText {
+    font-size: 20px;
+  }
+  
+  .questionNumber {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+  
+  .instructionText {
+    font-size: 16px;
+  }
+}
+
+/* تأثيرات إضافية للتفاعل */
+@keyframes colorChange {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.coloringBox:focus {
+  outline: 2px solid #DD2946;
+  outline-offset: 2px;
+}
+
+/* تحسينات الوصولية */
+@media (prefers-reduced-motion: reduce) {
+  .coloringBox {
+    transition: none;
+  }
+  
+  .coloringBox:hover {
+    transform: none;
+  }
+  
+  .coloringBox:active {
+    transform: none;
+  }
+}

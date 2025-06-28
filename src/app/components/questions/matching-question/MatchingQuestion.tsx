@@ -16,27 +16,37 @@ interface Position {
   y: number;
 }
 
-// تعريف واجهة الخصائص (Props) التي سيستقبلها المكون
+// تعديل الواجهات لدعم النصوص والصور في كلا العمودين
 interface ItemData {
   id: string;
-  text: string;
-}
-
-interface ImageData {
-  id: string;
-  url: string;
+  text?: string;  // اختيارية
+  url?: string;   // اختيارية
 }
 
 interface MatchingQuestionProps {
-  items: ItemData[];
-  images: ImageData[];
-  questionNumber?: string; // إضافة خاصية رقم السؤال
+  items: Array<{
+    id: string;
+    text?: string;  // دعم النص
+    url?: string;   // دعم الصورة
+  }>;
+  images: Array<{
+    id: string;
+    url?: string;   // اختيارية للصور
+    text?: string;  // دعم النصوص
+  }>;
+  questionNumber: string;
+  questionTitle: string;
+  correctMatches?: Array<{
+    textId?: string;
+    imageId?: string;
+  }>;
 }
 
 export default function MatchingQuestion({ 
   items, 
   images, 
-  questionNumber = "1" // استخدام "1" كقيمة افتراضية
+  questionNumber,
+  questionTitle 
 }: MatchingQuestionProps) {
   // --- الحالة الداخلية للمكون ---
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -152,18 +162,15 @@ export default function MatchingQuestion({
       }
     };
     
-    // تسجيل مستمعي الأحداث
     document.addEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
     document.addEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
     
-    // تنظيف عند إلغاء تحميل المكون
     return () => {
       document.removeEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
       document.removeEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
     };
   }, [startPoint]);
 
-  // تنظيف عند إلغاء تحميل المكون
   useEffect(() => {
     return () => {
       setConnections([]);
@@ -172,11 +179,44 @@ export default function MatchingQuestion({
     };
   }, []);
 
-  const getImageAltText = (imageId: string): string => {
-    if (imageId === 'img1') return 'صورة تلميذ';
-    if (imageId === 'img2') return 'صورة تلميذة';
-    if (imageId === 'img3') return 'صورة تلاميذ';
-    return 'صورة توضيحية';
+  // دالة لعرض محتوى العنصر (نص أو صورة)
+  const renderItemContent = (item: { id: string; text?: string; url?: string; }) => {
+    if (item.url) {
+      return (
+        <img 
+          src={item.url} 
+          alt={`صورة ${item.id}`}
+          className={styles.matchingImage}
+        />
+      );
+    } else if (item.text) {
+      return (
+        <div className={styles.textContent}>
+          {item.text}
+        </div>
+      );
+    }
+    return <div>محتوى غير محدد</div>;
+  };
+
+  // دالة لعرض محتوى العمود الأيمن (images) - تم حذف النقاط المزدوجة
+  const renderImageContent = (image: { id: string; text?: string; url?: string; }) => {
+    if (image.url) {
+      return (
+        <img 
+          src={image.url} 
+          alt={`صورة ${image.id}`}
+          className={styles.matchingImage}
+        />
+      );
+    } else if (image.text) {
+      return (
+        <div className={styles.textContent}>
+          {image.text}
+        </div>
+      );
+    }
+    return <div>محتوى غير محدد</div>;
   };
 
   // --- بنية الـ JSX للعرض ---
@@ -191,17 +231,18 @@ export default function MatchingQuestion({
           className={styles.mainContent}
         >
           <div className={styles.exerciseArea}>
+            {/* عنوان السؤال */}
             <div className={styles.questionTitle}>
               <span className={styles.questionNumber}>
-                {questionNumber} {/* استخدام رقم السؤال المُمرر من الخارج */}
+                {questionNumber}
               </span>
               <span className={styles.questionText}>
-                أَرْبُطُ كُلَّ جُمْلَةٍ بِٱلصُّورَةِ ٱلْمُنَاسِبَةِ
+                {questionTitle}
               </span>
             </div>
 
             <div className={styles.matchingArea}>
-              {/* عرض النصوص */}
+              {/* العمود الأيسر - النصوص/الصور */}
               <div className={styles.textsList}>
                 {items.map((item) => {
                   const pointId = getTextPointId(item.id);
@@ -213,9 +254,6 @@ export default function MatchingQuestion({
                       className={`${styles.textItem} ${!isConnected ? styles.clickable : ''}`}
                       onClick={(e) => !isConnected && handlePointClick(e, pointId)}
                     >
-                      <span className={styles.textContent}>
-                        {item.text}
-                      </span>
                       <div
                         id={pointId}
                         className={`${styles.connectionPoint} ${
@@ -225,15 +263,16 @@ export default function MatchingQuestion({
                               ? styles.selected
                               : styles.default
                         }`}
-                        title={isConnected ? `"${item.text}" متصلة بالفعل` : `اربط من: ${item.text}`}
+                        title={isConnected ? `"${item.text || item.id}" متصلة بالفعل` : `اربط من: ${item.text || item.id}`}
                       ></div>
+                      {renderItemContent(item)}
                     </div>
                   );
                 })}
               </div>
 
-              {/* عرض الصور */}
-              <div className={styles.imagesList}>
+              {/* العمود الأيمن - الصور/النصوص */}
+              <div className={styles.imagesColumn}>
                 {images.map((image) => {
                   const pointId = getImagePointId(image.id);
                   const isSelected = startPoint === pointId;
@@ -241,9 +280,12 @@ export default function MatchingQuestion({
                   return (
                     <div
                       key={image.id}
-                      className={`${styles.imageItem} ${!isConnected ? styles.clickable : ''}`}
+                      className={`${styles.imageContainer} ${
+                        isConnected ? styles.connected : ''
+                      } ${!isConnected ? styles.clickable : ''}`}
                       onClick={(e) => !isConnected && handlePointClick(e, pointId)}
                     >
+                      {renderImageContent(image)}
                       <div
                         id={pointId}
                         className={`${styles.connectionPoint} ${
@@ -253,28 +295,7 @@ export default function MatchingQuestion({
                               ? styles.selected
                               : styles.default
                         }`}
-                        title={isConnected ? `الصورة متصلة بالفعل` : `اربط إلى الصورة`}
                       ></div>
-                      <div className={styles.imageFrame}>
-                        <img
-                          src={image.url}
-                          alt={getImageAltText(image.id)}
-                          onError={(e) => { 
-                            // استخدام صور بديلة مناسبة عند فشل تحميل الصور الأصلية
-                            if (image.id === 'img1') {
-                              e.currentTarget.src = 'https://placehold.co/120x120/E3F2FD/1565C0?text=تلميذ';
-                            } else if (image.id === 'img2') {
-                              e.currentTarget.src = 'https://placehold.co/120x120/FCE4EC/C2185B?text=تلميذة';
-                            } else if (image.id === 'img3') {
-                              e.currentTarget.src = 'https://placehold.co/120x120/E8F5E8/388E3C?text=تلاميذ';
-                            } else {
-                              e.currentTarget.src = 'https://placehold.co/120x120/EEE/31343C?text=Error';
-                            }
-                          }}
-                          width={120}
-                          height={120}
-                        />
-                      </div>
                     </div>
                   );
                 })}

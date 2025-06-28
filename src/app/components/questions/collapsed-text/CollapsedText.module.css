@@ -1,0 +1,230 @@
+/* الحاوية الرئيسية للمكون */
+.collapsedTextContainer {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px dashed #DD2946;
+  border-radius: 50px;
+  overflow: hidden;
+  background-color: rgba(221, 41, 70, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  direction: rtl;
+  transition: border-radius 0.4s ease; /* إضافة انتقال سلس للـ border radius */
+}
+
+/* الحاوية عند الفتح - خلفية بيضاء وتغيير border radius */
+.collapsedTextContainer:has(.accordionHeader.expanded) {
+  background-color: white;
+  border-radius: 25px; /* تغيير border radius عند الفتح */
+}
+
+/* رأس الـ Accordion */
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 25px;
+  background-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  position: relative;
+  min-height: 60px;
+}
+
+.accordionHeader.expanded {
+  background-color: transparent; /* إزالة لون الخلفية */
+  border-bottom: none; /* إزالة الحد السفلي */
+}
+
+.accordionHeader.expanded:hover {
+  background-color: rgba(221, 41, 70, 0.05); /* خلفية خفيفة عند التحويم */
+}
+
+.accordionHeader:focus {
+  outline-offset: -2px;
+}
+
+/* عنوان الرأس - توسيط النص */
+.headerTitle {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Scheherazade New', serif;
+  color: #DD2946;
+  text-align: center;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  transition: opacity 0.2s ease; /* انتقال سلس للنص */
+}
+
+/* أيقونة الزائد والناقص */
+.accordionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #DD2946;
+  position: absolute;
+  left: 25px;
+  width: 30px;
+  height: 30px;
+  transition: transform 0.4s ease;
+  transform: rotate(0deg);
+}
+
+/* دوران حاوية الأيقونة مع الانتقال */
+.accordionIcon.rotated {
+  transform: rotate(180deg);
+}
+
+/* تنسيق الأيقونات الفردية */
+.plusIcon,
+.minusIcon {
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* إظهار وإخفاء الأيقونات */
+.plusIcon.visible,
+.minusIcon.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.plusIcon.hidden,
+.minusIcon.hidden {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* إلغاء zoom عند التحويم - تحديث */
+.accordionHeader:hover .accordionIcon {
+  transform: rotate(0deg); /* إزالة scale(1.15) */
+}
+
+.accordionHeader:hover .accordionIcon.rotated {
+  transform: rotate(180deg); /* إزالة scale(1.15) */
+}
+
+/* محتوى الـ Accordion */
+.accordionContent {
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  background-color: white;
+}
+
+.accordionContent.collapsed {
+  max-height: 0;
+  padding: 0 20px;
+}
+
+.accordionContent.expanded {
+  max-height: 600px;
+  padding: 25px;
+  background-color: white; /* التأكد من الخلفية البيضاء */
+}
+
+/* المحتوى الداخلي */
+.contentInner {
+  width: 100%;
+}
+
+/* حاوية صورة السند */
+.textImageContainer {
+  text-align: center;
+  width: 100%;
+}
+
+.textImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  display: block;
+  margin: 0 auto;
+}
+
+/* تأثيرات إضافية */
+.accordionHeader:active {
+  transform: scale(0.98);
+}
+
+/* تأثيرات التحويم على الأيقونة */
+.accordionHeader:hover .accordionIcon {
+  transform: scale(1.15);
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .collapsedTextContainer {
+    border-radius: 35px;
+  }
+  
+  .collapsedTextContainer:has(.accordionHeader.expanded) {
+    border-radius: 25px;
+  }
+  
+  .accordionHeader {
+    padding: 16px 20px;
+    min-height: 55px;
+  }
+  
+  .headerTitle {
+    font-size: 18px;
+  }
+  
+  .accordionIcon {
+    width: 26px;
+    height: 26px;
+    left: 20px;
+  }
+  
+  .accordionContent.expanded {
+    padding: 20px;
+    max-height: 500px;
+  }
+  
+  /* إزالة zoom من media query */
+  .accordionHeader:hover .accordionIcon {
+    transform: rotate(0deg); /* بدون scale */
+  }
+  
+  .accordionHeader:hover .accordionIcon.rotated {
+    transform: rotate(180deg); /* بدون scale */
+  }
+}
+
+@media (max-width: 480px) {
+  .collapsedTextContainer {
+    border-radius: 25px;
+  }
+  
+  .collapsedTextContainer:has(.accordionHeader.expanded) {
+    border-radius: 20px;
+  }
+  
+  .accordionHeader {
+    padding: 14px 18px;
+    min-height: 50px;
+  }
+  
+  .headerTitle {
+    font-size: 16px;
+  }
+  
+  .accordionIcon {
+    width: 24px;
+    height: 24px;
+    left: 18px;
+  }
+}
+
+/* تحسينات الوصولية */
+@media (prefers-reduced-motion: reduce) {
+  .accordionHeader,
+  .accordionContent,
+  .accordionIcon,
+  .collapsedTextContainer {
+    transition: none;
+  }
+}

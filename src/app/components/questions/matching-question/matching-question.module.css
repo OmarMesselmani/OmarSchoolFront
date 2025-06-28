@@ -64,7 +64,7 @@
   justify-content: space-between;
 }
 
-/* قائمة النصوص */
+/* قائمة النصوص - تم تعديل ترتيب العناصر للحصول على النقطة في اليمين */
 .textsList {
   display: flex;
   flex-direction: column;
@@ -74,12 +74,13 @@
   gap: 16px; /* تم تقليل من 24px إلى 16px */
 }
 
-/* عنصر النص الواحد */
+/* عنصر النص الواحد - إضافة flex-direction: row-reverse للحصول على النقطة في اليمين */
 .textItem {
   display: flex;
   align-items: center;
   gap: 12px; /* تم تقليل من 16px إلى 12px */
   margin: 8px 0; /* إضافة هامش عمودي صغير */
+  flex-direction: row-reverse; /* هذا يضع النقطة في اليمين عندما تكون في البداية */
 }
 
 .textItem.clickable {
@@ -89,6 +90,56 @@
 .textContent {
   font-size: 24px;
   font-family: 'Scheherazade New', serif;
+}
+
+/* حذف تنسيق النصوص مع النقاط المزدوجة */
+.textWithBullet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-family: 'Scheherazade New', serif;
+}
+
+.bullet {
+  color: #DD2946;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.text {
+  color: #171717;
+  font-weight: normal;
+}
+
+/* تنسيق العمود الأيمن للصور والنصوص - تعديل ترتيب العناصر */
+.imagesColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  min-height: 250px;
+  gap: 16px;
+}
+
+.imageContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  flex-direction: row-reverse;
+}
+
+.imageContainer.clickable {
+  cursor: pointer;
+}
+
+/* تنسيق الصور في العمود الأيمن */
+.matchingImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 /* قائمة الصور */

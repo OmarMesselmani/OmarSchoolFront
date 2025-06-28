@@ -1,0 +1,171 @@
+/* ./app/components/questions/cross-out-question/CrossOutQuestion.module.css */
+
+/* الحاوية الرئيسية للسؤال - مطابقة لباقي المكونات */
+.questionContainer {
+  display: flex;
+  gap: 20px;
+  width: 800px;
+  margin: 0 auto 20px;
+  position: relative;
+  min-height: 400px;
+}
+
+/* منطقة المحتوى الرئيسي للتمرين */
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  color: #171717;
+  position: relative;
+}
+
+/* منطقة التمرين الداخلية */
+.exerciseArea {
+  direction: rtl;
+  position: relative;
+  height: 100%;
+  padding: 20px;
+}
+
+/* عنوان السؤال - مطابق للمكونات الأخرى */
+.questionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.questionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #DD2946;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.questionText {
+  font-size: 24px;
+  color: #DD2946;
+  font-family: 'Scheherazade New', serif;
+}
+
+/* منطقة العبارات */
+.statementsArea {
+  margin: 32px 0;
+  padding: 20px;
+}
+
+/* حاوية العبارة الواحدة */
+.statementContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px; /* تقليل من 24px إلى 16px */
+  padding: 8px 0; /* تقليل من 12px إلى 8px */
+}
+
+.bulletPoint {
+  font-size: 40px;
+  color: #DD2946;
+  font-weight: bold;
+  line-height: 0.8;
+  margin-right: 4px;
+}
+
+/* نص العبارة */
+.statementText {
+  font-size: 22px;
+  color: #171717;
+  font-family: 'Scheherazade New', serif;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  user-select: none;
+}
+
+.statementText:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+/* حالة العبارة المشطوبة - شطب فقط */
+.statementText.crossedOut {
+  text-decoration: line-through;
+  text-decoration-color: #DD2946;
+  text-decoration-thickness: 3px;
+  color: #999;
+}
+
+.statementText.crossedOut:hover {
+  background-color: #f8f9fa;
+}
+
+/* تأثيرات إضافية للتفاعل */
+.statementText:active {
+  transform: scale(0.98);
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 900px) {
+  .questionContainer {
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto 15px;
+  }
+  
+  .mainContent {
+    padding: 15px;
+  }
+  
+  .exerciseArea {
+    padding: 15px;
+  }
+  
+  .questionText {
+    font-size: 20px;
+  }
+  
+  .statementsArea {
+    margin: 24px 0;
+    padding: 15px;
+  }
+  
+  .bulletPoint {
+    font-size: 30px;
+  }
+  
+  .statementText {
+    font-size: 20px;
+  }
+  
+  .questionTitle {
+    margin-bottom: 24px;
+  }
+  
+  .questionNumber {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+}
+
+/* تحسينات الوصولية */
+@media (prefers-reduced-motion: reduce) {
+  .statementText {
+    transition: none;
+  }
+  
+  .statementText:hover {
+    transform: none;
+  }
+}

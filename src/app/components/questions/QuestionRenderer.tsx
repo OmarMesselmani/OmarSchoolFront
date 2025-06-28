@@ -7,13 +7,20 @@ import MatchingQuestion from './matching-question/MatchingQuestion';
 import DragDropQuestion from './drag-drop-question/DragDropQuestion';
 import MultipleChoiceQuestion from './multiple-choice-question/MultipleChoiceQuestion';
 import ColoringBoxes from './coloring-boxes/ColoringBoxes';
+import CrossOutQuestion from './cross-out-question/CrossOutQuestion';
+import CollapsedText from './collapsed-text/CollapsedText';
 
 interface QuestionRendererProps {
   questionConfig: QuestionConfig;
   exerciseAssets?: any;
+  onAnswerChange?: (questionId: string, answer: any) => void; // إضافة هذا
 }
 
-export default function QuestionRenderer({ questionConfig, exerciseAssets }: QuestionRendererProps) {
+export default function QuestionRenderer({ 
+  questionConfig, 
+  exerciseAssets, 
+  onAnswerChange 
+}: QuestionRendererProps) {
   switch (questionConfig.type) {
     case 'text-display':
       return (
@@ -31,6 +38,7 @@ export default function QuestionRenderer({ questionConfig, exerciseAssets }: Que
           items={questionConfig.content.items}
           images={questionConfig.content.images}
           questionNumber={questionConfig.questionNumber}
+          questionTitle={questionConfig.questionTitle}
         />
       );
 
@@ -57,10 +65,59 @@ export default function QuestionRenderer({ questionConfig, exerciseAssets }: Que
 
     case 'coloring-boxes':
       return (
-        <ColoringBoxes
-          content={questionConfig.content}
+        <div>
+          {/* عرض السند خارج المكون مثل cross-out */}
+          {questionConfig.assets?.textImage && (
+            <CollapsedText 
+              textImage={questionConfig.assets.textImage}
+              title="عرض السند"
+            />
+          )}
+          
+          {/* السؤال بدون السند الداخلي */}
+          <ColoringBoxes
+            content={{
+              vocabulary: questionConfig.content.vocabulary,
+              targetSentence: questionConfig.content.targetSentence
+            }}
+            questionNumber={questionConfig.questionNumber}
+            questionTitle={questionConfig.questionTitle}
+            onComplete={onAnswerChange ? (selectedWords) => {
+              onAnswerChange(questionConfig.questionId, selectedWords);
+            } : undefined}
+          />
+        </div>
+      );
+
+    case 'cross-out':
+      return (
+        <div>
+          {(questionConfig.assets?.textImage || exerciseAssets?.textImage) && (
+            <CollapsedText 
+              textImage={questionConfig.assets?.textImage || exerciseAssets?.textImage}
+              title="عرض السند"
+            />
+          )}
+          
+          <CrossOutQuestion
+            content={questionConfig.content}
+            questionNumber={questionConfig.questionNumber}
+            questionTitle={questionConfig.questionTitle}
+          />
+        </div>
+      );
+
+    case 'word-matching':
+      return (
+        <MatchingQuestion
+          items={questionConfig.content.leftWords}
+          images={questionConfig.content.rightWords.map(word => ({
+            id: word.id,
+            text: word.text
+          }))}
           questionNumber={questionConfig.questionNumber}
           questionTitle={questionConfig.questionTitle}
+          correctMatches={questionConfig.content.correctMatches}
         />
       );
 
