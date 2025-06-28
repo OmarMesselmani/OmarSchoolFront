@@ -211,26 +211,169 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
   'exercise3': {
     exerciseId: 'exercise3',
     title: 'التمرين التمهيدي عدد 03',
-    assets: {},
+    assets: {
+      textImage: '/exercices/year1/reading/introductory/exercise3/text.png'
+    },
     questions: [
       {
         questionId: 'question1',
-        type: 'mcq',
+        type: 'text-display',
+        questionNumber: '',
+        questionTitle: 'أَقْرَأُ الجُمَلَ التَّالِيَةَ:',
+        content: null
+      },
+      {
+        questionId: 'question2',
+        type: 'matching',
         questionNumber: '1',
-        questionTitle: 'أَخْتَارُ الإِجَابَةَ الصَّحِيحَةَ',
+        questionTitle: 'أَصِلُ كُلَّ كَلِمَةٍ بِالْمَشْهَدِ الْمُنَاسِبِ لَهَا:',
         content: {
-          question: 'مَا لَوْنُ الشَّمْسِ؟',
-          image: '/exercices/year1/reading/introductory/exercice3/sun.png',
-          options: [
-            { id: 'a', text: 'أَصْفَرُ', isCorrect: true },
-            { id: 'b', text: 'أَزْرَقُ', isCorrect: false },
-            { id: 'c', text: 'أَحْمَرُ', isCorrect: false },
-            { id: 'd', text: 'أَخْضَرُ', isCorrect: false }
+          items: [
+            { id: 'text1', text: 'الْقِسْمُ' },
+            { id: 'text2', text: 'مَكْتَبُ الْمُدِيرِ' },
+            { id: 'text3', text: 'الْعَلَمُ' }
+          ],
+          images: [
+            { id: 'img1', url: '/exercices/year1/reading/introductory/exercise3/flag.png' },
+            { id: 'img2', url: '/exercices/year1/reading/introductory/exercise3/classroom.png' },
+            { id: 'img3', url: '/exercices/year1/reading/introductory/exercise3/door.png' }
+          ],
+          correctMatches: [
+            { textId: 'text1', imageId: 'img3' }, // أَلْعَبُ ← الملعب
+            { textId: 'text2', imageId: 'img2' }, // مَكْتَبُ الْمُدِيرِ ← القسم
+            { textId: 'text3', imageId: 'img1' }  // أَلْعَلَمُ ← العلم
           ]
         }
-      }
+      },
+      {
+        questionId: 'question3',
+        type: 'coloring-boxes',
+        questionNumber: '2',
+        questionTitle: 'أُلَوِّنُ الْجُمْلَةَ الْمَوْجُودَةَ فِي النَّصِّ:',
+        content: {
+          vocabulary: [
+            {
+              id: "phrase1",
+              text: "قِسْمُنَا كَبِيرٌ"
+            },
+            {
+              id: "phrase2",
+              text: "قِسْمُنَا جَمِيلٌ"
+            },
+            {
+              id: "phrase3",
+              text: "قِسْمُنَا مُتَّسِخٌ"
+            }
+          ]
+        },
+        assets: {
+          textImage: '/exercices/year1/reading/introductory/exercise3/text.png'
+        }
+      },
+      {
+        questionId: 'question4',
+        type: 'coloring-boxes',
+        questionNumber: '3',
+        questionTitle: 'أُلَوِّنُ الْجُمْلَةَ الْمَوْجُودَةَ فِي النَّصِّ:',
+        content: {
+          vocabulary: [
+            {
+              id: "phrase1",
+              text: "تِلْمِيذٌ"
+            },
+            {
+              id: "phrase2",
+              text: "ٱلْمَلْعَبُ"
+            },
+            {
+              id: "phrase3",
+              text: "ٱلْمُدِيرُ"
+            },
+            {
+              id: "phrase4",
+              text: "قِسْمُنَا"
+            },
+            {
+              id: "phrase5",
+              text: "مَكْتَبٌ"
+            },
+            {
+              id: "phrase6",
+              text: "عَلَمٌ"
+            },
+            {
+              id: "phrase7",
+              text: "جَمِيلٌ"
+            },
+            {
+              id: "phrase8",
+              text: "وَاسِعَةٌ"
+            },
+          ]
+        },
+        assets: {
+          textImage: '/exercices/year1/reading/introductory/exercise3/text.png'
+        }
+      },
+      {
+        questionId: 'question5',
+        type: 'cross-out',
+        questionNumber: '4',
+        questionTitle: 'أَشْطُبُ الْخَطَأَ:',
+        content: {
+          statements: [
+            {
+              id: 'statement1',
+              text: 'مَكْتَبُ ٱلْمُدِيرِ قُرْبَ ٱلْبَابِ.',
+              isCorrect: false
+            },
+            {
+              id: 'statement2', 
+              text: 'مَكْتَبُ ٱلْمُدِيرِ بِجَانِبِ ٱلْقِسْمِ.',
+              isCorrect: false
+            },
+            {
+              id: 'statement3', 
+              text: 'مَكْتَبُ ٱلْمُدِيرِ قُرْبَ ٱلْعَلَمِ.',
+              isCorrect: true
+            }
+          ]
+        },
+        assets: {
+          textImage: '/exercices/year1/reading/introductory/exercise3/text.png'
+        }
+      },
+      {
+        questionId: 'question6',
+        type: 'word-matching',
+        questionNumber: '5',
+        questionTitle: 'أَرْبُطُ الْمُفْرَدَةَ بِمَعْنَاهَا:',
+        content: {
+          leftWords: [
+            { id: 'word1', text: 'جَمِيلٌ' }
+          ],
+          rightWords: [
+            { id: 'meaning1', text: 'رَائِعٌ.' },
+            { id: 'meaning2', text: 'صَغِيرٌ.' },
+            { id: 'meaning3', text: 'بَعِيدٌ.' }
+          ],
+          correctMatches: [
+            { leftId: 'word1', rightId: 'meaning1' }
+          ]
+        }
+      },
     ]
   },
+
+
+
+
+  
+
+
+
+
+
 
   'exercise4': {
     exerciseId: 'exercise4',

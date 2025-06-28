@@ -14,7 +14,7 @@ export default function CollapsedText({
   title = "عرض السند",
   className = ""
 }: CollapsedTextProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpansion = () => {
     setIsExpanded(!isExpanded);
