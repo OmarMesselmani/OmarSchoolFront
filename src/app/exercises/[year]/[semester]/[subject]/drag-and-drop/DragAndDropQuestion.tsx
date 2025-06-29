@@ -325,57 +325,44 @@ export default function DragAndDrop() {
     else {
         return (
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-                <div className={styles.pageContainer}>
-                    <Header />
-                    <main className={styles.exerciseContainer}>
-                        <div className={styles.exerciseContent}>
-                            <h1 className={styles.exerciseTitle}>{exerciseTitle}</h1>
-                            <div className={styles.exerciseBody}>
-                                <div dir="rtl" className={`${styles.mainContent} relative`} >
-                                    {/* السؤال مع الرقم */}
-                                    <h2 className="flex items-center justify-start gap-3 mb-12">
-                                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#DD2946] text-white text-base font-bold"> 2 </span>
-                                        {/* *** تعديل: تغيير نص السؤال *** */}
-                                        <span
-                                            className="text-2xl font-bold"
-                                            style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
-                                        >
-                                            {exerciseQuestion}
-                                        </span>
-                                    </h2>
-                                    <div className="exercise-area flex flex-col items-center gap-12">
-                                        {/* 1. حاوية أسماء الألوان القابلة للسحب */}
-                                        <div className="color-names-container flex flex-wrap justify-center gap-4 p-4 min-h-[80px]">
-                                            {(draggableItems || []).map((color) => (
-                                                <DraggableColor key={color.id} color={color} />
-                                            ))}
 
-                                            {draggableItems?.length === 0 && (
-                                                <p className="text-gray-500">تم سحب كل الألوان!</p>
-                                            )}
+                <div dir="rtl" className={`${styles.mainContent} relative`} >
+                    {/* السؤال مع الرقم */}
+                    <h2 className="flex items-center justify-start gap-3 mb-12">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#DD2946] text-white text-base font-bold"> 2 </span>
+                        {/* *** تعديل: تغيير نص السؤال *** */}
+                        <span
+                            className="text-2xl font-bold"
+                            style={{ color: '#DD2946', fontFamily: "'Scheherazade New', serif" }}
+                        >
+                            {exerciseQuestion}
+                        </span>
+                    </h2>
+                    <div className="exercise-area flex flex-col items-center gap-12">
+                        {/* 1. حاوية أسماء الألوان القابلة للسحب */}
+                        <div className="color-names-container flex flex-wrap justify-center gap-4 p-4 min-h-[80px]">
+                            {(draggableItems || []).map((color) => (
+                                <DraggableColor key={color.id} color={color} />
+                            ))}
 
-                                        </div>
-                                        {/* 2. حاوية الدوائر الملونة ومناطق الإسقاط */}
-                                        <div className="color-targets-container w-full max-w-2xl grid grid-cols-3 gap-x-8 gap-y-10">
-                                            {displayDropZones.map((zone) => (
-                                                console.log("Rendering dropzone:", zone),
-                                                <div key={zone.id} className="flex flex-col items-center">
-                                                    <p>{zone.color.color_code}</p>
-                                                    <div className={`w-20 h-20 rounded-full ${zone.color.color_code} shadow-md mb-3`}></div>
-                                                    <DroppableZone colorId={zone.color.id.toString()} droppedItem={droppedItems[`dropzone-${zone.color.id}`] || null} />
-                                                </div>
-                                            ))}
+                            {draggableItems?.length === 0 && (
+                                <p className="text-gray-500">تم سحب كل الألوان!</p>
+                            )}
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <ExerciseSidebar onUndoClick={handleUndo} onResetClick={handleReset} />
-                                </div>
-                            </div>
                         </div>
-                    </main>
-                    <Footer />
+                        {/* 2. حاوية الدوائر الملونة ومناطق الإسقاط */}
+                        <div className="color-targets-container w-full max-w-2xl grid grid-cols-3 gap-x-8 gap-y-10">
+                            {displayDropZones.map((zone) => (
+                                console.log("Rendering dropzone:", zone),
+                                <div key={zone.id} className="flex flex-col items-center">
+                                    <p>{zone.color.color_code}</p>
+                                    <div className={`w-20 h-20 rounded-full ${zone.color.color_code} shadow-md mb-3`}></div>
+                                    <DroppableZone colorId={zone.color.id.toString()} droppedItem={droppedItems[`dropzone-${zone.color.id}`] || null} />
+                                </div>
+                            ))}
+
+                        </div>
+                    </div>
                 </div>
             </DndContext>
         );

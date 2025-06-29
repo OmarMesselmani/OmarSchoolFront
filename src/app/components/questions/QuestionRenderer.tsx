@@ -9,6 +9,7 @@ import MultipleChoiceQuestion from './multiple-choice-question/MultipleChoiceQue
 import ColoringBoxes from './coloring-boxes/ColoringBoxes';
 import CrossOutQuestion from './cross-out-question/CrossOutQuestion';
 import CollapsedText from './collapsed-text/CollapsedText';
+import DragAndDrop from '@/app/exercises/[year]/[semester]/[subject]/drag-and-drop/DragAndDropQuestion';
 
 interface QuestionRendererProps {
   questionConfig: QuestionConfig;
@@ -16,10 +17,10 @@ interface QuestionRendererProps {
   onAnswerChange?: (questionId: string, answer: any) => void; // إضافة هذا
 }
 
-export default function QuestionRenderer({ 
-  questionConfig, 
-  exerciseAssets, 
-  onAnswerChange 
+export default function QuestionRenderer({
+  questionConfig,
+  exerciseAssets,
+  onAnswerChange
 }: QuestionRendererProps) {
   switch (questionConfig.type) {
     case 'text-display':
@@ -44,12 +45,7 @@ export default function QuestionRenderer({
 
     case 'drag-drop':
       return (
-        <DragDropQuestion
-          draggableItems={questionConfig.content.draggableItems}
-          dropZones={questionConfig.content.dropZones}
-          questionNumber={questionConfig.questionNumber}
-          questionTitle={questionConfig.questionTitle}
-        />
+        <DragAndDrop />
       );
 
     case 'mcq':
@@ -68,12 +64,12 @@ export default function QuestionRenderer({
         <div>
           {/* عرض السند خارج المكون مثل cross-out */}
           {questionConfig.assets?.textImage && (
-            <CollapsedText 
+            <CollapsedText
               textImage={questionConfig.assets.textImage}
               title="عرض السند"
             />
           )}
-          
+
           {/* السؤال بدون السند الداخلي */}
           <ColoringBoxes
             content={{
@@ -93,12 +89,12 @@ export default function QuestionRenderer({
       return (
         <div>
           {(questionConfig.assets?.textImage || exerciseAssets?.textImage) && (
-            <CollapsedText 
+            <CollapsedText
               textImage={questionConfig.assets?.textImage || exerciseAssets?.textImage}
               title="عرض السند"
             />
           )}
-          
+
           <CrossOutQuestion
             content={questionConfig.content}
             questionNumber={questionConfig.questionNumber}

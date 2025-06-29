@@ -12,17 +12,11 @@ import styles from './page.module.css';
 interface ExerciseSidebarProps {
   onUndoClick?: () => void;
   onResetClick?: () => void;
-  onNextClick: () => void;
-  exerciseAlreadyDone: boolean;
-  loading: boolean;
 }
 
 export default function ExerciseSidebar({
   onUndoClick,
   onResetClick,
-  onNextClick,
-  exerciseAlreadyDone,
-  loading,
 }: ExerciseSidebarProps) {
   const handleUndoClick = () => {
     console.log('تم النقر على زر التراجع');
@@ -65,26 +59,6 @@ export default function ExerciseSidebar({
         {/* Check Section */}
         <div className={styles.checkSection} title="الإصلاح">
           <LuFileCheck className={styles.checkIcon} />
-        </div>
-
-        {/* Next Exercise Button */}
-        <div
-          className={styles.redoSection}
-          title="التمرين التالي"
-          // Disable onClick if loading or if exercise is already done
-          onClick={!loading && !exerciseAlreadyDone ? onNextClick : undefined}
-          style={{ cursor: !loading && !exerciseAlreadyDone ? 'pointer' : 'default' }}
-        >
-          {loading ? (
-            // Spinner: ensure you have a CSS animation for the spinnerIcon class
-            <FaSpinner className={styles.spinnerIcon} />
-          ) : exerciseAlreadyDone ? (
-            // Green check icon if already done
-            <BsCheck className={styles.checkIcon} style={{ color: 'green' }} />
-          ) : (
-            // Default next arrow
-            <BsArrowLeft className={styles.printIcon} />
-          )}
         </div>
       </div>
     </div>

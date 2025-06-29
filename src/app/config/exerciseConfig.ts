@@ -36,7 +36,7 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
     questions: [
       {
         questionId: 'question1',
-        type: 'text-display',
+        type: 'drag-drop',
         questionNumber: '',
         questionTitle: 'أَقْرَأُ الجُمَلَ التَّالِيَةَ:',
         content: null
