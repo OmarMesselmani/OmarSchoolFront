@@ -72,7 +72,7 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
               {children} {/* عرض مكون السؤال هنا */}
             </div>
             {/* تمرير دوال التحكم إلى الشريط الجانبي */}
-            <ExerciseSidebar onUndoClick={onUndo} onResetClick={onReset} />
+            {/* <ExerciseSidebar onUndoClick={onUndo} onResetClick={onReset} /> */}
           </div>
 
         </div>

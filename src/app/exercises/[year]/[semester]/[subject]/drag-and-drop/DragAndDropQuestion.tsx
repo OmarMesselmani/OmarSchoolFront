@@ -318,13 +318,14 @@ export default function DragAndDrop() {
                 <main className="flex-grow flex items-center justify-center text-2xl text-gray-600">
                     لا توجد بيانات هنا
                 </main>
-                <Footer />
             </div>
         );
     }
     else {
         return (
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+
+                <ExerciseSidebar onUndoClick={handleUndo} onResetClick={handleReset} />
 
                 <div dir="rtl" className={`${styles.mainContent} relative`} >
                     {/* السؤال مع الرقم */}
