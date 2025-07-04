@@ -17,6 +17,8 @@ interface QuestionRendererProps {
   onAnswerChange?: (questionId: string, answer: any) => void; // إضافة هذا
 }
 
+
+
 export default function QuestionRenderer({
   questionConfig,
   exerciseAssets,

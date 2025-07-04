@@ -134,6 +134,38 @@ export default function QuestionPage() {
     }
   };
 
+  //lena besh njib el exam
+    const fetchExamData = async () => {
+    try {
+      const token = Cookies.get('token');
+      if (!token) {
+        console.log('No authentication token found');
+        return;
+      }
+
+      const response = await fetch(`http://127.0.0.1:8000/parent/get-selected-student`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch student data.");
+      }
+
+      const data = await response.json();
+      setStudent(data.student);
+      console.log("Student data fetched successfully:", data.student);
+
+    } catch (error: any) {
+      console.error("Error fetching student data:", error.message);
+      setStudent(null);
+    }
+  };
+
   // --- دالة لجلب تكوين التمرين ---
   const getExerciseConfig = (): ExerciseConfig | null => {
     const exerciseKey = `exercise${currentExerciseNumber}`;
@@ -333,6 +365,7 @@ export default function QuestionPage() {
       onReset={handleReset}
       onNavigateToNextExercise={handleNavigateToNextExercise}
     >
+      {/* displayin the current question */}
       <QuestionRenderer 
         questionConfig={currentQuestionConfig}
         exerciseAssets={exerciseConfig.assets}

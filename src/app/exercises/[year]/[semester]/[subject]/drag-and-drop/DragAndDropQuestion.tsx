@@ -20,6 +20,7 @@ import Footer from '@/app/components/Footer';
 import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 import Cookies from 'js-cookie';
 import LoadingPage from '@/app/components/loading-page/LoadingPage';
+import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 
 // تعريف واجهة لبيانات الألوان
 interface ColorInfo {
@@ -365,6 +366,10 @@ export default function DragAndDrop() {
                         </div>
                     </div>
                 </div>
+                <SubmitAndNextButton
+                    onClick={handleSubmit}
+                    isLastQuestion={false}
+                />
             </DndContext>
         );
     }

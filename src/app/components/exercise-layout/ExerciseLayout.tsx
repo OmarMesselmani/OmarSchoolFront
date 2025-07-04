@@ -12,7 +12,7 @@ import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 import CloseButton from '@/app/components/close-button/page';
 
 // ✅ تعريف واجهة HeaderData
-interface HeaderData { 
+interface HeaderData {
   trimester: string;
   unit: string;
   title?: string;
@@ -56,7 +56,7 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
 
       <main className={styles.exerciseContainer} style={{ paddingTop: '1rem' }}>
         <div className={styles.exerciseContent}>
-          <ExerciseHeader 
+          <ExerciseHeader
             trimester={headerData.trimester}
             unit={headerData.unit}
             grade={headerData.grade}
@@ -79,10 +79,10 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
       </main>
 
       {/* مكونات التحكم والتفاعل السفلية */}
-      <SubmitAndNextButton
+      {/* <SubmitAndNextButton
         onClick={onNavigateNext}
         isLastQuestion={isLastQuestion}
-      />
+      /> */}
       <AiTalker
         exerciseType={"غير محدد"} // تمرير نوع التمرين
         onHelpRequest={() => console.log("AI: طلب مساعدة")} // تنفيذ مؤقت
