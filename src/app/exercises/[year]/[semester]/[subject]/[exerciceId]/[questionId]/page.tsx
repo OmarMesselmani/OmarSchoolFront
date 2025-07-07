@@ -7,9 +7,10 @@ import { EXERCISES_CONFIG, ExerciseConfig, QuestionConfig } from '@/app/config/e
 import QuestionRenderer from '@/app/components/questions/QuestionRenderer';
 import Cookies from 'js-cookie';
 import { Student } from '@/app/data-structures/Student';
+import { ExamWithExercises } from '@/app/data-structures/Exam';
 
 // واجهة بيانات الهيدر
-interface HeaderData { 
+interface HeaderData {
   trimester: string;
   unit: string;
   title?: string;
@@ -40,7 +41,7 @@ const extractQuestionNumber = (slug: string | undefined | null): number => {
     const num = parseInt(slug.substring(2), 10); // إزالة "qs" والحصول على الرقم
     return isNaN(num) ? 1 : num;
   }
-  
+
   // إذا كان التنسيق غير صحيح، إرجاع قيمة افتراضية
   console.warn(`Invalid question format: ${slug}. Expected format: qs[number]`);
   return 1;
@@ -58,6 +59,7 @@ export default function QuestionPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [student, setStudent] = useState<Student | null>(null);
+  const [examData, setExamData] = useState<ExamWithExercises | null>(null);
 
   // --- استخراج ومعالجة params بدون قيم افتراضية ---
   const exerciseSlug = params?.exerciceId as string;
@@ -80,13 +82,13 @@ export default function QuestionPage() {
   // ✅ إضافة: التحقق من تنسيق السؤال وإعادة التوجيه إذا لزم الأمر
   if (!questionSlug.startsWith('qs')) {
     // تحويل التنسيق القديم إلى الجديد
-    const correctQuestionSlug = questionSlug.startsWith('question') 
+    const correctQuestionSlug = questionSlug.startsWith('question')
       ? `qs${questionSlug.substring(8)}` // تحويل question1 إلى qs1
       : 'qs1'; // قيمة افتراضية
 
     const correctPath = pathname.replace(`/${questionSlug}`, `/${correctQuestionSlug}`);
     console.log(`Redirecting from ${questionSlug} to ${correctQuestionSlug}`);
-    
+
     // إعادة توجيه فورية
     router.replace(correctPath);
     return (
@@ -135,15 +137,14 @@ export default function QuestionPage() {
   };
 
   //lena besh njib el exam
-    const fetchExamData = async () => {
+  const fetchExamData = async () => {
     try {
       const token = Cookies.get('token');
       if (!token) {
-        console.log('No authentication token found');
-        return;
+        window.location.href = '/login';
       }
 
-      const response = await fetch(`http://127.0.0.1:8000/parent/get-selected-student`, {
+      const response = await fetch(`http://127.0.0.1:8000/student/exam/1`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -157,9 +158,8 @@ export default function QuestionPage() {
       }
 
       const data = await response.json();
-      setStudent(data.student);
-      console.log("Student data fetched successfully:", data.student);
-
+      setExamData(data);
+      console.log("Exam data fetched successfully:", examData);
     } catch (error: any) {
       console.error("Error fetching student data:", error.message);
       setStudent(null);
@@ -180,6 +180,7 @@ export default function QuestionPage() {
     const exerciseConfig = getExerciseConfig();
     if (!exerciseConfig) return null;
     
+
     const questionIndex = currentQuestionNumber - 1;
     console.log('Looking for question at index:', questionIndex);
     const questionConfig = exerciseConfig.questions[questionIndex] || null;
@@ -190,6 +191,7 @@ export default function QuestionPage() {
   // --- جلب بيانات الطالب ---
   useEffect(() => {
     fetchStudentData();
+    fetchExamData();
   }, []);
 
   // --- جلب البيانات ---
@@ -197,45 +199,30 @@ export default function QuestionPage() {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         console.log(`Loading data for exercise: ${currentExerciseNumber}, question: ${currentQuestionNumber}`);
-        
+
         // الحصول على تكوين التمرين
         const exerciseConfig = getExerciseConfig();
         if (!exerciseConfig) {
           throw new Error(`التمرين رقم ${currentExerciseNumber} غير موجود`);
         }
 
-        // إعداد بيانات الهيدر
-        const gradeNames: { [key: string]: string } = {
-          'year1': 'السنة الأولى',
-          'year2': 'السنة الثانية',
-          'year3': 'السنة الثالثة'
-        };
 
-        const unitNames: { [key: string]: string } = {
-          'unit1': 'الوحدة الأولى',
-          'unit2': 'الوحدة الثانية',
-          'unit3': 'الوحدة الثالثة',
-          'introductory': 'الوحدة التمهيدية'
-        };
-
-        const studentFullName = student 
-          ? `${student.name} ${student.surname}` 
+        const studentFullName = student
+          ? `${student.name} ${student.surname}`
           : "";
 
         const exerciseKey = `exercise${currentExerciseNumber}`;
-        
+
         const fetchedHeaderData: HeaderData = {
-          trimester: "الثلاثي الأول",
-          unit: unitNames[unitParam] || unitParam,
-          grade: gradeNames[yearParam] || yearParam,
+          trimester: examData?.semester?.name,
+          unit: examData?.subject?.name,
+          grade: examData?.grade?.name,
           studentName: studentFullName,
           exerciseId: exerciseKey
         };
-
-        console.log('Final header data:', fetchedHeaderData);
 
         setHeaderData(fetchedHeaderData);
         setTotalQuestions(exerciseConfig.questions.length);
@@ -258,7 +245,7 @@ export default function QuestionPage() {
   // --- دوال التحكم ---
   const handleNavigateNext = () => {
     console.log("التحقق من الإجابة...");
-    
+
     if (currentQuestionNumber < totalQuestions) {
       const nextQuestionNumber = currentQuestionNumber + 1;
       const nextQuestionSlug = `qs${nextQuestionNumber}`;
@@ -308,7 +295,7 @@ export default function QuestionPage() {
     if (currentQuestionNumber === totalQuestions) {
       const nextExerciseNumber = currentExerciseNumber + 1;
       const nextExercisePath = `/exercises/${yearParam}/${subjectParam}/${unitParam}/exercise${nextExerciseNumber}/qs1`;
-      
+
       const nextExerciseKey = `exercise${nextExerciseNumber}`;
       if (EXERCISES_CONFIG[nextExerciseKey]) {
         console.log(`Navigating to next exercise: ${nextExercisePath}`);
@@ -355,7 +342,7 @@ export default function QuestionPage() {
   return (
     <ExerciseLayout
       headerData={headerData}
-      totalSteps={totalQuestions}
+      totalSteps={examData?.exercises_count || 0}
       currentStep={currentQuestionNumber}
       onStepChange={handleStepChange}
       onNavigateNext={handleNavigateNext}
@@ -366,7 +353,7 @@ export default function QuestionPage() {
       onNavigateToNextExercise={handleNavigateToNextExercise}
     >
       {/* displayin the current question */}
-      <QuestionRenderer 
+      <QuestionRenderer
         questionConfig={currentQuestionConfig}
         exerciseAssets={exerciseConfig.assets}
       />
