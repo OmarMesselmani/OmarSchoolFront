@@ -21,8 +21,8 @@ interface StudentDetailsMap {
 }
 // واجهة Props لهذه الصفحة
 interface ExamsPageProps {
-  selectedChildId: number;
-  studentDetailsMap: StudentDetailsMap;
+    selectedChildId: number;
+    studentDetailsMap: StudentDetailsMap;
 }
 // واجهة بيانات الامتحان
 interface Exam {
@@ -100,12 +100,12 @@ const getPeriodName = (periodNumber: number): string => {
 
 // بيانات فلاتر التبويبات (تتضمن الآن "جميع الامتحانات")
 const subjectFilters: SubjectFilter[] = [
-  { id: 'all', name: 'جميع الامتحانات' },
-  { id: 'writing', name: 'الانتاج الكتابي' },
-  { id: 'reading', name: 'القراءة' },
-  { id: 'islamic', name: 'التربية الإسلامية' },
-  { id: 'science', name: 'الإيقاظ العلمي' },
-  { id: 'math', name: 'الرياضيات' },
+    { id: 'all', name: 'جميع الامتحانات' },
+    { id: 'writing', name: 'الانتاج الكتابي' },
+    { id: 'reading', name: 'القراءة' },
+    { id: 'islamic', name: 'التربية الإسلامية' },
+    { id: 'science', name: 'الإيقاظ العلمي' },
+    { id: 'math', name: 'الرياضيات' },
 ];
 
 // ترتيب أهمية المواد (يمكن تعديله للامتحانات إذا اختلف)
@@ -124,174 +124,173 @@ const ExamsPage: React.FC<ExamsPageProps> = ({
     studentDetailsMap
 }) => {
 
-  // البحث عن بيانات الطالب
-  const defaultStudentData: StudentData = mockStudentDetails[''] || { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' };
-  const selectedStudentData = studentDetailsMap[selectedChildId] || defaultStudentData;
+    // البحث عن بيانات الطالب
+    const defaultStudentData: StudentData = mockStudentDetails[''] || { name: 'لم يختر', level: '-', age: 0, uniqueId: 'N/A' };
+    const selectedStudentData = studentDetailsMap[selectedChildId] || defaultStudentData;
 
-  const [activeFilter, setActiveFilter] = useState<string>('all');
+    const [activeFilter, setActiveFilter] = useState<string>('all');
 
-  // فرز فلاتر التبويبات للعرض
-  const sortedTabFilters = useMemo((): SubjectFilter[] => {
-      const allFilter = subjectFilters.find(f => f.id === 'all');
-      const subjectOnlyFilters = subjectFilters.filter(f => f.id !== 'all');
-      subjectOnlyFilters.sort((a, b) => {
-          const indexA = subjectImportanceOrder.indexOf(a.name);
-          const indexB = subjectImportanceOrder.indexOf(b.name);
-          if (indexA === -1 && indexB === -1) return 0;
-          if (indexA === -1) return 1;
-          if (indexB === -1) return -1;
-          return indexA - indexB;
-      });
-      return allFilter ? [allFilter, ...subjectOnlyFilters] : subjectOnlyFilters;
-  }, []);
+    // فرز فلاتر التبويبات للعرض
+    const sortedTabFilters = useMemo((): SubjectFilter[] => {
+        const allFilter = subjectFilters.find(f => f.id === 'all');
+        const subjectOnlyFilters = subjectFilters.filter(f => f.id !== 'all');
+        subjectOnlyFilters.sort((a, b) => {
+            const indexA = subjectImportanceOrder.indexOf(a.name);
+            const indexB = subjectImportanceOrder.indexOf(b.name);
+            if (indexA === -1 && indexB === -1) return 0;
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+        return allFilter ? [allFilter, ...subjectOnlyFilters] : subjectOnlyFilters;
+    }, []);
 
-  // حساب اسم الفلتر النشط
-  const activeFilterName = useMemo(() => {
-      return subjectFilters.find(f => f.id === activeFilter)?.name || 'جميع الامتحانات';
-  }, [activeFilter]);
+    // حساب اسم الفلتر النشط
+    const activeFilterName = useMemo(() => {
+        return subjectFilters.find(f => f.id === activeFilter)?.name || 'جميع الامتحانات';
+    }, [activeFilter]);
 
-  // منطق التصفية والتجميع والفرز للامتحانات
-  const groupedAndFilteredExams = useMemo((): GroupedExams[] => {
-    let examsToShow = mockExams;
-    if (activeFilter !== 'all') {
-      const activeFilterData = subjectFilters.find(f => f.id === activeFilter);
-      const targetSubjectName = activeFilterData ? activeFilterData.name : '';
-      examsToShow = mockExams.filter(exam => exam.subject === targetSubjectName);
-    }
-    const groups: { [key: string]: { subject: string; periodNumber: number; exams: Exam[] } } = {};
-    examsToShow.forEach(exam => {
-      const key = `${exam.subject}-${exam.periodNumber}`;
-      if (!groups[key]) { groups[key] = { subject: exam.subject, periodNumber: exam.periodNumber, exams: [] }; }
-      groups[key].exams.push(exam);
-    });
-    return Object.values(groups).sort((a, b) => {
-        if (a.periodNumber !== b.periodNumber) { return a.periodNumber - b.periodNumber; }
-        const indexA = subjectImportanceOrder.indexOf(a.subject);
-        const indexB = subjectImportanceOrder.indexOf(b.subject);
-        if (indexA === -1 && indexB === -1) return 0; if (indexA === -1) return 1; if (indexB === -1) return -1;
-        return indexA - indexB;
-    });
-  }, [activeFilter]);
-
-
-  // ألوان الحالة الفاتحة للخلفيات/التدرج
-  const statusBackgroundColors = {
-      completed: '#dcfce7',      // أخضر فاتح لـ "مكتمل"
-      inProgress: '#fce9ec',      // وردي فاتح لـ "قيد الإنجاز"
-      notStarted: '#e5e7eb'       // رمادي فاتح لـ "لم يبدأ" أو "مجدول" أو "لم يجتز"
-  };
-  // اللون المتبقي في حالة "قيد الإنجاز" هو الأبيض
-  const remainingColorInProgress = "#ffffff";
+    // منطق التصفية والتجميع والفرز للامتحانات
+    const groupedAndFilteredExams = useMemo((): GroupedExams[] => {
+        let examsToShow = mockExams;
+        if (activeFilter !== 'all') {
+            const activeFilterData = subjectFilters.find(f => f.id === activeFilter);
+            const targetSubjectName = activeFilterData ? activeFilterData.name : '';
+            examsToShow = mockExams.filter(exam => exam.subject === targetSubjectName);
+        }
+        const groups: { [key: string]: { subject: string; periodNumber: number; exams: Exam[] } } = {};
+        examsToShow.forEach(exam => {
+            const key = `${exam.subject}-${exam.periodNumber}`;
+            if (!groups[key]) { groups[key] = { subject: exam.subject, periodNumber: exam.periodNumber, exams: [] }; }
+            groups[key].exams.push(exam);
+        });
+        return Object.values(groups).sort((a, b) => {
+            if (a.periodNumber !== b.periodNumber) { return a.periodNumber - b.periodNumber; }
+            const indexA = subjectImportanceOrder.indexOf(a.subject);
+            const indexB = subjectImportanceOrder.indexOf(b.subject);
+            if (indexA === -1 && indexB === -1) return 0; if (indexA === -1) return 1; if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+    }, [activeFilter]);
 
 
-  return (
-    <div className={styles.pageContainer}>
-        {/* شريط معلومات التلميذ */}
-        <div className={styles.fullWidthSpan}>
-             <StudentInfoHeader
-                 studentName={selectedStudentData.name}
-                 schoolLevel={selectedStudentData.level}
-                 age={selectedStudentData.age}
-                 uniqueId={selectedStudentData.uniqueId}
-             />
-        </div>
+    // ألوان الحالة الفاتحة للخلفيات/التدرج
+    const statusBackgroundColors = {
+        completed: '#dcfce7',      // أخضر فاتح لـ "مكتمل"
+        inProgress: '#fce9ec',      // وردي فاتح لـ "قيد الإنجاز"
+        notStarted: '#e5e7eb'       // رمادي فاتح لـ "لم يبدأ" أو "مجدول" أو "لم يجتز"
+    };
+    // اللون المتبقي في حالة "قيد الإنجاز" هو الأبيض
+    const remainingColorInProgress = "#ffffff";
 
-        {/* شريط التبويبات */}
-        <div className={styles.tabsContainer}>
-             <h3 className={styles.activeTabTitle}>{activeFilterName}</h3>
-             <div className={styles.tabButtonsGroup}>
-                {sortedTabFilters.map(filter => {
-                    let inlineStyles: React.CSSProperties = {};
-                    const isActive = activeFilter === filter.id;
-                    // منطق ألوان الأزرار
-                     if (filter.id === 'all') {
-                        if (isActive) { inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)' }; }
-                    } else {
-                        const cardBgColor = (subjectColorData.subjectCardBgColors as Record<string, string>)[filter.id];
-                        const titleBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[filter.id];
-                        if (isActive) {
-                            if (titleBgColor) { inlineStyles = { backgroundColor: titleBgColor, borderColor: titleBgColor }; }
-                            else { inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)'}; }
+
+    return (
+        <div className={styles.pageContainer}>
+            {/* شريط معلومات التلميذ */}
+            <div className={styles.fullWidthSpan}>
+                <StudentInfoHeader
+                    studentName={selectedStudentData.name}
+                    schoolLevel={selectedStudentData.level}
+                    age={selectedStudentData.age}
+                    uniqueId={selectedStudentData.uniqueId}
+                />
+            </div>
+
+            {/* شريط التبويبات */}
+            <div className={styles.tabsContainer}>
+                <h3 className={styles.activeTabTitle}>{activeFilterName}</h3>
+                <div className={styles.tabButtonsGroup}>
+                    {sortedTabFilters.map(filter => {
+                        let inlineStyles: React.CSSProperties = {};
+                        const isActive = activeFilter === filter.id;
+                        // منطق ألوان الأزرار
+                        if (filter.id === 'all') {
+                            if (isActive) { inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)' }; }
                         } else {
-                            if (cardBgColor && titleBgColor) { inlineStyles = { backgroundColor: cardBgColor, borderColor: titleBgColor, color: titleBgColor }; }
+                            const cardBgColor = (subjectColorData.subjectCardBgColors as Record<string, string>)[filter.id];
+                            const titleBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[filter.id];
+                            if (isActive) {
+                                if (titleBgColor) { inlineStyles = { backgroundColor: titleBgColor, borderColor: titleBgColor }; }
+                                else { inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)' }; }
+                            } else {
+                                if (cardBgColor && titleBgColor) { inlineStyles = { backgroundColor: cardBgColor, borderColor: titleBgColor, color: titleBgColor }; }
+                            }
                         }
-                    }
-                    return ( <button key={filter.id} className={`${styles.tabItem} ${isActive ? styles.active : ''}`} style={inlineStyles} onClick={() => setActiveFilter(filter.id)}> {filter.name} </button> );
-                })}
-             </div>
-        </div>
+                        return (<button key={filter.id} className={`${styles.tabItem} ${isActive ? styles.active : ''}`} style={inlineStyles} onClick={() => setActiveFilter(filter.id)}> {filter.name} </button>);
+                    })}
+                </div>
+            </div>
 
-        {/* منطقة عرض قائمة الامتحانات المجمعة */}
-        <div className={styles.groupedExerciseListContainer}>
-            {groupedAndFilteredExams.length > 0 ? (
-              groupedAndFilteredExams.map(group => {
-                const subjectId = subjectFilters.find(f => f.name === group.subject)?.id || '';
-                const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
-                const bodyBgColor = '#ffffff';
-
-                return (
-                  <div key={`${group.subject}-${group.periodNumber}`} className={styles.subjectGroup}>
-                    {/* رأس المجموعة */}
-                    <div className={styles.groupHeader} style={{ backgroundColor: headerBgColor }}>
-                      <span className={styles.groupSubjectName}>{group.subject}</span>
-                      <span className={styles.groupPeriodName}>{getPeriodName(group.periodNumber)}</span>
-                    </div>
-                    {/* قائمة امتحانات المجموعة */}
-                    <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
-                      {group.exams.map((exam) => { // استخدام exam هنا
-                        // حساب ستايل الخلفية بناءً على الحالة ونسبة التقدم
-                        let itemStyle: React.CSSProperties = {};
-                        let progressFillColor = statusBackgroundColors.notStarted; // اللون الافتراضي
-
-                        if (exam.status === 'مكتمل') {
-                            progressFillColor = statusBackgroundColors.completed;
-                            itemStyle = { backgroundColor: progressFillColor }; // لون أخضر فاتح صلب
-                        } else if (exam.status === 'لم يبدأ' || exam.status === 'مجدول' || exam.status === 'لم يجتز') {
-                            // يمكن استخدام ألوان مختلفة لهذه الحالات إذا أردت
-                            progressFillColor = statusBackgroundColors.notStarted;
-                            itemStyle = { backgroundColor: progressFillColor }; // لون رمادي فاتح صلب
-                        } else if (exam.status === 'قيد الإنجاز') { // نفس حالة التمارين
-                            progressFillColor = statusBackgroundColors.inProgress;
-                            itemStyle = {
-                                // تطبيق التدرج الوردي -> الأبيض
-                                background: `linear-gradient(to left, ${progressFillColor} ${exam.progress}%, ${remainingColorInProgress} ${exam.progress}%)`
-                            };
-                        } else { // حالة افتراضية
-                            itemStyle = { backgroundColor: statusBackgroundColors.notStarted };
-                        }
+            {/* منطقة عرض قائمة الامتحانات المجمعة */}
+            <div className={styles.groupedExerciseListContainer}>
+                {groupedAndFilteredExams.length > 0 ? (
+                    groupedAndFilteredExams.map(group => {
+                        const subjectId = subjectFilters.find(f => f.name === group.subject)?.id || '';
+                        const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
+                        const bodyBgColor = '#ffffff';
 
                         return (
-                          // عنصر الامتحان
-                          <div
-                              key={exam.id}
-                              className={styles.groupedExerciseItem} // استخدام نفس الكلاسات حالياً
-                              style={itemStyle}
-                          >
-                            {/* عنوان الامتحان */}
-                            <span className={styles.exerciseTitle}>{exam.title}</span>
-                            {/* حاوية الحالة والأيقونة */}
-                            <div className={styles.statusIconGroup}>
-                                {/* نص الحالة + النسبة المئوية */}
-                                <span className={styles.exerciseStatusText}>
-                                    {exam.status} {exam.progress}%
-                                </span>
-                                {/* أيقونة السهم */}
-                                <HiChevronLeft className={styles.exerciseActionIcon} />
+                            <div key={`${group.subject}-${group.periodNumber}`} className={styles.subjectGroup}>
+                                {/* رأس المجموعة */}
+                                <div className={styles.groupHeader} style={{ backgroundColor: headerBgColor }}>
+                                    <span className={styles.groupSubjectName}>{group.subject}</span>
+                                    <span className={styles.groupPeriodName}>{getPeriodName(group.periodNumber)}</span>
+                                </div>
+                                {/* قائمة امتحانات المجموعة */}
+                                <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
+                                    {group.exams.map((exam) => { // استخدام exam هنا
+                                        // حساب ستايل الخلفية بناءً على الحالة ونسبة التقدم
+                                        let itemStyle: React.CSSProperties = {};
+                                        let progressFillColor = statusBackgroundColors.notStarted; // اللون الافتراضي
+
+                                        if (exam.status === 'مكتمل') {
+                                            progressFillColor = statusBackgroundColors.completed;
+                                            itemStyle = { backgroundColor: progressFillColor }; // لون أخضر فاتح صلب
+                                        } else if (exam.status === 'لم يبدأ' || exam.status === 'مجدول' || exam.status === 'لم يجتز') {
+                                            // يمكن استخدام ألوان مختلفة لهذه الحالات إذا أردت
+                                            progressFillColor = statusBackgroundColors.notStarted;
+                                            itemStyle = { backgroundColor: progressFillColor }; // لون رمادي فاتح صلب
+                                        } else if (exam.status === 'قيد الإنجاز') { // نفس حالة التمارين
+                                            progressFillColor = statusBackgroundColors.inProgress;
+                                            itemStyle = {
+                                                // تطبيق التدرج الوردي -> الأبيض
+                                                background: `linear-gradient(to left, ${progressFillColor} ${exam.progress}%, ${remainingColorInProgress} ${exam.progress}%)`
+                                            };
+                                        } else { // حالة افتراضية
+                                            itemStyle = { backgroundColor: statusBackgroundColors.notStarted };
+                                        }
+
+                                        return (
+                                            <div
+                                                key={exam.id}
+                                                className={styles.groupedExerciseItem} // استخدام نفس الكلاسات حالياً
+                                                style={itemStyle}
+                                            >
+                                                {/* عنوان الامتحان */}
+                                                <span className={styles.exerciseTitle}>{exam.title}</span>
+                                                {/* حاوية الحالة والأيقونة */}
+                                                <div className={styles.statusIconGroup}>
+                                                    {/* نص الحالة + النسبة المئوية */}
+                                                    <span className={styles.exerciseStatusText}>
+                                                        {exam.status} {exam.progress}%
+                                                    </span>
+                                                    {/* أيقونة السهم */}
+                                                    <HiChevronLeft className={styles.exerciseActionIcon} />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                          </div>
                         );
-                      })}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              // رسالة في حال عدم وجود امتحانات
-              <p className={styles.noExercises}>لا توجد امتحانات متاحة لهذا الفلتر.</p>
-            )}
+                    })
+                ) : (
+                    // رسالة في حال عدم وجود امتحانات
+                    <p className={styles.noExercises}>لا توجد امتحانات متاحة لهذا الفلتر.</p>
+                )}
+            </div>
         </div>
-    </div>
-  );
+    );
 };
 
 export default ExamsPage; // تغيير اسم التصدير

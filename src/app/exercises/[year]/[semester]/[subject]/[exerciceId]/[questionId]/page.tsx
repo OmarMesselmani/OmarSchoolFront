@@ -162,7 +162,6 @@ export default function QuestionPage() {
       console.log("Exam data fetched successfully:", examData);
     } catch (error: any) {
       console.error("Error fetching student data:", error.message);
-      setStudent(null);
     }
   };
 

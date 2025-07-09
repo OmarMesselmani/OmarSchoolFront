@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './page.module.css';
 import StudentInfoHeader from '@/app/components/student-info-header/page';
 import subjectColorData from '@/app/data/subjectColors.json';
@@ -10,6 +10,8 @@ import { HiChevronLeft } from "react-icons/hi";
 import Link from 'next/link';
 // إضافة استيراد ملف التكوين
 import { EXERCISES_CONFIG } from '@/app/config/exerciseConfig';
+import { ExamWithExercises } from '@/app/data-structures/Exam';
+import Cookies from 'js-cookie';
 
 // --- واجهات البيانات ---
 interface StudentData {
@@ -46,71 +48,12 @@ const getExerciseTitle = (exerciseNumber: number): string => {
     return exerciseConfig?.title || `التمرين رقم ${exerciseNumber}`;
 };
 
-// --- بيانات حقيقية للتمارين ---
-const realExercises: Exercise[] = [
-    // تمارين القراءة - السنة الأولى - الوحدة التمهيدية
-    {
-        id: 'reading-year1-intro-ex1',
-        subject: 'القراءة',
-        title: getExerciseTitle(1), // استخدام الدالة لجلب العنوان
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/reading/introductory/exercise1/qs1', // ✅ تغيير إلى qs1
-    },
-    {
-        id: 'reading-year1-intro-ex2',
-        subject: 'القراءة',
-        title: getExerciseTitle(2), // استخدام الدالة لجلب العنوان
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/reading/introductory/exercise2/qs1', // ✅ تغيير إلى qs1
-    },
-    {
-        id: 'reading-year1-intro-ex3',
-        subject: 'القراءة',
-        title: getExerciseTitle(3), // استخدام الدالة لجلب العنوان
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/reading/introductory/exercise3/qs1', // ✅ تغيير إلى qs1
-    },
-    
-    // يمكنك إضافة المزيد من التمارين وربطها بملف التكوين
-    {
-        id: 'math-year1-unit1-ex1',
-        subject: 'الرياضيات',
-        title: 'تمرين العد والأرقام', // يمكن تحديثه لاحقاً من ملف التكوين
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/math/unit1/exercise1/qs1', // ✅ تغيير إلى qs1
-    },
-    {
-        id: 'science-year1-unit1-ex1',
-        subject: 'الإيقاظ العلمي',
-        title: 'تمرين الحواس الخمس', // يمكن تحديثه لاحقاً من ملف التكوين
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/science/unit1/exercise1/qs1', // ✅ تغيير إلى qs1
-    },
-    {
-        id: 'science-year1-unit1-ex4',
-        subject: 'الإيقاظ العلمي',
-        title: getExerciseTitle(4), // سيجلب "تمرين الحواس الخمس"
-        status: 'لم يبدأ',
-        periodNumber: 1,
-        progress: 0,
-        link: '/exercises/year1/science/unit1/exercise4/qs1', // ✅ تغيير إلى qs1
-    }
-];
+
 
 // --- دالة محسنة لتوليد قائمة التمارين مع تحديد المادة الصحيحة ---
 const generateExercisesFromConfig = (): Exercise[] => {
     const exercises: Exercise[] = [];
-    
+
     // تعريف مطابقة التمارين مع المواد والمسارات
     const exerciseMapping: { [key: string]: { subject: string; path: string } } = {
         'exercise1': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise1/qs1' }, // ✅
@@ -118,12 +61,13 @@ const generateExercisesFromConfig = (): Exercise[] => {
         'exercise3': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise3/qs1' }, // ✅
         'exercise4': { subject: 'الإيقاظ العلمي', path: '/exercises/year1/science/unit1/exercise4/qs1' }, // ✅
     };
-    
+
     // التكرار عبر جميع التمارين في ملف التكوين
     Object.keys(EXERCISES_CONFIG).forEach((exerciseKey) => {
+        console.log(`Processing exercise: ${exerciseKey}`);
         const exerciseConfig = EXERCISES_CONFIG[exerciseKey];
         const mapping = exerciseMapping[exerciseKey];
-        
+
         if (mapping) {
             exercises.push({
                 id: `${mapping.subject === 'القراءة' ? 'reading' : 'science'}-year1-${exerciseKey}`,
@@ -136,7 +80,7 @@ const generateExercisesFromConfig = (): Exercise[] => {
             });
         }
     });
-    
+
     return exercises;
 };
 
@@ -173,13 +117,47 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     selectedChildId,
     studentDetailsMap
 }) => {
+    const [examData, setExamData] = useState<ExamWithExercises[]>([]);
+
+    useEffect(() => {
+        fetchExamsData();
+    }, [])
+
+
+    const fetchExamsData = async () => {
+        try {
+            const token = Cookies.get('token');
+            if (!token) {
+                window.location.href = '/login';
+            }
+
+            const response = await fetch(`http://127.0.0.1:8000/student/exams`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to fetch student data.");
+            }
+
+            const data: ExamWithExercises[] = await response.json();
+            console.log("Fetched exam data:", data);
+            setExamData(data);
+        } catch (error: any) {
+            console.error("Error fetching student data:", error.message);
+        }
+    };
 
     // البحث عن بيانات الطالب مع قيمة افتراضية في حالة عدم وجود بيانات
-    const defaultStudentData: StudentData = { 
-        name: 'طالب غير محدد', 
-        level: 'غير محدد', 
-        age: 0, 
-        uniqueId: 'N/A' 
+    const defaultStudentData: StudentData = {
+        name: 'طالب غير محدد',
+        level: 'غير محدد',
+        age: 0,
+        uniqueId: 'N/A'
     };
     const selectedStudentData = studentDetailsMap[selectedChildId] || defaultStudentData;
 
@@ -211,14 +189,14 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     const groupedAndFilteredExercises = useMemo((): GroupedExercises[] => {
         // استخدام التمارين المولدة من ملف التكوين
         let exercisesToShow = realExercisesFromConfig;
-        
+
         // 1. التصفية حسب التبويب النشط
         if (activeFilter !== 'all') {
             const activeFilterData = initialSubjectFilters.find(f => f.id === activeFilter);
             const targetSubjectName = activeFilterData ? activeFilterData.name : '';
             exercisesToShow = realExercisesFromConfig.filter(exercise => exercise.subject === targetSubjectName);
         }
-        
+
         // 2. التجميع حسب المادة والفترة
         const groups: { [key: string]: { subject: string; periodNumber: number; exercises: Exercise[] } } = {};
         exercisesToShow.forEach(exercise => {
@@ -228,7 +206,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             }
             groups[key].exercises.push(exercise);
         });
-        
+
         // 3. الفرز حسب الفترة ثم أهمية المادة
         return Object.values(groups).sort((a, b) => {
             if (a.periodNumber !== b.periodNumber) { return a.periodNumber - b.periodNumber; }
@@ -344,7 +322,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         }
 
                                         return (
-                                            <Link 
+                                            <Link
                                                 key={exercise.id}
                                                 href={exercise.link}
                                                 className={styles.exerciseLink}

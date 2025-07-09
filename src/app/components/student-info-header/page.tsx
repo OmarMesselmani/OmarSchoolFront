@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { Student } from '@/app/data-structures/Student';
 
 interface StudentInfoHeaderProps {
-  childID: number; // معرف الطفل
+  childID?: number; // معرف الطفل
   studentName: string;
   schoolLevel: string;
   age: number | string; // يمكن أن يكون رقمًا أو نصًا مثل "غير محدد"
