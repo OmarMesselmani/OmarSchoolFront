@@ -39,16 +39,38 @@ export interface Exercise {
   created_at: string; // ISO datetime string
 }
 
+// types/period.ts
+
+export interface Period {
+  id: number;
+  name: string;
+  order: number;
+  active: boolean;
+  start_month: number; // 1–12
+  start_day: number; // 1–31
+  end_month: number; // 1–12
+  end_day: number; // 1–31
+}
 // Root interface for the exam + exercises payload
 export interface ExamWithExercises {
   id: number;
   title: string;
   description: string | null;
   semester: Semester;
+  period: Period | null; // Nullable if not applicable
   grade: Grade;
   subject: Subject;
   active: boolean;
   created_at: string; // ISO datetime string
   exercises: Exercise[];
+  status: string; // e.g. "draft", "published", "archived"
+  progress: number; // Percentage of exercises completed
   exercises_count: number; // Total number of exercises in the exam
+}
+
+export interface Pack {
+  exams: ExamWithExercises[];
+  subject: Subject | null; // Nullable if not applicable
+  period: Period | null; // Nullable if not applicable
+  semester: Semester | null; // Nullable if not applicable
 }

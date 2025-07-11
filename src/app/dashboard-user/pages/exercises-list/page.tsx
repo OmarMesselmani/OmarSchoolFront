@@ -10,7 +10,7 @@ import { HiChevronLeft } from "react-icons/hi";
 import Link from 'next/link';
 // إضافة استيراد ملف التكوين
 import { EXERCISES_CONFIG } from '@/app/config/exerciseConfig';
-import { ExamWithExercises } from '@/app/data-structures/Exam';
+import { ExamWithExercises, Pack, Subject } from '@/app/data-structures/Exam';
 import Cookies from 'js-cookie';
 
 // --- واجهات البيانات ---
@@ -117,21 +117,23 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     selectedChildId,
     studentDetailsMap
 }) => {
-    const [examData, setExamData] = useState<ExamWithExercises[]>([]);
+    const [packData, setPackData] = useState<Pack[]>([]);
+    const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [activeFilter, setActiveFilter] = useState<number>(null);
 
     useEffect(() => {
-        fetchExamsData();
-    }, [])
+        fetchPacksData();
+        fetchSubjectsData();
+    }, [activeFilter])
 
-
-    const fetchExamsData = async () => {
+    const fetchSubjectsData = async () => {
         try {
             const token = Cookies.get('token');
             if (!token) {
                 window.location.href = '/login';
             }
 
-            const response = await fetch(`http://127.0.0.1:8000/student/exams`, {
+            const response = await fetch(`http://127.0.0.1:8000/student/subjects`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -144,9 +146,38 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                 throw new Error(errorData.error || "Failed to fetch student data.");
             }
 
-            const data: ExamWithExercises[] = await response.json();
+            const data: Subject[] = await response.json();
             console.log("Fetched exam data:", data);
-            setExamData(data);
+            setSubjects(data);
+        } catch (error: any) {
+            console.error("Error fetching student data:", error.message);
+        }
+    };
+
+
+    const fetchPacksData = async () => {
+        try {
+            const token = Cookies.get('token');
+            if (!token) {
+                window.location.href = '/login';
+            }
+
+            const response = await fetch(`http://127.0.0.1:8000/student/packs?subject_id=${activeFilter}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to fetch student data.");
+            }
+
+            const data: Pack[] = await response.json();
+            console.log("Fetched exam data:", data);
+            setPackData(data);
         } catch (error: any) {
             console.error("Error fetching student data:", error.message);
         }
@@ -161,40 +192,18 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     };
     const selectedStudentData = studentDetailsMap[selectedChildId] || defaultStudentData;
 
-    const [activeFilter, setActiveFilter] = useState<string>('all');
 
-    // فرز فلاتر التبويبات للعرض بناءً على الأهمية
-    const sortedTabFilters = useMemo((): SubjectFilter[] => {
-        const allFilter = initialSubjectFilters.find(f => f.id === 'all');
-        const subjectOnlyFilters = initialSubjectFilters.filter(f => f.id !== 'all');
 
-        subjectOnlyFilters.sort((a, b) => {
-            const indexA = subjectImportanceOrder.indexOf(a.name);
-            const indexB = subjectImportanceOrder.indexOf(b.name);
-            if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-        });
-
-        return allFilter ? [allFilter, ...subjectOnlyFilters] : subjectOnlyFilters;
-    }, []);
-
-    // حساب اسم الفلتر النشط
-    const activeFilterName = useMemo(() => {
-        return initialSubjectFilters.find(f => f.id === activeFilter)?.name || 'جميع التمارين';
-    }, [activeFilter]);
-
+    var targetSubjectName: string = 'جميع التمارين';
     // منطق التصفية والتجميع والفرز لعرض البطاقات
     const groupedAndFilteredExercises = useMemo((): GroupedExercises[] => {
         // استخدام التمارين المولدة من ملف التكوين
         let exercisesToShow = realExercisesFromConfig;
 
         // 1. التصفية حسب التبويب النشط
-        if (activeFilter !== 'all') {
-            const activeFilterData = initialSubjectFilters.find(f => f.id === activeFilter);
-            const targetSubjectName = activeFilterData ? activeFilterData.name : '';
-            exercisesToShow = realExercisesFromConfig.filter(exercise => exercise.subject === targetSubjectName);
+        if (activeFilter !== null) {
+            const activeFilterData = subjects.find(f => f.id === activeFilter);
+            targetSubjectName = activeFilterData ? activeFilterData.name : '';
         }
 
         // 2. التجميع حسب المادة والفترة
@@ -242,34 +251,27 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
 
             {/* شريط التبويبات */}
             <div className={styles.tabsContainer}>
-                <h3 className={styles.activeTabTitle}>{activeFilterName}</h3>
+                <h3 className={styles.activeTabTitle}>{targetSubjectName}</h3>
                 <div className={styles.tabButtonsGroup}>
-                    {sortedTabFilters.map(filter => {
+                    {subjects.map(filter => {
                         let inlineStyles: React.CSSProperties = {};
                         const isActive = activeFilter === filter.id;
 
-                        if (filter.id === 'all') {
-                            if (isActive) {
-                                inlineStyles = {
-                                    backgroundColor: 'var(--main-color, #DD2946)',
-                                    borderColor: 'var(--main-color, #DD2946)',
-                                };
+
+                        const cardBgColor = (subjectColorData.subjectCardBgColors as Record<string, string>)[filter.id];
+                        const titleBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[filter.id];
+                        if (isActive) {
+                            if (titleBgColor) {
+                                inlineStyles = { backgroundColor: titleBgColor, borderColor: titleBgColor };
+                            } else {
+                                inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)' };
                             }
                         } else {
-                            const cardBgColor = (subjectColorData.subjectCardBgColors as Record<string, string>)[filter.id];
-                            const titleBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[filter.id];
-                            if (isActive) {
-                                if (titleBgColor) {
-                                    inlineStyles = { backgroundColor: titleBgColor, borderColor: titleBgColor };
-                                } else {
-                                    inlineStyles = { backgroundColor: 'var(--main-color, #DD2946)', borderColor: 'var(--main-color, #DD2946)' };
-                                }
-                            } else {
-                                if (cardBgColor && titleBgColor) {
-                                    inlineStyles = { backgroundColor: cardBgColor, borderColor: titleBgColor, color: titleBgColor };
-                                }
+                            if (cardBgColor && titleBgColor) {
+                                inlineStyles = { backgroundColor: cardBgColor, borderColor: titleBgColor, color: titleBgColor };
                             }
                         }
+
                         return (
                             <button
                                 key={filter.id}
@@ -286,33 +288,32 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
 
             {/* منطقة عرض قائمة التمارين المجمعة */}
             <div className={styles.groupedExerciseListContainer}>
-                {groupedAndFilteredExercises.length > 0 ? (
-                    groupedAndFilteredExercises.map(group => {
-                        const subjectId = initialSubjectFilters.find(f => f.name === group.subject)?.id || '';
-                        const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
+                {packData.length > 0 ? (
+                    packData.map(group => {
+                        // const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
                         const bodyBgColor = '#ffffff';
 
                         return (
-                            <div key={`${group.subject}-${group.periodNumber}`} className={styles.subjectGroup}>
+                            <div key={`${group.subject}-${group?.period?.name}`} className={styles.subjectGroup}>
                                 {/* رأس المجموعة */}
-                                <div className={styles.groupHeader} style={{ backgroundColor: headerBgColor }}>
-                                    <span className={styles.groupSubjectName}>{group.subject}</span>
-                                    <span className={styles.groupPeriodName}>{getPeriodName(group.periodNumber)}</span>
+                                <div className={styles.groupHeader} style={{ backgroundColor: '#A1A1AA' }}>
+                                    <span className={styles.groupSubjectName}>{group?.subject?.name}</span>
+                                    <span className={styles.groupPeriodName}>{group?.period?.name}</span>
                                 </div>
                                 {/* قائمة تمارين المجموعة */}
                                 <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
-                                    {group.exercises.map((exercise) => {
+                                    {group?.exams.map((exercise) => {
                                         // حساب ستايل الخلفية بناءً على الحالة
                                         let itemStyle: React.CSSProperties = {};
                                         let progressFillColor = statusBackgroundColors.notStarted;
 
-                                        if (exercise.status === 'مكتمل') {
+                                        if (exercise.status === 'finished') {
                                             progressFillColor = statusBackgroundColors.completed;
                                             itemStyle = { backgroundColor: progressFillColor };
-                                        } else if (exercise.status === 'لم يبدأ') {
+                                        } else if (exercise.status === 'pending') {
                                             progressFillColor = statusBackgroundColors.notStarted;
                                             itemStyle = { backgroundColor: progressFillColor };
-                                        } else if (exercise.status === 'قيد الإنجاز') {
+                                        } else if (exercise.status === 'in_progress') {
                                             progressFillColor = statusBackgroundColors.inProgress;
                                             itemStyle = {
                                                 background: `linear-gradient(to left, ${progressFillColor} ${exercise.progress}%, ${remainingColorInProgress} ${exercise.progress}%)`
@@ -324,7 +325,8 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         return (
                                             <Link
                                                 key={exercise.id}
-                                                href={exercise.link}
+                                                href="/subject-exercises"
+                                                // href={exercise.link}
                                                 className={styles.exerciseLink}
                                                 style={{ textDecoration: 'none' }}
                                             >
