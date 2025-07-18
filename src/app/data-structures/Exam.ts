@@ -54,6 +54,7 @@ export interface Period {
 // Root interface for the exam + exercises payload
 export interface ExamWithExercises {
   id: number;
+  unique_id: string; // Public identifier for the exam
   title: string;
   description: string | null;
   semester: Semester;

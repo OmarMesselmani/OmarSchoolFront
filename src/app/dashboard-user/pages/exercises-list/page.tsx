@@ -50,42 +50,9 @@ const getExerciseTitle = (exerciseNumber: number): string => {
 
 
 
-// --- دالة محسنة لتوليد قائمة التمارين مع تحديد المادة الصحيحة ---
-const generateExercisesFromConfig = (): Exercise[] => {
-    const exercises: Exercise[] = [];
 
-    // تعريف مطابقة التمارين مع المواد والمسارات
-    const exerciseMapping: { [key: string]: { subject: string; path: string } } = {
-        'exercise1': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise1/qs1' }, // ✅
-        'exercise2': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise2/qs1' }, // ✅
-        'exercise3': { subject: 'القراءة', path: '/exercises/year1/reading/introductory/exercise3/qs1' }, // ✅
-        'exercise4': { subject: 'الإيقاظ العلمي', path: '/exercises/year1/science/unit1/exercise4/qs1' }, // ✅
-    };
-
-    // التكرار عبر جميع التمارين في ملف التكوين
-    Object.keys(EXERCISES_CONFIG).forEach((exerciseKey) => {
-        console.log(`Processing exercise: ${exerciseKey}`);
-        const exerciseConfig = EXERCISES_CONFIG[exerciseKey];
-        const mapping = exerciseMapping[exerciseKey];
-
-        if (mapping) {
-            exercises.push({
-                id: `${mapping.subject === 'القراءة' ? 'reading' : 'science'}-year1-${exerciseKey}`,
-                subject: mapping.subject,
-                title: exerciseConfig.title, // جلب العنوان من ملف التكوين
-                status: 'لم يبدأ',
-                periodNumber: 1,
-                progress: 0,
-                link: mapping.path,
-            });
-        }
-    });
-
-    return exercises;
-};
 
 // --- استخدام الدالة المحسنة ---
-const realExercisesFromConfig: Exercise[] = generateExercisesFromConfig();
 
 // دالة مساعدة للحصول على اسم الفترة بالعربية
 const getPeriodName = (periodNumber: number): string => {
@@ -130,7 +97,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
         try {
             const token = Cookies.get('token');
             if (!token) {
-                window.location.href = '/login';
+                window.location.href = '/auth/login';
             }
 
             const response = await fetch(`http://127.0.0.1:8000/student/subjects`, {
@@ -159,7 +126,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
         try {
             const token = Cookies.get('token');
             if (!token) {
-                window.location.href = '/login';
+                window.location.href = '/auth/login';
             }
 
             const response = await fetch(`http://127.0.0.1:8000/student/packs?subject_id=${activeFilter}`, {
@@ -194,39 +161,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
 
 
 
-    var targetSubjectName: string = 'جميع التمارين';
-    // منطق التصفية والتجميع والفرز لعرض البطاقات
-    const groupedAndFilteredExercises = useMemo((): GroupedExercises[] => {
-        // استخدام التمارين المولدة من ملف التكوين
-        let exercisesToShow = realExercisesFromConfig;
 
-        // 1. التصفية حسب التبويب النشط
-        if (activeFilter !== null) {
-            const activeFilterData = subjects.find(f => f.id === activeFilter);
-            targetSubjectName = activeFilterData ? activeFilterData.name : '';
-        }
-
-        // 2. التجميع حسب المادة والفترة
-        const groups: { [key: string]: { subject: string; periodNumber: number; exercises: Exercise[] } } = {};
-        exercisesToShow.forEach(exercise => {
-            const key = `${exercise.subject}-${exercise.periodNumber}`;
-            if (!groups[key]) {
-                groups[key] = { subject: exercise.subject, periodNumber: exercise.periodNumber, exercises: [] };
-            }
-            groups[key].exercises.push(exercise);
-        });
-
-        // 3. الفرز حسب الفترة ثم أهمية المادة
-        return Object.values(groups).sort((a, b) => {
-            if (a.periodNumber !== b.periodNumber) { return a.periodNumber - b.periodNumber; }
-            const indexA = subjectImportanceOrder.indexOf(a.subject);
-            const indexB = subjectImportanceOrder.indexOf(b.subject);
-            if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-        });
-    }, [activeFilter]);
 
     // ألوان الحالة للخلفيات
     const statusBackgroundColors = {
@@ -251,7 +186,6 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
 
             {/* شريط التبويبات */}
             <div className={styles.tabsContainer}>
-                <h3 className={styles.activeTabTitle}>{targetSubjectName}</h3>
                 <div className={styles.tabButtonsGroup}>
                     {subjects.map(filter => {
                         let inlineStyles: React.CSSProperties = {};
@@ -325,7 +259,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         return (
                                             <Link
                                                 key={exercise.id}
-                                                href="/subject-exercises"
+                                                href={`/exam/${exercise?.unique_id}/1`} // Assuming the link structure is like this
                                                 // href={exercise.link}
                                                 className={styles.exerciseLink}
                                                 style={{ textDecoration: 'none' }}

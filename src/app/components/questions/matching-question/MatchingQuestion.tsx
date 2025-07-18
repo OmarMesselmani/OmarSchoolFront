@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './matching-question.module.css';
-import { CONNECTION_EVENTS } from '@/app/exercises/[year]/[semester]/[subject]/[exerciceId]/[questionId]/page';
+import { CONNECTION_EVENTS } from '@/app/exam/[uniqueId]/[questionOrder]/page';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {
@@ -42,11 +42,11 @@ interface MatchingQuestionProps {
   }>;
 }
 
-export default function MatchingQuestion({ 
-  items, 
-  images, 
+export default function MatchingQuestion({
+  items,
+  images,
   questionNumber,
-  questionTitle 
+  questionTitle
 }: MatchingQuestionProps) {
   // --- الحالة الداخلية للمكون ---
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -106,11 +106,11 @@ export default function MatchingQuestion({
         cancelConnection();
         return;
       }
-      
+
       // تحديد النقطة الصحيحة للبداية والنهاية
       const finalStart = isStartText ? startPoint : pointId;
       const finalEnd = isCurrentImage ? pointId : startPoint;
-      
+
       setConnections(prevConnections => [...prevConnections, { start: finalStart, end: finalEnd }]);
       setStartPoint(null);
       setMousePos(null);
@@ -146,13 +146,13 @@ export default function MatchingQuestion({
         }
         return prevConnections;
       });
-      
+
       if (startPoint) {
         setStartPoint(null);
         setMousePos(null);
       }
     };
-    
+
     const handleResetEvent = () => {
       console.log("إعادة تعيين جميع الاتصالات");
       setConnections([]);
@@ -161,10 +161,10 @@ export default function MatchingQuestion({
         setMousePos(null);
       }
     };
-    
+
     document.addEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
     document.addEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
-    
+
     return () => {
       document.removeEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
       document.removeEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
@@ -183,8 +183,8 @@ export default function MatchingQuestion({
   const renderItemContent = (item: { id: string; text?: string; url?: string; }) => {
     if (item.url) {
       return (
-        <img 
-          src={item.url} 
+        <img
+          src={item.url}
           alt={`صورة ${item.id}`}
           className={styles.matchingImage}
         />
@@ -203,8 +203,8 @@ export default function MatchingQuestion({
   const renderImageContent = (image: { id: string; text?: string; url?: string; }) => {
     if (image.url) {
       return (
-        <img 
-          src={image.url} 
+        <img
+          src={image.url}
           alt={`صورة ${image.id}`}
           className={styles.matchingImage}
         />
@@ -256,13 +256,12 @@ export default function MatchingQuestion({
                     >
                       <div
                         id={pointId}
-                        className={`${styles.connectionPoint} ${
-                          isConnected 
-                            ? styles.connected
-                            : isSelected 
-                              ? styles.selected
-                              : styles.default
-                        }`}
+                        className={`${styles.connectionPoint} ${isConnected
+                          ? styles.connected
+                          : isSelected
+                            ? styles.selected
+                            : styles.default
+                          }`}
                         title={isConnected ? `"${item.text || item.id}" متصلة بالفعل` : `اربط من: ${item.text || item.id}`}
                       ></div>
                       {renderItemContent(item)}
@@ -280,21 +279,19 @@ export default function MatchingQuestion({
                   return (
                     <div
                       key={image.id}
-                      className={`${styles.imageContainer} ${
-                        isConnected ? styles.connected : ''
-                      } ${!isConnected ? styles.clickable : ''}`}
+                      className={`${styles.imageContainer} ${isConnected ? styles.connected : ''
+                        } ${!isConnected ? styles.clickable : ''}`}
                       onClick={(e) => !isConnected && handlePointClick(e, pointId)}
                     >
                       {renderImageContent(image)}
                       <div
                         id={pointId}
-                        className={`${styles.connectionPoint} ${
-                          isConnected 
-                            ? styles.connected
-                            : isSelected 
-                              ? styles.selected
-                              : styles.default
-                        }`}
+                        className={`${styles.connectionPoint} ${isConnected
+                          ? styles.connected
+                          : isSelected
+                            ? styles.selected
+                            : styles.default
+                          }`}
                       ></div>
                     </div>
                   );
@@ -308,8 +305,8 @@ export default function MatchingQuestion({
             <div
               id="temp-mouse-target"
               className={styles.tempMouseTarget}
-              style={{ 
-                top: `${mousePos.y}px`, 
+              style={{
+                top: `${mousePos.y}px`,
                 left: `${mousePos.x}px`
               }}
             />
@@ -321,12 +318,12 @@ export default function MatchingQuestion({
       {connections.map((conn, index) => (
         <Xarrow
           key={`conn-${conn.start}-${conn.end}-${index}`}
-          start={conn.start} 
+          start={conn.start}
           end={conn.end}
-          color="#171717" 
-          strokeWidth={2} 
+          color="#171717"
+          strokeWidth={2}
           headSize={6}
-          path="straight" 
+          path="straight"
           showHead={true}
         />
       ))}
@@ -335,13 +332,13 @@ export default function MatchingQuestion({
       {startPoint && mousePos && (
         <Xarrow
           key="temp-arrow"
-          start={startPoint} 
+          start={startPoint}
           end="temp-mouse-target"
-          color="#171717" 
-          strokeWidth={2} 
+          color="#171717"
+          strokeWidth={2}
           headSize={0}
-          path="straight" 
-          showHead={false} 
+          path="straight"
+          showHead={false}
           dashness={true}
           passProps={{ pointerEvents: "none" }}
         />

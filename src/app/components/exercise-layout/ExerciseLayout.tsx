@@ -1,7 +1,7 @@
 // ./app/components/exercise-layout/ExerciseLayout.tsx
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 // تأكد من أن اسم الملف هو exercise-layout.module.css وأن المسار صحيح
 import styles from './exercise-layout.module.css';
 import ExerciseHeader from '@/app/components/exercise-header/page';
@@ -10,26 +10,20 @@ import AiTalker from '@/app/components/ai-talker/page';
 import ProgressStepper from '@/app/components/progress-stepper/page';
 import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 import CloseButton from '@/app/components/close-button/page';
+import QuestionRenderer from '../questions/QuestionRenderer';
+import { ExamWithExercises, Exercise } from '@/app/data-structures/Exam';
+import { useParams, useRouter, usePathname } from 'next/navigation';
+import { Student } from '@/app/data-structures/Student';
 
-// ✅ تعريف واجهة HeaderData
-interface HeaderData {
-  trimester: string;
-  unit: string;
-  title?: string;
-  grade: string;
-  studentName?: string;
-  exerciseId?: string; // إضافة معرف التمرين
-}
 
 // تعريف واجهة للخصائص
 interface ExerciseLayoutProps {
-  children: React.ReactNode;
-  headerData: HeaderData;
+  // children: React.ReactNode;
+  examData: ExamWithExercises;
+  student: Student; // إضافة خاصية الطالب
+  exercises: Exercise[];
+  examUniqueId?: string; // إضافة معرف الامتحان
   totalSteps: number;
-  currentStep: number;
-  onStepChange: (step: number) => void;
-  onNavigateNext: () => void;
-  isLastQuestion: boolean;
   onClose: () => void;
   onUndo: () => void;
   onReset: () => void;
@@ -37,18 +31,58 @@ interface ExerciseLayoutProps {
 }
 
 const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
-  children,
-  headerData,
+  // children,
+  examData,
+  student,
+  exercises,
+  examUniqueId,
   totalSteps,
-  currentStep,
-  onStepChange,
-  onNavigateNext,
-  isLastQuestion,
   onClose,
   onUndo,
   onReset,
   onNavigateToNextExercise,
 }) => {
+
+  function getExerciseByOrder(
+    exercises: Exercise[],
+    order: number
+  ): Exercise | undefined {
+    return exercises.find(ex => ex.order === order)
+  }
+  //////////////////////////////////////////////////////
+  // استخدم useParams من Next.js للحصول على المعلمات من URL
+  const params = useParams();
+  const router = useRouter();
+  const stringCurrentStep = params?.questionOrder as string;
+  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
+
+  const ex1 = getExerciseByOrder(exercises, currentStep)
+  console.log('Current Step:', currentStep);
+  console.log('Exercise Data:', ex1);
+
+  //////////////////////////////////////////////////////
+  const handleStepChange = (step: number) => {
+    if (step !== currentStep) {
+
+      router.push(`/exam/${examUniqueId}/${step}`);
+    }
+  };
+  //////////////////////////////////////////////////////
+  const handleNavigateNext = () => {
+    if (currentStep < totalSteps) {
+      const nextQuestionNumber = currentStep + 1;
+      router.push(`/exam/${examUniqueId}/${nextQuestionNumber}`);
+    } else {
+      router.push('/dashboard-user?section=home');
+    }
+  };
+
+  const [isLastQuestion, setIsLastQuestion] = React.useState<boolean>(true);
+  useEffect(() => {
+    setIsLastQuestion(currentStep === totalSteps);
+  }, [currentStep]);
+
+
   return (
     // استخدام الكلاسات من ملف CSS المستورد
     <div className={styles.pageContainer} style={{ paddingTop: 0, marginTop: 0 }}>
@@ -57,11 +91,11 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
       <main className={styles.exerciseContainer} style={{ paddingTop: '1rem' }}>
         <div className={styles.exerciseContent}>
           <ExerciseHeader
-            trimester={headerData.trimester}
-            unit={headerData.unit}
-            grade={headerData.grade}
-            studentName={headerData.studentName}
-            exerciseId={headerData.exerciseId} // ✅ تمرير exerciseId
+            trimester={examData?.semester?.name}
+            unit={examData?.subject?.name}
+            title={examData?.title} // تمرير عنوان التمرين
+            grade={examData?.grade?.name}
+            studentName={`${student?.name} ${student?.surname}`}
             onClose={onClose}
             onUndo={onUndo}
             onReset={onReset}
@@ -69,7 +103,11 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
 
           <div className={styles.exerciseBodyWrapper}>
             <div className={styles.mainExerciseArea}>
-              {children} {/* عرض مكون السؤال هنا */}
+              {/* {children} */}
+              <QuestionRenderer
+                exerciseData={ex1}
+                student={student} // تمرير خاصية الطالب
+              />
             </div>
             {/* تمرير دوال التحكم إلى الشريط الجانبي */}
             {/* <ExerciseSidebar onUndoClick={onUndo} onResetClick={onReset} /> */}
@@ -91,7 +129,7 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
       <ProgressStepper
         totalSteps={totalSteps}
         currentStep={currentStep}
-        onStepChange={onStepChange}
+        onStepChange={handleStepChange}
         allowNavigation={true}
         showNavigationButtons={true}
         onNextExercise={onNavigateToNextExercise} // تمرير الدالة هنا

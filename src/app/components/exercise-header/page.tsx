@@ -15,7 +15,6 @@ interface ExerciseHeaderProps {
   grade: string;
   studentName?: string;
   // إضافة خاصية جديدة للحصول على العنوان من التكوين
-  exerciseId?: string; // معرف التمرين (مثل "exercise1")
   onClose?: () => void;
   onUndo?: () => void;
   onReset?: () => void;
@@ -28,21 +27,13 @@ const ExerciseHeader: React.FC<ExerciseHeaderProps> = ({
   title,
   grade,
   studentName,
-  exerciseId,
   onClose,
   onUndo,
   onReset,
 }) => {
   // دالة للحصول على عنوان التمرين من ملف التكوين
-  const getExerciseTitle = (): string => {
-    console.log('ExerciseHeader - exerciseId:', exerciseId); // للتتبع
-    
-    // إذا تم تمرير exerciseId، نجلب العنوان من ملف التكوين
-    if (exerciseId && EXERCISES_CONFIG[exerciseId]) {
-      const configTitle = EXERCISES_CONFIG[exerciseId].title;
-      console.log('ExerciseHeader - Config title:', configTitle); // للتتبع
-      return configTitle;
-    }
+  const getExerciseTitle = (): string => {    
+
     
     // إذا تم تمرير title مباشرة، نستخدمه
     if (title) {

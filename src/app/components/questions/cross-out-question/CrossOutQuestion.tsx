@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './CrossOutQuestion.module.css';
-import { CONNECTION_EVENTS } from '@/app/exercises/[year]/[semester]/[subject]/[exerciceId]/[questionId]/page';
+import { CONNECTION_EVENTS } from '@/app/exam/[uniqueId]/[questionOrder]/page';
 
 interface Statement {
   id: string;
@@ -20,8 +20,8 @@ interface CrossOutQuestionProps {
   questionTitle: string;
 }
 
-export default function CrossOutQuestion({ 
-  content, 
+export default function CrossOutQuestion({
+  content,
   questionNumber,
   questionTitle
 }: CrossOutQuestionProps) {
@@ -57,16 +57,16 @@ export default function CrossOutQuestion({
         return prev;
       });
     };
-    
+
     const handleResetEvent = () => {
       console.log("إعادة تعيين جميع الشطب");
       setCrossedOutStatements(new Set());
     };
-    
+
     // تسجيل مستمعي الأحداث
     document.addEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
     document.addEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
-    
+
     // تنظيف عند إلغاء تحميل المكون
     return () => {
       document.removeEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
@@ -97,9 +97,8 @@ export default function CrossOutQuestion({
               >
                 <span className={styles.bulletPoint}>•</span>
                 <div
-                  className={`${styles.statementText} ${
-                    crossedOutStatements.has(statement.id) ? styles.crossedOut : ''
-                  }`}
+                  className={`${styles.statementText} ${crossedOutStatements.has(statement.id) ? styles.crossedOut : ''
+                    }`}
                   onClick={() => handleStatementClick(statement.id)}
                   title={`انقر لشطب: ${statement.text}`}
                 >

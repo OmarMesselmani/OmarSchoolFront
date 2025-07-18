@@ -9,70 +9,72 @@ import MultipleChoiceQuestion from './multiple-choice-question/MultipleChoiceQue
 import ColoringBoxes from './coloring-boxes/ColoringBoxes';
 import CrossOutQuestion from './cross-out-question/CrossOutQuestion';
 import CollapsedText from './collapsed-text/CollapsedText';
-import DragAndDrop from '@/app/exercises/[year]/[semester]/[subject]/drag-and-drop/DragAndDropQuestion';
+import DragAndDrop from '@/app/exercise-types/drag-and-drop/DragAndDropQuestion';
+import { Exercise } from '@/app/data-structures/Exam';
+import { Student } from '@/app/data-structures/Student';
 
 interface QuestionRendererProps {
-  questionConfig: QuestionConfig;
-  exerciseAssets?: any;
+  exerciseData: Exercise;
+  student: Student; // إضافة خاصية الطالب
+  // questionConfig: QuestionConfig;
+  // exerciseAssets?: any;
   onAnswerChange?: (questionId: string, answer: any) => void; // إضافة هذا
 }
 
 
 
 export default function QuestionRenderer({
-  questionConfig,
-  exerciseAssets,
-  onAnswerChange
+  exerciseData,
+  student,
 }: QuestionRendererProps) {
-  switch (questionConfig.type) {
-    case 'text-display':
+  switch (exerciseData?.exercise_type?.name) {
+    // case 'reading':
+    //   return (
+    //     <TextDisplay
+    //       exerciseId={exerciseData?.id}
+    //       student={student} // تمرير خاصية الطالب
+    //     />
+    //   );
+
+    // case 'matching':
+    //   return (
+    //     <MatchingQuestion
+    //       items={questionConfig.content.items}
+    //       images={questionConfig.content.images}
+    //       questionNumber={questionConfig.questionNumber}
+    //       questionTitle={questionConfig.questionTitle}
+    //     />
+    //   );
+
+    case 'drag-and-drop':
       return (
-        <TextDisplay
-          questionNumber={questionConfig.questionNumber}
-          questionTitle={questionConfig.questionTitle}
-          textContent=""
-          imageUrl={exerciseAssets?.textImage}
+        <DragAndDrop
+          exerciseId={exerciseData?.id}
+          student={student}
         />
       );
 
-    case 'matching':
-      return (
-        <MatchingQuestion
-          items={questionConfig.content.items}
-          images={questionConfig.content.images}
-          questionNumber={questionConfig.questionNumber}
-          questionTitle={questionConfig.questionTitle}
-        />
-      );
-
-    case 'drag-drop':
-      return (
-        <DragAndDrop />
-      );
-
-    case 'mcq':
-      return (
-        <MultipleChoiceQuestion
-          question={questionConfig.content.question}
-          options={questionConfig.content.options}
-          image={questionConfig.content.image}
-          questionNumber={questionConfig.questionNumber}
-          questionTitle={questionConfig.questionTitle}
-        />
-      );
+    // case 'mcq':
+    //   return (
+    //     <MultipleChoiceQuestion
+    //       question={questionConfig.content.question}
+    //       options={questionConfig.content.options}
+    //       image={questionConfig.content.image}
+    //       questionNumber={questionConfig.questionNumber}
+    //       questionTitle={questionConfig.questionTitle}
+    //     />
+    //   );
 
     case 'coloring-boxes':
       return (
         <div>
-          {/* عرض السند خارج المكون مثل cross-out */}
-          {questionConfig.assets?.textImage && (
+          {/* {questionConfig.assets?.textImage && (
             <CollapsedText
               textImage={questionConfig.assets.textImage}
               title="عرض السند"
             />
           )}
 
-          {/* السؤال بدون السند الداخلي */}
           <ColoringBoxes
             content={{
               vocabulary: questionConfig.content.vocabulary,
@@ -83,41 +85,41 @@ export default function QuestionRenderer({
             onComplete={onAnswerChange ? (selectedWords) => {
               onAnswerChange(questionConfig.questionId, selectedWords);
             } : undefined}
-          />
+          /> */}
         </div>
       );
 
-    case 'cross-out':
-      return (
-        <div>
-          {(questionConfig.assets?.textImage || exerciseAssets?.textImage) && (
-            <CollapsedText
-              textImage={questionConfig.assets?.textImage || exerciseAssets?.textImage}
-              title="عرض السند"
-            />
-          )}
+    // case 'cross-out':
+    //   return (
+    //     <div>
+    //       {(questionConfig.assets?.textImage || exerciseAssets?.textImage) && (
+    //         <CollapsedText
+    //           textImage={questionConfig.assets?.textImage || exerciseAssets?.textImage}
+    //           title="عرض السند"
+    //         />
+    //       )}
 
-          <CrossOutQuestion
-            content={questionConfig.content}
-            questionNumber={questionConfig.questionNumber}
-            questionTitle={questionConfig.questionTitle}
-          />
-        </div>
-      );
+    //       <CrossOutQuestion
+    //         content={questionConfig.content}
+    //         questionNumber={questionConfig.questionNumber}
+    //         questionTitle={questionConfig.questionTitle}
+    //       />
+    //     </div>
+    //   );
 
-    case 'word-matching':
-      return (
-        <MatchingQuestion
-          items={questionConfig.content.leftWords}
-          images={questionConfig.content.rightWords.map(word => ({
-            id: word.id,
-            text: word.text
-          }))}
-          questionNumber={questionConfig.questionNumber}
-          questionTitle={questionConfig.questionTitle}
-          correctMatches={questionConfig.content.correctMatches}
-        />
-      );
+    // case 'word-matching':
+    //   return (
+    //     <MatchingQuestion
+    //       items={questionConfig.content.leftWords}
+    //       images={questionConfig.content.rightWords.map(word => ({
+    //         id: word.id,
+    //         text: word.text
+    //       }))}
+    //       questionNumber={questionConfig.questionNumber}
+    //       questionTitle={questionConfig.questionTitle}
+    //       correctMatches={questionConfig.content.correctMatches}
+    //     />
+    //   );
 
     default:
       return <div>نوع السؤال غير مدعوم</div>;

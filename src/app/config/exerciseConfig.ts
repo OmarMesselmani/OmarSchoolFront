@@ -13,7 +13,7 @@ export interface ExerciseConfig {
 
 export interface QuestionConfig {
   questionId: string;
-  type: 'text-display' | 'matching' | 'drag-drop' | 'mcq' | 'fill-blank' | 'sequence' | 'coloring-boxes' | 'cross-out' | 'word-matching';
+  type: 'text-display' | 'matching' | 'drag-and-drop' | 'mcq' | 'fill-blank' | 'sequence' | 'coloring-boxes' | 'cross-out' | 'word-matching';
   questionNumber: string;
   questionTitle: string;
   content: any;
@@ -36,7 +36,7 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
     questions: [
       {
         questionId: 'question1',
-        type: 'drag-drop',
+        type: 'drag-and-drop',
         questionNumber: '',
         questionTitle: 'أَقْرَأُ الجُمَلَ التَّالِيَةَ:',
         content: null
@@ -431,7 +431,7 @@ export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {
       },
       {
         questionId: 'question4',
-        type: 'drag-drop',
+        type: 'drag-and-drop',
         questionNumber: '3',
         questionTitle: 'أَضَعُ كُلَّ شَيْءٍ فِي المَجْمُوعَةِ المُنَاسِبَةِ',
         content: {

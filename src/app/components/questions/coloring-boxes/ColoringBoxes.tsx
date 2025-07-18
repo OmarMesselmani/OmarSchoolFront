@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ColoringBoxes.module.css';
 import CollapsedText from '../collapsed-text/CollapsedText';
-import { CONNECTION_EVENTS } from '@/app/exercises/[year]/[semester]/[subject]/[exerciceId]/[questionId]/page';
+import { CONNECTION_EVENTS } from '@/app/exam/[uniqueId]/[questionOrder]/page';
 
 interface ColoringBoxesContent {
   vocabulary: Array<{
@@ -21,8 +21,8 @@ interface ColoringBoxesProps {
   onComplete?: (selectedWords: string[]) => void; // إضافة callback اختياري
 }
 
-export default function ColoringBoxes({ 
-  content, 
+export default function ColoringBoxes({
+  content,
   questionNumber,
   questionTitle,
   textImage,
@@ -39,12 +39,12 @@ export default function ColoringBoxes({
       } else {
         newSet.add(boxId); // إضافة اللون إذا لم يكن ملوناً
       }
-      
+
       // إرسال النتيجة للمكون الأب
       if (onComplete) {
         onComplete(Array.from(newSet));
       }
-      
+
       return newSet;
     });
   };
@@ -61,32 +61,32 @@ export default function ColoringBoxes({
             newSet.delete(lastItem);
           }
           console.log("تراجع عن آخر تلوين");
-          
+
           // إرسال النتيجة المحدثة
           if (onComplete) {
             onComplete(Array.from(newSet));
           }
-          
+
           return newSet;
         }
         return prev;
       });
     };
-    
+
     const handleResetEvent = () => {
       console.log("إعادة تعيين جميع الألوان");
       setColoredBoxes(new Set());
-      
+
       // إرسال نتيجة فارغة
       if (onComplete) {
         onComplete([]);
       }
     };
-    
+
     // تسجيل مستمعي الأحداث
     document.addEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
     document.addEventListener(CONNECTION_EVENTS.RESET, handleResetEvent);
-    
+
     // تنظيف عند إلغاء تحميل المكون
     return () => {
       document.removeEventListener(CONNECTION_EVENTS.UNDO, handleUndoEvent);
@@ -123,9 +123,8 @@ export default function ColoringBoxes({
             {content.vocabulary.map((item) => (
               <div
                 key={item.id}
-                className={`${styles.coloringBox} ${
-                  coloredBoxes.has(item.id) ? styles.colored : styles.uncolored
-                }`}
+                className={`${styles.coloringBox} ${coloredBoxes.has(item.id) ? styles.colored : styles.uncolored
+                  }`}
                 onClick={() => handleBoxClick(item.id)}
                 title={`انقر لتلوين: ${item.text}`}
               >

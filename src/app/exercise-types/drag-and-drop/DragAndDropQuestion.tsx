@@ -21,6 +21,8 @@ import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 import Cookies from 'js-cookie';
 import LoadingPage from '@/app/components/loading-page/LoadingPage';
 import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
+import { Exercise } from '@/app/data-structures/Exam';
+import { Student } from '@/app/data-structures/Student';
 
 // تعريف واجهة لبيانات الألوان
 interface ColorInfo {
@@ -45,13 +47,11 @@ interface MoveHistoryItem {
 }
 
 // اسم المكون الجديد
-export default function DragAndDrop() {
+export default function DragAndDrop({ exerciseId, student }: { exerciseId: number, student: Student }) {
     const [exercise, setExercise] = useState(null);
     const [exerciseQuestion, setExerciseQuestion] = useState('');
     const [exerciseTitle, setExerciseTitle] = useState('');
     const [exerciseFinished, setExerciseFinished] = useState(false);
-    const [exerciseId, setExerciseId] = useState(1);
-    const [studentId, setStudentId] = useState(1);
     const [draggableItems, setDraggableItems] = useState<ColorInfo[]>([]);
     const [allItems, setAllItems] = useState<ColorInfo[]>([]);
     const [status, setStatus] = useState<ExerciseStatus | null>(null);
@@ -65,7 +65,7 @@ export default function DragAndDrop() {
     useEffect(() => {
         const token = Cookies.get("token");
         setIsFullLoading(true);
-        fetch(`http://127.0.0.1:8000/student/drag-and-drop/exercise-status/${studentId}/${exerciseId}`, {
+        fetch(`http://127.0.0.1:8000/student/drag-and-drop/exercise-status/${student?.id}/${exerciseId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export default function DragAndDrop() {
                 setError("Failed to fetch exercise status.");
                 setIsFullLoading(false);
             });
-    }, [studentId, exerciseId]);
+    }, [exerciseId, student?.id]);
 
 
 
@@ -204,8 +204,8 @@ export default function DragAndDrop() {
                     "Authorization": `Token ${token}`,
                 },
                 body: JSON.stringify({
-                    student_id: 1, // Your logic for student ID
-                    exercise_id: exerciseId,
+                    student_id: student?.id, // Your logic for student ID
+                    exercise_id: exerciseId, // Your logic for exercise ID
                     moves: moves, // The complete array of moves
                 }),
             });
