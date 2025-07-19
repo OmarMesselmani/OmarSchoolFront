@@ -28,13 +28,13 @@ export default function QuestionRenderer({
   student,
 }: QuestionRendererProps) {
   switch (exerciseData?.exercise_type?.name) {
-    // case 'reading':
-    //   return (
-    //     <TextDisplay
-    //       exerciseId={exerciseData?.id}
-    //       student={student} // تمرير خاصية الطالب
-    //     />
-    //   );
+    case 'image-reading-segment':
+      return (
+        <TextDisplay
+          exerciseId={exerciseData?.id}
+          student={student} // تمرير خاصية الطالب
+        />
+      );
 
     // case 'matching':
     //   return (

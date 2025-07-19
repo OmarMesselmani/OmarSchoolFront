@@ -27,9 +27,9 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
   isLastQuestion = false,
 }) => {
   const validTotalSteps = Math.max(1, totalSteps);
-  const validCurrentStep = Math.min(Math.max(1, currentStep), validTotalSteps);
-  
-  const isFirstStep = validCurrentStep === 1;
+  const validCurrentStep = Math.min(Math.max(0, currentStep), validTotalSteps);
+
+  const isFirstStep = validCurrentStep === 0;
   const isLastStep = validCurrentStep === validTotalSteps;
 
   const handleStepClick = (stepIndex: number) => {
@@ -57,10 +57,10 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
         <div className="flex items-center gap-2">
           {/* زر التمرين السابق */}
           {showExerciseNavigation && (
-            <button 
+            <button
               className={`flex items-center justify-center w-9 h-9 rounded-full 
-                ${onPrevExercise 
-                  ? 'bg-gray-400 text-white hover:bg-gray-500' 
+                ${onPrevExercise
+                  ? 'bg-gray-400 text-white hover:bg-gray-500'
                   : 'bg-gray-300 text-gray-500'} 
                 transition-colors`}
               onClick={onPrevExercise}
@@ -73,10 +73,9 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
 
           {/* زر السؤال السابق */}
           {showNavigationButtons && (
-            <button 
-              className={`flex items-center justify-center w-9 h-9 rounded-full ${
-                !isFirstStep ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' : 'bg-gray-300 text-gray-500'
-              } transition-colors`}
+            <button
+              className={`flex items-center justify-center w-9 h-9 rounded-full ${!isFirstStep ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' : 'bg-gray-300 text-gray-500'
+                } transition-colors`}
               onClick={handlePrevStep}
               disabled={isFirstStep}
               title="السؤال السابق"
@@ -85,14 +84,14 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
             </button>
           )}
         </div>
-        
+
         {/* شريط التقدم */}
         <div className="flex gap-2 flex-1">
           {Array.from({ length: validTotalSteps }).map((_, index) => {
-            const stepNumber = index + 1;
+            const stepNumber = index;
             const isActive = stepNumber === validCurrentStep;
             const isPast = stepNumber < validCurrentStep;
-            
+
             return (
               <div
                 key={`step-${index}`}
@@ -110,15 +109,14 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
             );
           })}
         </div>
-        
+
         {/* أزرار التنقل التالية */}
         <div className="flex items-center gap-2">
           {/* زر السؤال التالي */}
           {showNavigationButtons && (
-            <button 
-              className={`flex items-center justify-center w-9 h-9 rounded-full ${
-                !isLastStep ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' : 'bg-gray-300 text-gray-500'
-              } transition-colors`}
+            <button
+              className={`flex items-center justify-center w-9 h-9 rounded-full ${!isLastStep ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' : 'bg-gray-300 text-gray-500'
+                } transition-colors`}
               onClick={handleNextStep}
               disabled={isLastStep}
               title="السؤال التالي"
@@ -129,11 +127,11 @@ const ProgressStepper: React.FC<ProgressStepperProps> = ({
 
           {/* زر التمرين التالي - تحديث المنطق */}
           {showExerciseNavigation && (
-            <button 
+            <button
               className={`flex items-center justify-center w-9 h-9 rounded-full 
-                ${(onNextExercise && isLastQuestion) 
+                ${(onNextExercise && isLastQuestion)
                   ? 'bg-[#DD2946] text-white hover:bg-[#c12340]' // اللون الرئيسي عند آخر سؤال
-                  : onNextExercise 
+                  : onNextExercise
                     ? 'bg-gray-400 text-white hover:bg-gray-500' // رمادي بدلاً من الأزرق
                     : 'bg-gray-300 text-gray-500'} 
                 transition-colors`}

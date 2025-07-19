@@ -92,7 +92,7 @@ export default function DragAndDrop() {
     useEffect(() => {
         setIsFullLoading(true);
 
-        fetch(`http://127.0.0.1:8000/student/get-drag-and-drop-data/${exerciseId}`, {
+        fetch(`http://127.0.0.1:8000/student/get-exercise-data/${exerciseId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

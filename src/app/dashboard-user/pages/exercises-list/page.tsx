@@ -259,7 +259,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                         return (
                                             <Link
                                                 key={exercise.id}
-                                                href={`/exam/${exercise?.unique_id}/1`} // Assuming the link structure is like this
+                                                href={`/exam/${exercise?.unique_id}/0`} // Assuming the link structure is like this
                                                 // href={exercise.link}
                                                 className={styles.exerciseLink}
                                                 style={{ textDecoration: 'none' }}
