@@ -94,9 +94,7 @@
     font-size: 1rem;
     flex-shrink: 0;
   }
-  .groupSubjectName {
-    /* يمكن إضافة تنسيقات هنا */
-  }
+
   .groupPeriodName {
     font-size: 0.9rem;
     font-weight: 500;
@@ -195,3 +193,26 @@
       padding: 2rem 1rem;
       grid-column: 1 / -1;
   }
+
+
+  /* outer wrapper box */
+.packContainer {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px;
+  margin: 24px 0;
+}
+
+/* floating title */
+.packTitle {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: #fff;
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}

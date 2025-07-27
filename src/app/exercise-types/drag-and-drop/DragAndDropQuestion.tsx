@@ -23,6 +23,7 @@ import LoadingPage from '@/app/components/loading-page/LoadingPage';
 import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
 import { Exercise } from '@/app/data-structures/Exam';
 import { Student } from '@/app/data-structures/Student';
+import { useParams } from 'next/navigation';
 
 // تعريف واجهة لبيانات الألوان
 interface ColorInfo {
@@ -47,7 +48,7 @@ interface MoveHistoryItem {
 }
 
 // اسم المكون الجديد
-export default function DragAndDrop({ exerciseId, student }: { exerciseId: number, student: Student }) {
+export default function DragAndDrop({ exerciseId, student, handleStepChange }: { exerciseId: number, student: Student, handleStepChange?: (step: number) => void }) {
     const [exercise, setExercise] = useState(null);
     const [exerciseQuestion, setExerciseQuestion] = useState('');
     const [exerciseTitle, setExerciseTitle] = useState('');
@@ -61,6 +62,16 @@ export default function DragAndDrop({ exerciseId, student }: { exerciseId: numbe
     const [isFullLoading, setIsFullLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [dropZones, setDropZones] = useState([]);
+    const params = useParams();
+
+    const stringCurrentStep = params?.questionOrder as string;
+    const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
+    const examUniqueId = params?.uniqueId as string;
+    const handleNextStep = () => {
+        if (handleStepChange) {
+            handleStepChange(currentStep + 1);
+        }
+    };
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -207,6 +218,8 @@ export default function DragAndDrop({ exerciseId, student }: { exerciseId: numbe
                     student_id: student?.id, // Your logic for student ID
                     exercise_id: exerciseId, // Your logic for exercise ID
                     moves: moves, // The complete array of moves
+                    exam_unique_id: examUniqueId, // Pass the exam unique ID if needed
+                    current_step: currentStep, // Pass the current step
                 }),
             });
 
@@ -214,6 +227,7 @@ export default function DragAndDrop({ exerciseId, student }: { exerciseId: numbe
             if (response.ok) {
                 setExerciseFinished(true);
                 setLoading(false);
+                handleNextStep(); // Navigate to the next step if needed
             } else {
                 console.error("Submission error:", result.error);
             }
@@ -244,7 +258,6 @@ export default function DragAndDrop({ exerciseId, student }: { exerciseId: numbe
     }, [history, draggableItems]);
 
     const handleReset = useCallback(() => {
-        console.log("Reset action for Drag and Drop");
         setDraggableItems(allItems);
         setDroppedItems({});
         setHistory([]);
@@ -367,6 +380,8 @@ export default function DragAndDrop({ exerciseId, student }: { exerciseId: numbe
                     </div>
                 </div>
                 <SubmitAndNextButton
+                    isFinished={exerciseFinished}
+                    isLoading={loading}
                     onClick={handleSubmit}
                     isLastQuestion={false}
                 />

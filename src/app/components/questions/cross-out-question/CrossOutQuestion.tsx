@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './CrossOutQuestion.module.css';
-import { CONNECTION_EVENTS } from '@/app/exam/[uniqueId]/[questionOrder]/page';
+import { CONNECTION_EVENTS } from '@/app/exam/[packUniqueCode]/[uniqueId]/[questionOrder]/page';
 
 interface Statement {
   id: string;

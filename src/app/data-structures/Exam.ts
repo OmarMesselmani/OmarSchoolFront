@@ -70,6 +70,8 @@ export interface ExamWithExercises {
 }
 
 export interface Pack {
+  title: string;
+  unique_code: string; // Unique identifier for the pack
   exams: ExamWithExercises[];
   subject: Subject | null; // Nullable if not applicable
   period: Period | null; // Nullable if not applicable

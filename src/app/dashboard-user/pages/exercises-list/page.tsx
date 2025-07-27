@@ -10,7 +10,7 @@ import { HiChevronLeft } from "react-icons/hi";
 import Link from 'next/link';
 // إضافة استيراد ملف التكوين
 import { EXERCISES_CONFIG } from '@/app/config/exerciseConfig';
-import { ExamWithExercises, Pack, Subject } from '@/app/data-structures/Exam';
+import { Pack, Subject } from '@/app/data-structures/Exam';
 import Cookies from 'js-cookie';
 
 // --- واجهات البيانات ---
@@ -228,65 +228,66 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                         const bodyBgColor = '#ffffff';
 
                         return (
-                            <div key={`${group.subject}-${group?.period?.name}`} className={styles.subjectGroup}>
-                                {/* رأس المجموعة */}
-                                <div className={styles.groupHeader} style={{ backgroundColor: '#A1A1AA' }}>
-                                    <span className={styles.groupSubjectName}>{group?.subject?.name}</span>
-                                    <span className={styles.groupPeriodName}>{group?.period?.name}</span>
-                                </div>
-                                {/* قائمة تمارين المجموعة */}
-                                <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
-                                    {group?.exams.map((exercise) => {
-                                        // حساب ستايل الخلفية بناءً على الحالة
-                                        let itemStyle: React.CSSProperties = {};
-                                        let progressFillColor = statusBackgroundColors.notStarted;
+                            <div key={`${group.subject}-${group?.period?.name}`} className={styles.packContainer}>
+                                <div className={styles.packTitle}>{group?.title}</div>
 
-                                        if (exercise.status === 'finished') {
-                                            progressFillColor = statusBackgroundColors.completed;
-                                            itemStyle = { backgroundColor: progressFillColor };
-                                        } else if (exercise.status === 'pending') {
-                                            progressFillColor = statusBackgroundColors.notStarted;
-                                            itemStyle = { backgroundColor: progressFillColor };
-                                        } else if (exercise.status === 'in_progress') {
-                                            progressFillColor = statusBackgroundColors.inProgress;
-                                            itemStyle = {
-                                                background: `linear-gradient(to left, ${progressFillColor} ${exercise.progress}%, ${remainingColorInProgress} ${exercise.progress}%)`
-                                            };
-                                        } else {
-                                            itemStyle = { backgroundColor: statusBackgroundColors.notStarted };
-                                        }
-
-                                        return (
-                                            <Link
-                                                key={exercise.id}
-                                                href={`/exam/${exercise?.unique_id}/0`} // Assuming the link structure is like this
-                                                // href={exercise.link}
-                                                className={styles.exerciseLink}
-                                                style={{ textDecoration: 'none' }}
-                                            >
-                                                <div
-                                                    className={styles.groupedExerciseItem}
-                                                    style={itemStyle}
+                                {group?.exams.map((exercise) => {
+                                    let itemStyle: React.CSSProperties = {};
+                                    let progressFillColor = statusBackgroundColors.notStarted;
+                                    if (exercise.status === 'finished') {
+                                        progressFillColor = statusBackgroundColors.completed;
+                                        itemStyle = { backgroundColor: progressFillColor };
+                                    } else if (exercise.status === 'pending') {
+                                        progressFillColor = statusBackgroundColors.notStarted;
+                                        itemStyle = { backgroundColor: progressFillColor };
+                                    } else if (exercise.status === 'in_progress') {
+                                        progressFillColor = statusBackgroundColors.inProgress;
+                                        itemStyle = {
+                                            background: `linear-gradient(to left, ${progressFillColor} ${exercise.progress}%, ${remainingColorInProgress} ${exercise.progress}%)`
+                                        };
+                                    } else {
+                                        itemStyle = { backgroundColor: statusBackgroundColors.notStarted };
+                                    }
+                                    return (
+                                        <div key={exercise?.id} className={styles.subjectGroup}>
+                                            {/* رأس المجموعة */}
+                                            <div className={styles.groupHeader} style={{ backgroundColor: '#A1A1AA' }}>
+                                                <span className={styles.groupSubjectName}>{exercise?.subject?.name}</span>
+                                                <span className={styles.groupPeriodName}>{group?.period?.name}</span>
+                                            </div>
+                                            {/* قائمة تمارين المجموعة */}
+                                            <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
+                                                <Link
+                                                    key={exercise.id}
+                                                    href={`/exam/${group?.unique_code}/${exercise?.unique_id}/0`} // Assuming the link structure is like this
+                                                    // href={exercise.link}
+                                                    className={styles.exerciseLink}
+                                                    style={{ textDecoration: 'none' }}
                                                 >
-                                                    {/* عنوان التمرين */}
-                                                    <div className={styles.exerciseTitleContainer}>
-                                                        <span className={styles.exerciseTitle}>{exercise.title}</span>
+                                                    <div
+                                                        className={styles.groupedExerciseItem}
+                                                        style={itemStyle}
+                                                    >
+                                                        {/* عنوان التمرين */}
+                                                        <div className={styles.exerciseTitleContainer}>
+                                                            <span className={styles.exerciseTitle}>{exercise.title}</span>
+                                                        </div>
+                                                        {/* حاوية الحالة والأيقونة */}
+                                                        <div className={styles.statusIconGroup}>
+                                                            {/* نص الحالة + النسبة المئوية */}
+                                                            <span className={styles.exerciseStatusText}>
+                                                                {exercise.status} {exercise.progress > 0 ? `${exercise.progress}%` : ''}
+                                                            </span>
+                                                            {/* أيقونة السهم */}
+                                                            <HiChevronLeft className={styles.exerciseActionIcon} />
+                                                        </div>
                                                     </div>
-                                                    {/* حاوية الحالة والأيقونة */}
-                                                    <div className={styles.statusIconGroup}>
-                                                        {/* نص الحالة + النسبة المئوية */}
-                                                        <span className={styles.exerciseStatusText}>
-                                                            {exercise.status} {exercise.progress > 0 ? `${exercise.progress}%` : ''}
-                                                        </span>
-                                                        {/* أيقونة السهم */}
-                                                        <HiChevronLeft className={styles.exerciseActionIcon} />
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
+                                                </Link>
+                                            </div>
+                                        </div>)
+                                })}
                             </div>
+
                         );
                     })
                 ) : (

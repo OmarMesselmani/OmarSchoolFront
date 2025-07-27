@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './matching-question.module.css';
-import { CONNECTION_EVENTS } from '@/app/exam/[uniqueId]/[questionOrder]/page';
+import { CONNECTION_EVENTS } from '@/app/exam/[packUniqueCode]/[uniqueId]/[questionOrder]/page';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {

@@ -15,6 +15,7 @@ import { Student } from '@/app/data-structures/Student';
 
 interface QuestionRendererProps {
   exerciseData: Exercise;
+  handleStepChange?: (step: number) => void; // إضافة هذا
   student: Student; // إضافة خاصية الطالب
   // questionConfig: QuestionConfig;
   // exerciseAssets?: any;
@@ -25,6 +26,7 @@ interface QuestionRendererProps {
 
 export default function QuestionRenderer({
   exerciseData,
+  handleStepChange,
   student,
 }: QuestionRendererProps) {
   switch (exerciseData?.exercise_type?.name) {
@@ -49,6 +51,7 @@ export default function QuestionRenderer({
     case 'drag-and-drop':
       return (
         <DragAndDrop
+          handleStepChange={handleStepChange}
           exerciseId={exerciseData?.id}
           student={student}
         />

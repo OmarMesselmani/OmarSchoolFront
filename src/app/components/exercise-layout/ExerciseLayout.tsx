@@ -22,7 +22,8 @@ interface ExerciseLayoutProps {
   examData: ExamWithExercises;
   student: Student; // إضافة خاصية الطالب
   exercises: Exercise[];
-  examUniqueId?: string; // إضافة معرف الامتحان
+  packUniqueCode: string; // إضافة معرف الحزمة
+  examUniqueId: string; // إضافة معرف الامتحان
   totalSteps: number;
   onClose: () => void;
   onUndo: () => void;
@@ -36,6 +37,7 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
   student,
   exercises,
   examUniqueId,
+  packUniqueCode,
   totalSteps,
   onClose,
   onUndo,
@@ -51,20 +53,18 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
   }
   //////////////////////////////////////////////////////
   // استخدم useParams من Next.js للحصول على المعلمات من URL
-  const params = useParams();
   const router = useRouter();
+  const params = useParams();
   const stringCurrentStep = params?.questionOrder as string;
   const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
 
   const ex1 = getExerciseByOrder(exercises, currentStep)
-  console.log('Current Step:', currentStep);
-  console.log('Exercise Data:', ex1);
 
   //////////////////////////////////////////////////////
   const handleStepChange = (step: number) => {
-    if (step !== currentStep) {
+    if (step !== currentStep && step >= 0 && step < totalSteps) {
 
-      router.push(`/exam/${examUniqueId}/${step}`);
+      router.push(`/exam/${packUniqueCode}/${examUniqueId}/${step}`);
     }
   };
   //////////////////////////////////////////////////////
@@ -105,6 +105,7 @@ const ExerciseLayout: React.FC<ExerciseLayoutProps> = ({
             <div className={styles.mainExerciseArea}>
               {/* {children} */}
               <QuestionRenderer
+                handleStepChange={handleStepChange}
                 exerciseData={ex1}
                 student={student} // تمرير خاصية الطالب
               />

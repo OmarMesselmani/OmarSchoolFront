@@ -32,7 +32,7 @@ export default function QuestionPage() {
 
 
   const unique_id = params?.uniqueId as string;
-
+  const pack_unique_code = params?.packUniqueCode as string;
 
   // التحقق من وجود المعاملات المطلوبة
   if (!unique_id) {
@@ -84,10 +84,10 @@ export default function QuestionPage() {
       setIsLoading(true);
       const token = Cookies.get('token');
       if (!token) {
-        window.location.href = '/login';
+        window.location.href = '/auth/login';
       }
 
-      const response = await fetch(`http://127.0.0.1:8000/student/exam/${unique_id}`, {
+      const response = await fetch(`http://127.0.0.1:8000/student/exam/${unique_id}/${pack_unique_code}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -181,6 +181,7 @@ export default function QuestionPage() {
 
   return (
     <ExerciseLayout
+      packUniqueCode={pack_unique_code}
       student={student}
       examData={examData}
       exercises={examData?.exercises || []}
