@@ -23,7 +23,10 @@ const SubmitAndNextButton: React.FC<SubmitAndNextButtonProps> = ({
   nextText = 'التالي',
   finishText = 'إنهاء',
 }) => {
-  const displayText = buttonText || (isLastQuestion ? finishText : nextText)
+  var displayText = buttonText || (isLastQuestion ? finishText : nextText)
+  if (isFinished) {
+    displayText = 'تم الانتهاء من التمرين'
+  }
 
   // disable when finished or loading
   const disabled = isFinished || isLoading

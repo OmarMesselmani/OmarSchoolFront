@@ -15,6 +15,7 @@ import { ExamWithExercises, Exercise } from '@/app/data-structures/Exam';
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { Student } from '@/app/data-structures/Student';
 
+import Cookies from 'js-cookie';
 
 // تعريف واجهة للخصائص
 interface ExerciseLayoutProps {

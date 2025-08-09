@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { EXERCISES_CONFIG } from '@/app/config/exerciseConfig';
 import { Pack, Subject } from '@/app/data-structures/Exam';
 import Cookies from 'js-cookie';
+import router from 'next/router';
+import LoadingPage from '@/app/components/loading-page/LoadingPage';
 
 // --- واجهات البيانات ---
 interface StudentData {
@@ -41,24 +43,6 @@ interface SubjectFilter {
     name: string;
 }
 
-// --- دالة لجلب عنوان التمرين من ملف التكوين ---
-const getExerciseTitle = (exerciseNumber: number): string => {
-    const exerciseKey = `exercise${exerciseNumber}`;
-    const exerciseConfig = EXERCISES_CONFIG[exerciseKey];
-    return exerciseConfig?.title || `التمرين رقم ${exerciseNumber}`;
-};
-
-
-
-
-
-// --- استخدام الدالة المحسنة ---
-
-// دالة مساعدة للحصول على اسم الفترة بالعربية
-const getPeriodName = (periodNumber: number): string => {
-    const names = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة'];
-    return `الفترة ${names[periodNumber - 1] || periodNumber}`;
-};
 
 // بيانات فلاتر التبويبات
 const initialSubjectFilters: SubjectFilter[] = [
@@ -87,6 +71,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     const [packData, setPackData] = useState<Pack[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [activeFilter, setActiveFilter] = useState<number>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         fetchPacksData();
@@ -95,6 +80,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
 
     const fetchSubjectsData = async () => {
         try {
+            setIsLoading(true);
             const token = Cookies.get('token');
             if (!token) {
                 window.location.href = '/auth/login';
@@ -118,12 +104,53 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             setSubjects(data);
         } catch (error: any) {
             console.error("Error fetching student data:", error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchExerciseOrder = async (exam_id, pack_unique_code, student_id, exam_unique_code) => {
+        try {
+            setIsLoading(true);
+            const token = Cookies.get('token');
+            if (!token) {
+                window.location.href = '/auth/login';
+            }
+
+            const response = await fetch(`http://127.0.0.1:8000/student/exam/current-exercise-order?`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+                body: JSON.stringify({
+                    exam_id: exam_id,
+                    pack_unique_code: pack_unique_code,
+                    student_id: student_id, // تمرير معرف الطالب
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to fetch student data.");
+            }
+
+            const data = await response.json();
+            const step = parseInt(data.order);
+            if (step >= 0) {
+                window.location.href = (`/exam/${pack_unique_code}/${exam_unique_code}/${step}`);
+            }
+        } catch (error: any) {
+            console.error("Error fetching student data:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
 
     const fetchPacksData = async () => {
         try {
+            setIsLoading(true);
             const token = Cookies.get('token');
             if (!token) {
                 window.location.href = '/auth/login';
@@ -147,6 +174,8 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             setPackData(data);
         } catch (error: any) {
             console.error("Error fetching student data:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -171,6 +200,11 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
     };
     const remainingColorInProgress = "#ffffff";
 
+    if (isLoading) {
+        return (
+            <LoadingPage />
+        );
+    }
     return (
         <div className={styles.pageContainer}>
             {/* شريط معلومات التلميذ */}
@@ -223,44 +257,44 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
             {/* منطقة عرض قائمة التمارين المجمعة */}
             <div className={styles.groupedExerciseListContainer}>
                 {packData.length > 0 ? (
-                    packData.map(group => {
+                    packData.map(pack => {
                         // const headerBgColor = (subjectColorData.subjectTitleBgColors as Record<string, string>)[subjectId] || '#A1A1AA';
                         const bodyBgColor = '#ffffff';
 
                         return (
-                            <div key={`${group.subject}-${group?.period?.name}`} className={styles.packContainer}>
-                                <div className={styles.packTitle}>{group?.title}</div>
+                            <div key={`${pack.subject}-${pack?.period?.name}`} className={styles.packContainer}>
+                                <div className={styles.packTitle}>{pack?.title}</div>
 
-                                {group?.exams.map((exercise) => {
+                                {pack?.exams.map((exam) => {
                                     let itemStyle: React.CSSProperties = {};
                                     let progressFillColor = statusBackgroundColors.notStarted;
-                                    if (exercise.status === 'finished') {
+                                    if (exam.status === 'finished') {
                                         progressFillColor = statusBackgroundColors.completed;
                                         itemStyle = { backgroundColor: progressFillColor };
-                                    } else if (exercise.status === 'pending') {
+                                    } else if (exam.status === 'pending') {
                                         progressFillColor = statusBackgroundColors.notStarted;
                                         itemStyle = { backgroundColor: progressFillColor };
-                                    } else if (exercise.status === 'in_progress') {
+                                    } else if (exam.status === 'in_progress') {
                                         progressFillColor = statusBackgroundColors.inProgress;
                                         itemStyle = {
-                                            background: `linear-gradient(to left, ${progressFillColor} ${exercise.progress}%, ${remainingColorInProgress} ${exercise.progress}%)`
+                                            background: `linear-gradient(to left, ${progressFillColor} ${exam.progress}%, ${remainingColorInProgress} ${exam.progress}%)`
                                         };
                                     } else {
                                         itemStyle = { backgroundColor: statusBackgroundColors.notStarted };
                                     }
                                     return (
-                                        <div key={exercise?.id} className={styles.subjectGroup}>
+                                        <div key={exam?.id} className={styles.subjectGroup}>
                                             {/* رأس المجموعة */}
                                             <div className={styles.groupHeader} style={{ backgroundColor: '#A1A1AA' }}>
-                                                <span className={styles.groupSubjectName}>{exercise?.subject?.name}</span>
-                                                <span className={styles.groupPeriodName}>{group?.period?.name}</span>
+                                                <span className={styles.groupSubjectName}>{exam?.subject?.name}</span>
+                                                <span className={styles.groupPeriodName}>{pack?.period?.name}</span>
                                             </div>
                                             {/* قائمة تمارين المجموعة */}
                                             <div className={styles.groupExerciseList} style={{ backgroundColor: bodyBgColor }}>
-                                                <Link
-                                                    key={exercise.id}
-                                                    href={`/exam/${group?.unique_code}/${exercise?.unique_id}/0`} // Assuming the link structure is like this
-                                                    // href={exercise.link}
+                                                <button
+                                                    key={exam.id}
+                                                    // href={`/exam/${pack?.unique_code}/${exam?.unique_id}/0`} 
+                                                    onClick={() => fetchExerciseOrder(exam?.id, pack?.unique_code, selectedChildId, exam?.unique_id)}
                                                     className={styles.exerciseLink}
                                                     style={{ textDecoration: 'none' }}
                                                 >
@@ -270,19 +304,19 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
                                                     >
                                                         {/* عنوان التمرين */}
                                                         <div className={styles.exerciseTitleContainer}>
-                                                            <span className={styles.exerciseTitle}>{exercise.title}</span>
+                                                            <span className={styles.exerciseTitle}>{exam.title}</span>
                                                         </div>
                                                         {/* حاوية الحالة والأيقونة */}
                                                         <div className={styles.statusIconGroup}>
                                                             {/* نص الحالة + النسبة المئوية */}
                                                             <span className={styles.exerciseStatusText}>
-                                                                {exercise.status} {exercise.progress > 0 ? `${exercise.progress}%` : ''}
+                                                                {exam.status} {exam.progress > 0 ? `${exam.progress}%` : ''}
                                                             </span>
                                                             {/* أيقونة السهم */}
                                                             <HiChevronLeft className={styles.exerciseActionIcon} />
                                                         </div>
                                                     </div>
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>)
                                 })}
