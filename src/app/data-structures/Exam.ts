@@ -77,3 +77,10 @@ export interface Pack {
   period: Period | null; // Nullable if not applicable
   semester: Semester | null; // Nullable if not applicable
 }
+
+export interface ExerciseStatus {
+    success: boolean;
+    finished: boolean;
+    score: number | null;
+    attempted_at: string;
+}

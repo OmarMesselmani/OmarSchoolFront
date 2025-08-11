@@ -21,7 +21,7 @@ import ExerciseSidebar from '@/app/components/exercise-sidebar/page';
 import Cookies from 'js-cookie';
 import LoadingPage from '@/app/components/loading-page/LoadingPage';
 import SubmitAndNextButton from '@/app/components/submit-and-next-button/page';
-import { Exercise } from '@/app/data-structures/Exam';
+import { Exercise, ExerciseStatus } from '@/app/data-structures/Exam';
 import { Student } from '@/app/data-structures/Student';
 import { useParams } from 'next/navigation';
 
@@ -31,12 +31,6 @@ interface ColorInfo {
     Exercice_id: string;
     name: string;
     color_code: string;
-}
-interface ExerciseStatus {
-    success: boolean;
-    finished: boolean;
-    score: number | null;
-    attempted_at: string;
 }
 
 
@@ -76,7 +70,7 @@ export default function DragAndDrop({ exerciseId, student, handleStepChange }: {
     useEffect(() => {
         const token = Cookies.get("token");
         setIsFullLoading(true);
-        fetch(`http://127.0.0.1:8000/student/drag-and-drop/exercise-status/${student?.id}/${exerciseId}`, {
+        fetch(`http://127.0.0.1:8000/student/exercise/exercise-status/${student?.id}/${exerciseId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

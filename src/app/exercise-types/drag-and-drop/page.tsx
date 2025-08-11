@@ -64,7 +64,7 @@ export default function DragAndDrop() {
     useEffect(() => {
         const token = Cookies.get("token");
         setIsFullLoading(true);
-        fetch(`http://127.0.0.1:8000/student/drag-and-drop/exercise-status/${studentId}/${exerciseId}`, {
+        fetch(`http://127.0.0.1:8000/student/exercise/exercise-status/${studentId}/${exerciseId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

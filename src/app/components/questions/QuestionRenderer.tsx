@@ -33,6 +33,7 @@ export default function QuestionRenderer({
     case 'image-reading-segment':
       return (
         <TextDisplay
+          handleStepChange={handleStepChange}
           exerciseId={exerciseData?.id}
           student={student} // تمرير خاصية الطالب
         />

@@ -109,7 +109,7 @@ const ExercisesListPage: React.FC<ExercisesListPageProps> = ({
         }
     };
 
-    const fetchExerciseOrder = async (exam_id, pack_unique_code, student_id, exam_unique_code) => {
+    const fetchExerciseOrder = async (exam_id: number, pack_unique_code: string, student_id: number, exam_unique_code: string) => {
         try {
             setIsLoading(true);
             const token = Cookies.get('token');

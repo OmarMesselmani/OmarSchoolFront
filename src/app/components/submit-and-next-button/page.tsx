@@ -32,7 +32,7 @@ const SubmitAndNextButton: React.FC<SubmitAndNextButtonProps> = ({
   const disabled = isFinished || isLoading
 
   return (
-    <div className="w-full flex justify-center mt-2 mb-3">
+    <div className="w-full flex justify-center mt-6 mb-2">
       <button
         onClick={() => {
           if (!disabled) onClick()
