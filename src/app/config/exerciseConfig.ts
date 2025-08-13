@@ -24,6 +24,34 @@ export interface QuestionConfig {
     textImage?: string; // إضافة textImage لدعم السند
   };
 }
+export const questionConfig: QuestionConfig = {
+  questionId: "1",
+  type: "mcq",
+  questionNumber: "1",
+  questionTitle: 'أَصِلُ كُلَّ كَلِمَةٍ بِالْمَشْهَدِ الْمُنَاسِبِ لَهَا:',
+          content: {
+          items: [
+            { id: 'text1', text: 'مُعَلِّمِي' },
+            { id: 'text2', text: 'مُعَلِّمَتِي' },
+            { id: 'text3', text: 'عَلَمٌ' }
+          ],
+          images: [
+            { id: 'img1', url: '/exercices/year1/reading/introductory/exercice2/femaleTeacher.png' },
+            { id: 'img2', url: '/exercices/year1/reading/introductory/exercice2/flag.png' },
+            { id: 'img3', url: '/exercices/year1/reading/introductory/exercice2/teacher.png' }
+          ],
+          correctMatches: [
+            { textId: 'text1', imageId: 'img3' },
+            { textId: 'text2', imageId: 'img1' }, 
+            { textId: 'text3', imageId: 'img2' }  
+          ]
+        },
+  assets: {
+    images: [],
+    audio: "",
+    video: ""
+  }
+};
 
 // ملف التكوين للتمارين
 export const EXERCISES_CONFIG: { [key: string]: ExerciseConfig } = {

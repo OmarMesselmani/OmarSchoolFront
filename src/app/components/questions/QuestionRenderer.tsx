@@ -1,7 +1,7 @@
 // src/app/components/questions/QuestionRenderer.tsx
 
 import React from 'react';
-import { QuestionConfig } from '@/app/config/exerciseConfig';
+import { questionConfig } from '@/app/config/exerciseConfig';
 import TextDisplay from './text-question/TextQuestion';
 import MatchingQuestion from './matching-question/MatchingQuestion';
 import DragDropQuestion from './drag-drop-question/DragDropQuestion';
@@ -17,7 +17,7 @@ interface QuestionRendererProps {
   exerciseData: Exercise;
   handleStepChange?: (step: number) => void; // إضافة هذا
   student: Student; // إضافة خاصية الطالب
-  // questionConfig: QuestionConfig;
+  // questionConfig?: QuestionConfig;
   // exerciseAssets?: any;
   onAnswerChange?: (questionId: string, answer: any) => void; // إضافة هذا
 }
@@ -30,24 +30,24 @@ export default function QuestionRenderer({
   student,
 }: QuestionRendererProps) {
   switch (exerciseData?.exercise_type?.name) {
-    case 'image-reading-segment':
-      return (
-        <TextDisplay
-          handleStepChange={handleStepChange}
-          exerciseId={exerciseData?.id}
-          student={student} // تمرير خاصية الطالب
-        />
-      );
-
-    // case 'matching':
+    // case 'image-reading-segment':
     //   return (
-    //     <MatchingQuestion
-    //       items={questionConfig.content.items}
-    //       images={questionConfig.content.images}
-    //       questionNumber={questionConfig.questionNumber}
-    //       questionTitle={questionConfig.questionTitle}
+    //     <TextDisplay
+    //       handleStepChange={handleStepChange}
+    //       exerciseId={exerciseData?.id}
+    //       student={student} // تمرير خاصية الطالب
     //     />
     //   );
+
+    case 'image-reading-segment':
+      return (
+        <MatchingQuestion
+          items={questionConfig.content.items}
+          images={questionConfig.content.images}
+          questionNumber={questionConfig.questionNumber}
+          questionTitle={questionConfig.questionTitle}
+        />
+      );
 
     case 'drag-and-drop':
       return (
