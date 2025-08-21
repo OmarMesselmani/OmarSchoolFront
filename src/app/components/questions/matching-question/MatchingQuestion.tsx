@@ -4,11 +4,15 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './matching-question.module.css';
 import { CONNECTION_EVENTS } from '@/app/exam/[packUniqueCode]/[uniqueId]/[questionOrder]/page';
+import Cookies from 'js-cookie';
+import { TwoColumnsMatchingResponse } from '@/app/data-structures/Exam';
+import { Student } from '@/app/data-structures/Student';
+import { useParams } from 'next/navigation';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {
-  start: string;
-  end: string;
+  right: string;
+  left: string;
 }
 
 interface Position {
@@ -16,24 +20,13 @@ interface Position {
   y: number;
 }
 
-// تعديل الواجهات لدعم النصوص والصور في كلا العمودين
-interface ItemData {
-  id: string;
-  text?: string;  // اختيارية
-  url?: string;   // اختيارية
-}
+
+
 
 interface MatchingQuestionProps {
-  items: Array<{
-    id: string;
-    text?: string;  // دعم النص
-    url?: string;   // دعم الصورة
-  }>;
-  images: Array<{
-    id: string;
-    url?: string;   // اختيارية للصور
-    text?: string;  // دعم النصوص
-  }>;
+  exerciseId: number;
+  student?: Student; // إضافة خاصية الطالب
+  handleStepChange?: (step: number) => void; // إضافة هذا
   questionNumber: string;
   questionTitle: string;
   correctMatches?: Array<{
@@ -43,16 +36,49 @@ interface MatchingQuestionProps {
 }
 
 export default function MatchingQuestion({
-  items,
-  images,
+  exerciseId,
+  handleStepChange,
+  student,
   questionNumber,
   questionTitle
 }: MatchingQuestionProps) {
-  // --- الحالة الداخلية للمكون ---
+
+  const params = useParams();
+
+  const stringCurrentStep = params?.questionOrder as string;
+  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
   const [connections, setConnections] = useState<Connection[]>([]);
   const [startPoint, setStartPoint] = useState<string | null>(null);
+  const [matchingData, setMatchingData] = useState<TwoColumnsMatchingResponse | null>(null);
   const [mousePos, setMousePos] = useState<Position | null>(null);
+  const [isFullLoading, setIsFullLoading] = useState(true);
+
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsFullLoading(true);
+
+    fetch(`http://127.0.0.1:8000/student/get-exercise-data/${exerciseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${Cookies.get("token")}`,
+      }
+    })
+      .then(res => {
+        if (res.status === 401) {
+          // Redirect to login
+          window.location.href = "/auth/login";
+          return null; // short‐circuit the chain
+        }
+        return res.json();
+      })
+      .then(data => {
+        setMatchingData(data || []);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setIsFullLoading(false));
+  }, [exerciseId]);
 
   // --- الدوال المساعدة ومعالجات الأحداث ---
   const getTextPointId = (itemId: string) => `point-text-${itemId}`;
@@ -80,9 +106,10 @@ export default function MatchingQuestion({
   };
 
   const handlePointClick = (e: React.MouseEvent, pointId: string) => {
+    console.log('startPoint : ' + startPoint)
     e.stopPropagation();
     if (!startPoint) {
-      if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
+      if (connections.some(conn => conn.right === pointId || conn.left === pointId)) {
         console.log("النقطة متصلة بالفعل.");
         return;
       }
@@ -101,7 +128,7 @@ export default function MatchingQuestion({
         cancelConnection();
         return;
       }
-      if (connections.some(conn => conn.start === pointId || conn.end === pointId)) {
+      if (connections.some(conn => conn.right === pointId || conn.left === pointId)) {
         console.log("النقطة الهدف متصلة بالفعل.");
         cancelConnection();
         return;
@@ -110,8 +137,9 @@ export default function MatchingQuestion({
       // تحديد النقطة الصحيحة للبداية والنهاية
       const finalStart = isStartText ? startPoint : pointId;
       const finalEnd = isCurrentImage ? pointId : startPoint;
+      console.log('finalEnd : ' + finalEnd)
 
-      setConnections(prevConnections => [...prevConnections, { start: finalStart, end: finalEnd }]);
+      setConnections(prevConnections => [...prevConnections, { right: finalStart, left: finalEnd }]);
       setStartPoint(null);
       setMousePos(null);
     }
@@ -200,11 +228,11 @@ export default function MatchingQuestion({
   };
 
   // دالة لعرض محتوى العمود الأيمن (images) - تم حذف النقاط المزدوجة
-  const renderImageContent = (image: { id: string; text?: string; url?: string; }) => {
-    if (image.url) {
+  const renderImageContent = (image: { id: string; text?: string; image?: string; order: number }) => {
+    if (image.image) {
       return (
         <img
-          src={image.url}
+          src={image.image}
           alt={`صورة ${image.id}`}
           className={styles.matchingImage}
         />
@@ -234,20 +262,21 @@ export default function MatchingQuestion({
             {/* عنوان السؤال */}
             <div className={styles.questionTitle}>
               <span className={styles.questionNumber}>
-                {questionNumber}
+                {currentStep + 1}
               </span>
               <span className={styles.questionText}>
                 {questionTitle}
               </span>
             </div>
+            {JSON.stringify(connections)}
 
             <div className={styles.matchingArea}>
               {/* العمود الأيسر - النصوص/الصور */}
               <div className={styles.textsList}>
-                {items.map((item) => {
+                {matchingData?.right_items.map((item) => {
                   const pointId = getTextPointId(item.id);
                   const isSelected = startPoint === pointId;
-                  const isConnected = connections.some(conn => conn.start === pointId || conn.end === pointId);
+                  const isConnected = connections.some(conn => conn.right === pointId || conn.left === pointId);
                   return (
                     <div
                       key={item.id}
@@ -272,10 +301,10 @@ export default function MatchingQuestion({
 
               {/* العمود الأيمن - الصور/النصوص */}
               <div className={styles.imagesColumn}>
-                {images.map((image) => {
+                {matchingData?.left_items.map((image) => {
                   const pointId = getImagePointId(image.id);
                   const isSelected = startPoint === pointId;
-                  const isConnected = connections.some(conn => conn.start === pointId || conn.end === pointId);
+                  const isConnected = connections.some(conn => conn.right === pointId || conn.left === pointId);
                   return (
                     <div
                       key={image.id}
@@ -317,9 +346,9 @@ export default function MatchingQuestion({
       {/* رسم خطوط التوصيل النهائية */}
       {connections.map((conn, index) => (
         <Xarrow
-          key={`conn-${conn.start}-${conn.end}-${index}`}
-          start={conn.start}
-          end={conn.end}
+          key={`conn-${conn.right}-${conn.left}-${index}`}
+          start={conn.right}
+          end={conn.left}
           color="#171717"
           strokeWidth={2}
           headSize={6}

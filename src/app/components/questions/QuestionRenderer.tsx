@@ -30,20 +30,21 @@ export default function QuestionRenderer({
   student,
 }: QuestionRendererProps) {
   switch (exerciseData?.exercise_type?.name) {
-    // case 'image-reading-segment':
-    //   return (
-    //     <TextDisplay
-    //       handleStepChange={handleStepChange}
-    //       exerciseId={exerciseData?.id}
-    //       student={student} // تمرير خاصية الطالب
-    //     />
-    //   );
-
     case 'image-reading-segment':
       return (
+        <TextDisplay
+          handleStepChange={handleStepChange}
+          exerciseId={exerciseData?.id}
+          student={student}
+        />
+      );
+
+    case 'two-columns-matching':
+      return (
         <MatchingQuestion
-          items={questionConfig.content.items}
-          images={questionConfig.content.images}
+          exerciseId={exerciseData?.id}
+          student={student}
+          handleStepChange={handleStepChange}
           questionNumber={questionConfig.questionNumber}
           questionTitle={questionConfig.questionTitle}
         />

@@ -146,7 +146,7 @@ export default function TextDisplay({
             <div className={styles.questionTitle}>
               {exerciseOrder && (
                 <span className={styles.questionNumber}>
-                  {exerciseOrder}
+                  {exerciseOrder + 1}
                 </span>
               )}
               {questionTitle && (

@@ -84,3 +84,21 @@ export interface ExerciseStatus {
     score: number | null;
     attempted_at: string;
 }
+
+
+// Shared item interface for left/right items
+export interface MatchItemDto {
+  id: string,
+  order: number;
+  text: string;
+  image: string; 
+}
+
+// The full two-columns-matching response
+export interface TwoColumnsMatchingResponse {
+  title: string;
+  exercise_order: number;
+  instruction: string;
+  left_items: MatchItemDto[];
+  right_items: MatchItemDto[];
+}

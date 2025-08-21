@@ -338,7 +338,7 @@ export default function DragAndDrop({ exerciseId, student, handleStepChange }: {
                 <div dir="rtl" className={`${styles.mainContent} relative`} >
                     {/* السؤال مع الرقم */}
                     <h2 className="flex items-center justify-start gap-3 mb-12">
-                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#DD2946] text-white text-base font-bold"> 2 </span>
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#DD2946] text-white text-base font-bold"> {currentStep + 1} </span>
                         {/* *** تعديل: تغيير نص السؤال *** */}
                         <span
                             className="text-2xl font-bold"

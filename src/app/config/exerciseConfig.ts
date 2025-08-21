@@ -24,6 +24,7 @@ export interface QuestionConfig {
     textImage?: string; // إضافة textImage لدعم السند
   };
 }
+
 export const questionConfig: QuestionConfig = {
   questionId: "1",
   type: "mcq",
