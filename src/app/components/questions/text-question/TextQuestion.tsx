@@ -12,7 +12,7 @@ import { ExerciseStatus } from '@/app/data-structures/Exam';
 interface TextDisplayProps {
   exerciseId?: number; // إضافة خاصية معرف التمرين
   student?: Student; // إضافة خاصية الطالب
-  handleStepChange?: (step: number) => void; // إضافة هذا
+  handleStepChange?: (step: number) => void;
 }
 
 interface segment {
@@ -39,16 +39,16 @@ export default function TextDisplay({
   const [error, setError] = useState<string | null>(null);
 
   const params = useParams();
+  
+  const stringCurrentStep = params?.questionOrder as string;
+  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
+  const examUniqueId = params?.uniqueId as string;
+  const packUniqueCode = params?.packUniqueCode as string;
   const handleNextStep = () => {
     if (handleStepChange) {
       handleStepChange(currentStep + 1);
     }
   };
-
-  const stringCurrentStep = params?.questionOrder as string;
-  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
-  const examUniqueId = params?.uniqueId as string;
-  const packUniqueCode = params?.packUniqueCode as string;
   const handleSubmit = async () => {
     setLoading(true);
     try {

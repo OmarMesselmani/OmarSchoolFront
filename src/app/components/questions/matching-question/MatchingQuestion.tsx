@@ -5,9 +5,10 @@ import Xarrow, { Xwrapper } from 'react-xarrows';
 import styles from './matching-question.module.css';
 import { CONNECTION_EVENTS } from '@/app/exam/[packUniqueCode]/[uniqueId]/[questionOrder]/page';
 import Cookies from 'js-cookie';
-import { TwoColumnsMatchingResponse } from '@/app/data-structures/Exam';
+import { ExerciseStatus, TwoColumnsMatchingResponse } from '@/app/data-structures/Exam';
 import { Student } from '@/app/data-structures/Student';
 import { useParams } from 'next/navigation';
+import SubmitAndNextButton from '../../submit-and-next-button/page';
 
 // تعريف واجهات البيانات الداخلية للمكون
 interface Connection {
@@ -45,15 +46,54 @@ export default function MatchingQuestion({
 
   const params = useParams();
 
-  const stringCurrentStep = params?.questionOrder as string;
-  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
   const [connections, setConnections] = useState<Connection[]>([]);
   const [startPoint, setStartPoint] = useState<string | null>(null);
   const [matchingData, setMatchingData] = useState<TwoColumnsMatchingResponse | null>(null);
   const [mousePos, setMousePos] = useState<Position | null>(null);
   const [isFullLoading, setIsFullLoading] = useState(true);
+  const [exerciseFinished, setExerciseFinished] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<ExerciseStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+
+
+  const stringCurrentStep = params?.questionOrder as string;
+  const currentStep = parseInt(stringCurrentStep); // تحويل المعامل إلى رقم صحيح
+  const examUniqueId = params?.uniqueId as string;
+  const packUniqueCode = params?.packUniqueCode as string;
+  const handleNextStep = () => {
+    if (handleStepChange) {
+      handleStepChange(currentStep + 1);
+    }
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    setIsFullLoading(true);
+    fetch(`http://127.0.0.1:8000/student/exercise/exercise-status/${student?.id}/${exerciseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": `Token ${token}`,
+      }
+    }).then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setStatus(data);
+          setExerciseFinished(data.finished);
+        } else {
+          setError(data.error || "Unknown error occurred.");
+        }
+        setIsFullLoading(false);
+      })
+      .catch((err) => {
+        setError("Failed to fetch exercise status.");
+        setIsFullLoading(false);
+      });
+  }, [exerciseId, student?.id]);
 
   useEffect(() => {
     setIsFullLoading(true);
@@ -81,14 +121,48 @@ export default function MatchingQuestion({
   }, [exerciseId]);
 
   // --- الدوال المساعدة ومعالجات الأحداث ---
-  const getTextPointId = (itemId: string) => `point-text-${itemId}`;
-  const getImagePointId = (imageId: string) => `point-image-${imageId}`;
+  const getTextPointId = (itemId: string) => `right-item-${itemId}`;
+  const getImagePointId = (imageId: string) => `left-item-${imageId}`;
 
   const cancelConnection = useCallback(() => {
     setStartPoint(null);
     setMousePos(null);
     console.log("تم إلغاء التوصيل.");
   }, []);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const token = Cookies.get("token");
+      const response = await fetch("http://127.0.0.1:8000/student/two-columns-matching/submit-exercise", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Token ${token}`,
+        },
+        body: JSON.stringify({
+          student_id: student?.id, // Your logic for student ID
+          exercise_id: exerciseId, // Your logic for exercise ID
+          exam_unique_id: examUniqueId, // Pass the exam unique ID if needed
+          current_step: currentStep, // Pass the current step
+          pack_unique_code: packUniqueCode, // Pass the pack unique code
+          connections: connections,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setExerciseFinished(true);
+        setLoading(false);
+        handleNextStep(); // Navigate to the next step if needed
+      } else {
+        console.error("Submission error:", result.error);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setLoading(false);
+    }
+  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!startPoint || !containerRef.current) {
@@ -106,7 +180,6 @@ export default function MatchingQuestion({
   };
 
   const handlePointClick = (e: React.MouseEvent, pointId: string) => {
-    console.log('startPoint : ' + startPoint)
     e.stopPropagation();
     if (!startPoint) {
       if (connections.some(conn => conn.right === pointId || conn.left === pointId)) {
@@ -119,10 +192,10 @@ export default function MatchingQuestion({
         cancelConnection();
         return;
       }
-      const isStartText = startPoint.startsWith('point-text-');
-      const isCurrentText = pointId.startsWith('point-text-');
-      const isStartImage = startPoint.startsWith('point-image-');
-      const isCurrentImage = pointId.startsWith('point-image-');
+      const isStartText = startPoint.startsWith('right-item-');
+      const isCurrentText = pointId.startsWith('right-item-');
+      const isStartImage = startPoint.startsWith('left-item-');
+      const isCurrentImage = pointId.startsWith('left-item-');
       if ((isStartText && isCurrentText) || (isStartImage && isCurrentImage)) {
         console.log("لا يمكن توصيل نقاط من نفس النوع.");
         cancelConnection();
@@ -268,8 +341,6 @@ export default function MatchingQuestion({
                 {questionTitle}
               </span>
             </div>
-            {JSON.stringify(connections)}
-
             <div className={styles.matchingArea}>
               {/* العمود الأيسر - النصوص/الصور */}
               <div className={styles.textsList}>
@@ -328,6 +399,13 @@ export default function MatchingQuestion({
               </div>
             </div>
           </div>
+          <SubmitAndNextButton
+            isFinished={exerciseFinished}
+            isLoading={loading}
+            onClick={handleSubmit}
+            isLastQuestion={false}
+          />
+
 
           {/* عنصر وهمي لتتبع الفأرة ورسم الخط المؤقت */}
           {mousePos && startPoint && (
